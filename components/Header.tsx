@@ -5,7 +5,7 @@ import UserDropdown from "./UserDropdown"
 
 const Header = () => {
   return (
-    <header className="sticky top-0 header">Header
+    <header className="sticky top-0 header">
       <div className="container header-wrapper">
         <Link href="/">
           <Image src="vercel.svg" alt="Logo" width={150} height={50} className="h-8 w-auto cursor-pointer"/>
