@@ -51,7 +51,7 @@ const UserDropdown = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent className="text-gray-500" >
                 <DropdownMenuLabel>
-                    <div className="flex relative item-center gap-3 py-2">
+                    <div className="flex relative items-center gap-3 py-2">
                         <Avatar className="h-10 w-10">
                             <AvatarImage src="https://github.com/shadcn.png" alt={user.name}/>
                                 <AvatarFallback className= "bg-yellow-400 text-yellow-800 text-sm font-bold">
