@@ -1,5 +1,4 @@
 import TradingViewWidget from "@/components/TradingViewWidget"
-import { Button } from "@/components/ui/button"
 import { MARKET_OVERVIEW_WIDGET_CONFIG, 
   STOCK_HEATMAP_WIDGET_CONFIG,
   TIMELINES_WIDGET_CONFIG,
