@@ -2,8 +2,9 @@ import { connectToDatabase } from "../database/mongoose";
 
 async function main() {
   try {
-    await connectToDatabase();
+    const mongoose = await connectToDatabase();
     console.log("OK: Database connection succeeded");
+    await mongoose.connection.close();
     process.exit(0);
   } catch (err) {
     console.error("ERROR: Database connection failed");
