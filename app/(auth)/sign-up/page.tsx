@@ -44,19 +44,20 @@ const SignUp = () => {
             placeholder="Robert Anderson" 
             register={register}
             error={errors.fullName}
-            validation={{ required: "Full Name is required.", minLength: 2 }}
+            validation={{ required: "Full name must be at least 2 characters.", minLength: 2 }}
             />
 
           <InputField
             name="email"
             label="Email"
             placeholder="stock@12345.com"
+            type="email"
             register={register}
             error={errors.email}
             validation={{
               required: 'Email is required.',
               pattern: {
-                value: /^\w+@\w+\.\w+$/,
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                 message: 'Invalid email address',
               },
             }}
@@ -69,7 +70,10 @@ const SignUp = () => {
             type="password"
             register={register}
             error={errors.password}
-            validation={{ required: 'Password is required.', minLength: 8 }}
+            validation={{ 
+              required: 'Password is required.', 
+              minLength: { value: 8, message: 'Password must be at least 8 characters.' }
+            }}
           />
 
           {/* country */}
