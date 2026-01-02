@@ -7,27 +7,27 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {useRouter} from "next/navigation";
 import {Button} from "@/components/ui/button";
 import { LogOut } from "lucide-react";
-import NavItems from "./NavItems";
+import NavItems from "@/components/NavItems";
+import {signOut} from "@/lib/actions/auth.actions";
 // import {LogOut} from "lucide-react";
 // import NavItems from "@/components/NavItems";
 // import {signOut} from "@/lib/actions/auth.actions";
 
 
 
-const UserDropdown = () => {
+const UserDropdown = ( {user} : {user: User}) => {
     const router = useRouter();
 
 
     //signout 
     const handleSignOut = async() => {
         // Perform sign out logic 
+        await signOut();
 
 
         // After sign out, redirect to home page
         router.push("/sign-in");
     }   
-
-    const user = {name: 'BOB', email: 'testing@example.com'};
 
     return (
         <DropdownMenu>
