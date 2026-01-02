@@ -7,10 +7,6 @@ import {sendWelcomeEmail} from "@/lib/nodemailer";
 // Direct Gemini API call function
 async function callGeminiAPI(prompt: string): Promise<string> {
     const apiKey = process.env.GOOGLE_GEMINI_KEY;
-    
-    if (!apiKey) {
-        throw new Error('GOOGLE_GEMINI_KEY is not set');
-    }
 
     const response = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${apiKey}`,

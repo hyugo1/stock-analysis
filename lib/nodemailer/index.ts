@@ -22,5 +22,14 @@ export const sendWelcomeEmail = async ({ email, name, intro }: WelcomeEmailData)
         html: htmlTemplate,
     }
 
-    await transporter.sendMail(mailOptions);
+    // await transporter.sendMail(mailOptions);
+    try {
+        await transporter.sendMail(mailOptions);
+    } catch (error) {
+        console.error('Failed to send welcome email via nodemailer', {
+            to: email,
+            error,
+        });
+        throw new Error('Failed to send welcome email. Please try again later.');
+    }
 }
