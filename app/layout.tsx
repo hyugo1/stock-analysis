@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-// import "./../globals.css"
 import "./globals.css"
+import {Toaster} from "@/components/ui/sonner";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Stock Tracker",
-  description: "Track real time stock!",
+  title: "MarketPulse - Stock Analysis App",
+  description: "Analyze and track your favorite stocks in real-time with MarketPulse!",
 };
 
 export default function RootLayout({
@@ -29,6 +30,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
+      <Toaster />
       </body>
     </html>
   );

@@ -1,5 +1,7 @@
 'use client';
 
+
+// app/(auth)/sign-up/page.tsx
 import {useForm} from "react-hook-form";
 import { Button } from '@/components/ui/button';
 import InputField from "@/components/forms/InputField";
@@ -7,8 +9,12 @@ import SelectField from "@/components/forms/SelectField";
 import {CountrySelectField} from "@/components/forms/CountrySelectField";
 import {INVESTMENT_GOALS, PREFERRED_INDUSTRIES, RISK_TOLERANCE_OPTIONS} from "@/lib/constants";
 import FooterLink from "@/components/forms/FooterLink";
+import { signUpWithEmail } from "@/lib/actions/auth.actions";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const SignUp = () => {
+  const router = useRouter()
   const {
     register, 
     handleSubmit,
@@ -26,11 +32,13 @@ const SignUp = () => {
       },
     );
 
-  const onSubmit = async(data: SignUpFormData) => {
+  const onSubmit = async (data: SignUpFormData) => {
     try {
-      console.log("Form Data Submitted: ", data);
+      const result = await signUpWithEmail(data);
+      if (result.success) router.push('/');
     } catch (error) {
       console.error("Error submitting form: ", error);
+      toast.error("Sign up failed.", { description: error instanceof Error ? error.message : "Failed to create an account." }); 
     }
   } 
   return (
@@ -50,7 +58,7 @@ const SignUp = () => {
           <InputField
             name="email"
             label="Email"
-            placeholder="stock@12345.com"
+            placeholder="marketpulse@12345.com"
             type="email"
             register={register}
             error={errors.email}
