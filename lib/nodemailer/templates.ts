@@ -297,9 +297,6 @@ export const WELCOME_EMAIL_TEMPLATE = `<!DOCTYPE html>
                             <td class="footer-section" style="padding: 40px; background-color: #0a0d12; text-align: center; border-radius: 0 0 12px 12px;">
                                 <div class="footer-divider" style="width: 60px; height: 2px; background: linear-gradient(90deg, #10b981 0%, transparent 100%); margin: 25px auto;"></div>
                                 <p class="footer-text" style="margin: 0 0 8px 0; font-size: 13px; color: #64748b;">
-                                    MarketPulse HQ, 200 Market Street, San Francisco, CA 94105
-                                </p>
-                                <p class="footer-text" style="margin: 0 0 8px 0; font-size: 13px; color: #64748b;">
                                     <a href="#" class="footer-link" style="color: #64748b; text-decoration: underline;">Unsubscribe</a> 
                                     &nbsp;|&nbsp; 
                                     <a href="https://stock-market-dev.vercel.app/" class="footer-link" style="color: #64748b; text-decoration: underline;">Visit MarketPulse</a>
