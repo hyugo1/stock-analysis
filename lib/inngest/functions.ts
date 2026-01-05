@@ -75,6 +75,7 @@ export const sendDailyNewsSummary = inngest.createFunction(
     { id: 'daily-news-summary' },
     [ { event: 'app/send.daily.news' }, 
       { cron: '0 12 * * *' } 
+    //   { cron: '* * * * *' } 
     ],
     async ({ step }) => {
         // Step #1: Get all users for news delivery
@@ -125,15 +126,30 @@ export const sendDailyNewsSummary = inngest.createFunction(
             }
 
         // Step #4: (placeholder) Send the emails
-        await step.run('send-news-emails', async () => {
-                await Promise.all(
-                    userNewsSummaries.map(async ({ user, newsContent}) => {
-                        if(!newsContent) return false;
+        // await step.run('send-news-emails', async () => {
+        //         await Promise.all(
+        //             userNewsSummaries.map(async ({ user, newsContent}) => {
+        //                 if(!newsContent) return false;
 
-                        return await sendDailyNewsSummaryEmail({ email: user.email, date: getFormattedTodayDate(), newsContent })
-                    })
-                )
-            })
+        //                 return await sendDailyNewsSummaryEmail({ email: user.email, date: getFormattedTodayDate(), newsContent })
+        //             })
+        //         )
+        //     })
+
+        await step.run('send-news-emails', async () => {
+            const todayDate = getFormattedTodayDate();
+            const results = await Promise.allSettled(
+                userNewsSummaries
+                    .filter(({ newsContent }) => newsContent)
+                    .map(({ user, newsContent }) =>
+                        sendDailyNewsSummaryEmail({ email: user.email, date: todayDate, newsContent: newsContent! })
+                    )
+            );
+            const failures = results.filter((r) => r.status === 'rejected');
+            if (failures.length > 0) {
+                console.error('Some emails failed to send:', failures);
+            }
+        });
 
         return { success: true, message: 'Daily news summary emails sent successfully' }
     }
