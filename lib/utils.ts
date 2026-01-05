@@ -80,22 +80,29 @@ export const validateArticle = (article: RawNewsArticle) =>
 export const getTodayString = () => new Date().toISOString().split('T')[0];
 
 export const formatArticle = (
-    article: RawNewsArticle,
-    isCompanyNews: boolean,
-    symbol?: string,
-    index: number = 0
-) => ({
-  id: isCompanyNews ? Date.now() + Math.random() : article.id + index,
-  headline: article.headline!.trim(),
-  summary:
-      article.summary!.trim().substring(0, isCompanyNews ? 200 : 150) + '...',
+  article: RawNewsArticle,
+  isCompanyNews: boolean,
+  symbol?: string,
+  index = 0
+) => {
+const summaryText = (article.summary ?? '').trim();
+
+return {
+  id: isCompanyNews
+    ? `${Date.now()}-${Math.floor(Math.random() * 1e6)}`
+    : `${article.id ?? Date.now()}-${index}`,
+  headline: (article.headline ?? '').trim(),
+  summary: summaryText
+    ? summaryText.substring(0, isCompanyNews ? 200 : 150) + '...'
+    : '',
   source: article.source || (isCompanyNews ? 'Company News' : 'Market News'),
-  url: article.url!,
-  datetime: article.datetime!,
+  url: article.url ?? '',
+  datetime: article.datetime ?? 0,
   image: article.image || '',
   category: isCompanyNews ? 'company' : article.category || 'general',
-  related: isCompanyNews ? symbol! : article.related || '',
-});
+  related: isCompanyNews ? symbol ?? '' : article.related || '',
+};
+};
 
 export const formatChangePercent = (changePercent?: number) => {
   if (!changePercent) return '';
