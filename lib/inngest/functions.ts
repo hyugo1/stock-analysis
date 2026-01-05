@@ -75,7 +75,6 @@ export const sendDailyNewsSummary = inngest.createFunction(
     { id: 'daily-news-summary' },
     [ { event: 'app/send.daily.news' }, 
       { cron: '0 12 * * *' } 
-    //   { cron: '* * * * *' } 
     ],
     async ({ step }) => {
         // Step #1: Get all users for news delivery
@@ -124,17 +123,6 @@ export const sendDailyNewsSummary = inngest.createFunction(
                     userNewsSummaries.push({ user, newsContent: null });
                 }
             }
-
-        // Step #4: (placeholder) Send the emails
-        // await step.run('send-news-emails', async () => {
-        //         await Promise.all(
-        //             userNewsSummaries.map(async ({ user, newsContent}) => {
-        //                 if(!newsContent) return false;
-
-        //                 return await sendDailyNewsSummaryEmail({ email: user.email, date: getFormattedTodayDate(), newsContent })
-        //             })
-        //         )
-        //     })
 
         await step.run('send-news-emails', async () => {
             const todayDate = getFormattedTodayDate();
