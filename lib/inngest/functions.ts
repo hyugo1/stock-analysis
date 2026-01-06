@@ -75,6 +75,8 @@ export const sendDailyNewsSummary = inngest.createFunction(
     { id: 'marketpulse-daily-news-summary' },
     [ { event: 'app/send.daily.news' }, 
       { cron: '0 12 * * *' } 
+    //for testing, run every 2 minutes  
+        // { cron: '*/2 * * * *' }
     ],
     async ({ step }) => {
         // Step #1: Get all users for news delivery
