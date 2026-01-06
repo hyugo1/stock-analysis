@@ -228,3 +228,64 @@ EXAMPLES:
 - Barclays PLC (BARC.L) from Finnhub → {"tradingViewSymbol": "LSE:BARC", "confidence": "high", "reasoning": "Barclays trades on London Stock Exchange as BARC"}
 
 Your response must be valid JSON only. Do not include any other text.`
+
+
+
+export const NEWS_SECTION_PROMPT = `
+You are generating HTML content to be injected INSIDE an existing email template.
+
+CRITICAL RULES:
+- Output ONLY valid HTML
+- NO markdown
+- NO <html>, <head>, <body>
+- Use ONLY the class names provided below
+- Do NOT invent new class names
+- Do NOT inline styles
+- Each article MUST be wrapped in .news-card
+
+AVAILABLE CSS CLASSES (USE THESE EXACTLY):
+- news-card
+- news-meta
+- ticker-badge
+- source-text
+- news-title
+- news-summary
+- news-cta
+- news-cta-arrow
+
+SECTION TYPE:
+{{sectionType}}
+
+NEWS DATA (JSON):
+{{newsData}}
+
+REQUIRED STRUCTURE PER ARTICLE:
+
+<div class="news-card">
+  <div class="news-meta">
+    <span class="ticker-badge">AAPL</span>
+    <span class="source-text">Reuters</span>
+  </div>
+
+  <h3 class="news-title">
+    <a href="ARTICLE_URL" target="_blank" rel="noopener noreferrer">
+      Article headline
+    </a>
+  </h3>
+
+  <p class="news-summary">
+    1–2 sentence neutral market summary written for investors.
+  </p>
+
+  <a href="ARTICLE_URL" class="news-cta" target="_blank" rel="noopener noreferrer">
+    Read full story
+    <span class="news-cta-arrow">→</span>
+  </a>
+</div>
+
+OUTPUT:
+- Generate 3–6 articles
+- If sectionType is "general", omit ticker-badge
+- Headlines must be concise
+- Summaries must be factual, not hype
+`;

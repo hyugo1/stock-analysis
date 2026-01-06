@@ -2,12 +2,13 @@
 
 import {inngest} from "@/lib/inngest/client";
 import {NEWS_SUMMARY_EMAIL_PROMPT, PERSONALIZED_WELCOME_EMAIL_PROMPT} from "@/lib/inngest/prompts";
-import {sendDailyNewsSummaryEmail, sendWelcomeEmail} from "@/lib/nodemailer";
-import {getAllUsersForNewsEmail} from "@/lib/actions/user.actions";
-import {getWatchlistSymbolsByEmail} from "@/lib/actions/watchlist.actions";
-import {getNews} from "@/lib/actions/finnhub.actions";
-import {getFormattedTodayDate} from "@/lib/utils";
-
+import { getAllUsersForNewsEmail } from "@/lib/actions/user.actions";
+import { getWatchlistSymbolsByEmail } from "@/lib/actions/watchlist.actions";
+import { getNews } from "@/lib/actions/finnhub.actions";
+import { sendDailyNewsSummaryEmail, sendWelcomeEmail } from "@/lib/nodemailer";
+import { getFormattedTodayDate } from "@/lib/utils";
+import { getOrCreateNewsSection } from "./newsSections";
+import { assembleNewsContent } from "./assembleNewsEmail";
 // Direct Gemini API call function
 async function callGeminiAPI(prompt: string): Promise<string> {
     const apiKey = process.env.GOOGLE_GEMINI_KEY;
@@ -72,75 +73,64 @@ export const sendSignUpEmail = inngest.createFunction(
   )
 
 export const sendDailyNewsSummary = inngest.createFunction(
-    { id: 'marketpulse-daily-news-summary' },
-    [ { event: 'app/send.daily.news' }, 
-      { cron: '0 12 * * *' } 
-    //for testing, run every 2 minutes  
-        // { cron: '*/2 * * * *' }
-    ],
-    async ({ step }) => {
-        // Step #1: Get all users for news delivery
-        const users = await step.run('get-all-users', getAllUsersForNewsEmail)
+  { id: "marketpulse-daily-news-summary" },
+  [{ cron: "0 12 * * *" }],
+//   [{ cron: "*/2 * * * *" }],
+  async ({ step }) => {
+    const users = await step.run("get-users", getAllUsersForNewsEmail);
+    if (!users?.length) return;
 
-        if(!users || users.length === 0) return { success: false, message: 'No users found for news email' };
+    // Collect unique symbols
+    const symbolSet = new Set<string>();
+    const userSymbolsMap = new Map<string, string[]>();
 
-        // Step #2: For each user, get watchlist symbols -> fetch news (fallback to general)
-        const results = await step.run('fetch-user-news', async () => {
-            const perUser: Array<{ user: User; articles: MarketNewsArticle[] }> = [];
-            for (const user of users as User[]) {
-                try {
-                    const symbols = await getWatchlistSymbolsByEmail(user.email);
-                    let articles = await getNews(symbols);
-                    // Enforce max 6 articles per user
-                    articles = (articles || []).slice(0, 6);
-                    // If still empty, fallback to general
-                    if (!articles || articles.length === 0) {
-                        articles = await getNews();
-                        articles = (articles || []).slice(0, 6);
-                    }
-                    perUser.push({ user, articles });
-                } catch (e) {
-                    console.error('daily-news: error preparing user news', user.email, e);
-                    perUser.push({ user, articles: [] });
-                }
-            }
-            return perUser;
-        });
-
-        // Step #3: Summarize news via AI
-        const userNewsSummaries: { user: User; newsContent: string | null}[] = [];
-
-        for (const { user, articles } of results) {
-                try {
-                    const prompt = NEWS_SUMMARY_EMAIL_PROMPT.replace('{{newsData}}', JSON.stringify(articles, null, 2));
-
-                    // Use direct API call instead of step.ai.infer
-                    const newsContent = await step.run(`summarize-news-${user.email}`, async () => {
-                        return await callGeminiAPI(prompt);
-                    });
-
-                    userNewsSummaries.push({ user, newsContent: newsContent || 'No market news.' });
-                } catch (e) {
-                    console.error('Failed to summarize news for : ', user.email);
-                    userNewsSummaries.push({ user, newsContent: null });
-                }
-            }
-
-        await step.run('send-news-emails', async () => {
-            const todayDate = getFormattedTodayDate();
-            const results = await Promise.allSettled(
-                userNewsSummaries
-                    .filter(({ newsContent }) => newsContent)
-                    .map(({ user, newsContent }) =>
-                        sendDailyNewsSummaryEmail({ email: user.email, date: todayDate, newsContent: newsContent! })
-                    )
-            );
-            const failures = results.filter((r) => r.status === 'rejected');
-            if (failures.length > 0) {
-                console.error('Some emails failed to send:', failures);
-            }
-        });
-
-        return { success: true, message: 'Daily news summary emails sent successfully' }
+    for (const user of users as User[]) {
+      const symbols = await getWatchlistSymbolsByEmail(user.email);
+      userSymbolsMap.set(user.email, symbols || []);
+      symbols?.forEach((s) => symbolSet.add(s));
     }
-)
+
+    // Fetch news once per symbol
+    const sectionMap: Record<string, string> = {};
+
+    for (const symbol of symbolSet) {
+      const articles = (await getNews([symbol]))?.slice(0, 6) || [];
+      if (!articles.length) continue;
+
+      sectionMap[symbol] = await getOrCreateNewsSection({
+        sectionKey: symbol,
+        articles,
+        step,
+      });
+    }
+
+    // General fallback
+    const generalArticles = (await getNews())?.slice(0, 6) || [];
+    const generalSection = await getOrCreateNewsSection({
+      sectionKey: "general",
+      articles: generalArticles,
+      step,
+    });
+
+    // Send emails
+    const date = getFormattedTodayDate();
+
+    for (const user of users as User[]) {
+      const symbols = userSymbolsMap.get(user.email) || [];
+
+      const newsContent = assembleNewsContent({
+        userSymbols: symbols,
+        sectionMap,
+        fallbackSection: generalSection,
+      });
+
+      await sendDailyNewsSummaryEmail({
+        email: user.email,
+        date,
+        newsContent,
+      });
+    }
+
+    return { success: true };
+  }
+);

@@ -282,7 +282,7 @@ export const WELCOME_EMAIL_TEMPLATE = `<!DOCTYPE html>
                                     <!-- CTA Button -->
                                     <tr>
                                         <td align="center" style="padding: 10px 0;">
-                                            <a href="https://stock-market-dev.vercel.app/" class="cta-button" style="display: inline-block; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 8px; font-size: 16px; font-weight: 600;">
+                                            <a href="marketpulse-taupe.vercel.app" class="cta-button" style="display: inline-block; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 8px; font-size: 16px; font-weight: 600;">
                                                 Go to Dashboard
                                             </a>
                                         </td>
@@ -299,7 +299,7 @@ export const WELCOME_EMAIL_TEMPLATE = `<!DOCTYPE html>
                                 <p class="footer-text" style="margin: 0 0 8px 0; font-size: 13px; color: #64748b;">
                                     <a href="#" class="footer-link" style="color: #64748b; text-decoration: underline;">Unsubscribe</a> 
                                     &nbsp;|&nbsp; 
-                                    <a href="https://stock-market-dev.vercel.app/" class="footer-link" style="color: #64748b; text-decoration: underline;">Visit MarketPulse</a>
+                                    <a href="marketpulse-taupe.vercel.app" class="footer-link" style="color: #64748b; text-decoration: underline;">Visit MarketPulse</a>
                                 </p>
                                 <p class="footer-text" style="margin: 0; font-size: 13px; color: #64748b;">
                                     © 2025 MarketPulse
@@ -650,7 +650,7 @@ export const NEWS_SUMMARY_EMAIL_TEMPLATE = `<!DOCTYPE html>
                                 <p class="footer-text" style="margin: 0 0 8px 0; font-size: 13px; color: #64748b;">
                                     <a href="#" class="footer-link" style="color: #64748b; text-decoration: underline;">Unsubscribe</a> 
                                     &nbsp;|&nbsp; 
-                                    <a href="https://stock-market-dev.vercel.app/" class="footer-link" style="color: #64748b; text-decoration: underline;">Visit MarketPulse</a>
+                                    <a href="marketpulse-taupe.vercel.app" class="footer-link" style="color: #64748b; text-decoration: underline;">Visit MarketPulse</a>
                                 </p>
                                 <p class="footer-text" style="margin: 0; font-size: 13px; color: #64748b;">
                                     © 2025 MarketPulse
