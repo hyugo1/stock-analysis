@@ -11,9 +11,36 @@ import {
   COMPANY_FINANCIALS_WIDGET_CONFIG,
 } from "@/lib/constants";
 
+const FINNHUB_BASE_URL = 'https://finnhub.io/api/v1';
+const FINNHUB_API_KEY = process.env.FINNHUB_API_KEY ?? '';
+
+/**
+ * Fetch the exchange for a given symbol from Finnhub
+ */
+async function getSymbolExchange(symbol: string): Promise<string> {
+  try {
+    const url = `${FINNHUB_BASE_URL}/stock/profile2?symbol=${encodeURIComponent(symbol)}&token=${FINNHUB_API_KEY}`;
+    const response = await fetch(url, { cache: 'force-cache', next: { revalidate: 3600 } });
+    
+    if (!response.ok) {
+      console.error('Failed to fetch profile for', symbol);
+      return 'NASDAQ'; // default fallback
+    }
+    
+    const data = await response.json();
+    return data.exchange || 'NASDAQ'; // default to NASDAQ if exchange is missing
+  } catch (error) {
+    console.error('Error fetching exchange for', symbol, error);
+    return 'NASDAQ'; // default fallback
+  }
+}
+
 export default async function StockDetails({ params }: StockDetailsPageProps) {
   const { symbol } = await params;
   const scriptUrl = `https://s3.tradingview.com/external-embedding/embed-widget-`;
+  
+  // Fetch exchange information for TradingView links
+  const exchange = await getSymbolExchange(symbol.toUpperCase());
 
   return (
     <div className="flex min-h-screen p-4 md:p-6 lg:p-8">
@@ -49,7 +76,7 @@ export default async function StockDetails({ params }: StockDetailsPageProps) {
 
           <TradingViewWidget
             scriptUrl={`${scriptUrl}technical-analysis.js`}
-            config={TECHNICAL_ANALYSIS_WIDGET_CONFIG(symbol)}
+            config={TECHNICAL_ANALYSIS_WIDGET_CONFIG(symbol, exchange)}
             height={400}
           />
 
