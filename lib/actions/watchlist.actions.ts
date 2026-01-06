@@ -7,7 +7,7 @@ export async function getWatchlistSymbolsByEmail(email: string): Promise<string[
   if (!email) return [];
 
   try {
-    console.log(`[Watchlist] Fetching watchlist for email: ${email}`);
+    console.log(`[Watchlist] Fetching watchlist for email: ${email.replace(/(.{2}).*@/, '$1***@')}`);
     const mongoose = await connectToDatabase();
     const db = mongoose.connection.db;
     if (!db) throw new Error('MongoDB connection not found');
@@ -23,7 +23,7 @@ export async function getWatchlistSymbolsByEmail(email: string): Promise<string[
 
     const items = await Watchlist.find({ userId }, { symbol: 1 }).lean();
     const symbols = items.map((i) => String(i.symbol));
-    console.log(`[Watchlist] Found symbols for ${email}:`, symbols);
+    console.log(`[Watchlist] Found symbols for  ${email.replace(/(.{2}).*@/, '$1***@')}:`, symbols);
     return symbols;
   } catch (err) {
     console.error('getWatchlistSymbolsByEmail error:', err);

@@ -84,17 +84,27 @@ export const sendDailyNewsSummary = inngest.createFunction(
     const symbolSet = new Set<string>();
     const userSymbolsMap = new Map<string, string[]>();
 
-    for (const user of users as User[]) {
-      const symbols = await getWatchlistSymbolsByEmail(user.email);
-      userSymbolsMap.set(user.email, symbols || []);
-      symbols?.forEach((s) => symbolSet.add(s));
+    const userSymbolsList = await step.run("fetch-user-symbols", async () => {
+        const results: Array<{ email: string; symbols: string[] }> = [];
+        for (const user of users as User[]) {
+        const symbols = await getWatchlistSymbolsByEmail(user.email);
+        results.push({ email: user.email, symbols: symbols || [] });
+        }
+        return results;
+    });
+
+    for (const { email, symbols } of userSymbolsList) {
+      userSymbolsMap.set(email, symbols);
+      symbols.forEach((s) => symbolSet.add(s));
     }
 
     // Fetch news once per symbol
     const sectionMap: Record<string, string> = {};
 
     for (const symbol of symbolSet) {
-      const articles = (await getNews([symbol]))?.slice(0, 6) || [];
+      const articles = await step.run(`fetch-news-${symbol}`, async () => {
+        return (await getNews([symbol]))?.slice(0, 6) || [];
+      });
       if (!articles.length) continue;
 
       sectionMap[symbol] = await getOrCreateNewsSection({
@@ -105,7 +115,9 @@ export const sendDailyNewsSummary = inngest.createFunction(
     }
 
     // General fallback
-    const generalArticles = (await getNews())?.slice(0, 6) || [];
+    const generalArticles = await step.run("fetch-general-news", async () => {
+      return (await getNews())?.slice(0, 6) || [];
+    });
     const generalSection = await getOrCreateNewsSection({
       sectionKey: "general",
       articles: generalArticles,
@@ -124,10 +136,12 @@ export const sendDailyNewsSummary = inngest.createFunction(
         fallbackSection: generalSection,
       });
 
-      await sendDailyNewsSummaryEmail({
+    await step.run(`send-email-${user.email}`, async () => {
+    await sendDailyNewsSummaryEmail({
         email: user.email,
         date,
         newsContent,
+    });
       });
     }
 
