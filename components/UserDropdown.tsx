@@ -9,15 +9,10 @@ import {Button} from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 import NavItems from "@/components/NavItems";
 import {signOut} from "@/lib/actions/auth.actions";
-// import {LogOut} from "lucide-react";
-// import NavItems from "@/components/NavItems";
-// import {signOut} from "@/lib/actions/auth.actions";
 
 
-
-const UserDropdown = ( {user} : {user: User}) => {
+const UserDropdown = ( {user, initialStocks} : {user: User, initialStocks: StockWithWatchlistStatus[]}) => {
     const router = useRouter();
-
 
     //signout 
     const handleSignOut = async() => {
@@ -65,12 +60,6 @@ const UserDropdown = ( {user} : {user: User}) => {
                             <span className="text-sm text-gray-500">{user.email}</span>
                         </div>
                     </div>
-                    {/* <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem>Profile</DropdownMenuItem>
-                    <DropdownMenuItem>Billing</DropdownMenuItem>
-                    <DropdownMenuItem>Team</DropdownMenuItem>
-                    <DropdownMenuItem>Subscription</DropdownMenuItem>             */}
                 </DropdownMenuLabel>   
                 <DropdownMenuSeparator className="bg-gray-600"/>
                     <DropdownMenuItem onClick={handleSignOut} className="text-gray-100 text-md font-medium cursor-pointer focus:text-yellow-500 transition-colors cursor-pointer">
@@ -79,9 +68,9 @@ const UserDropdown = ( {user} : {user: User}) => {
                     </DropdownMenuItem>
                 <DropdownMenuSeparator className="bg-gray-600 hidden sm:block "/>
                 <nav className="sm:hidden">
-                        <NavItems>
-                            
-                        </NavItems>
+                    <NavItems initialStocks={initialStocks}>
+                        
+                    </NavItems>
                 </nav>
 
 
