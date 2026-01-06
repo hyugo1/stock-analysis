@@ -23,15 +23,20 @@ async function getSymbolExchange(symbol: string): Promise<string> {
     const response = await fetch(url, { cache: 'force-cache', next: { revalidate: 3600 } });
     
     if (!response.ok) {
-      console.error('Failed to fetch profile for', symbol);
-      return 'NASDAQ'; // default fallback
+      console.warn(`Profile fetch returned ${response.status} for ${symbol}, using default exchange`);
+      return 'NASDAQ';
     }
     
     const data = await response.json();
-    return data.exchange || 'NASDAQ'; // default to NASDAQ if exchange is missing
+    if (!data || typeof data !== 'object') {
+      console.warn(`Invalid profile data for ${symbol}, using default exchange`);
+      return 'NASDAQ';
+    }
+    return data.exchange || 'NASDAQ';
   } catch (error) {
-    console.error('Error fetching exchange for', symbol, error);
-    return 'NASDAQ'; // default fallback
+    // Silently handle errors and use fallback
+    console.warn(`Error fetching exchange for ${symbol}:`, error instanceof Error ? error.message : 'Unknown error');
+    return 'NASDAQ';
   }
 }
 
