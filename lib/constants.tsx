@@ -207,7 +207,7 @@ export const TECHNICAL_ANALYSIS_WIDGET_CONFIG = (symbol: string) => ({
     width: '100%',
     height: 400,
     interval: '1h',
-    largeChartUrl: '',
+    largeChartUrl: `https://www.tradingview.com/symbols/NASDAQ-${symbol.toUpperCase()}/technicals/`,
 });
 
 export const COMPANY_PROFILE_WIDGET_CONFIG = (symbol: string) => ({
