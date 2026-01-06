@@ -1,9 +1,49 @@
 "use client";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useCallback } from "react";
+import { saveWatchlistItem, removeWatchlistItem } from "@/lib/actions/watchlist.actions";
 
-// Minimal WatchlistButton implementation to satisfy page requirements.
-// This component focuses on UI contract only. It toggles local state and
-// calls onWatchlistChange if provided. Styling hooks match globals.css.
+// LocalStorage key for watchlist persistence
+const WATCHLIST_STORAGE_KEY = "stock_analysis_watchlist";
+
+/**
+ * Get the current watchlist map from localStorage
+ */
+function getWatchlistFromStorage(): Record<string, boolean> {
+  if (typeof window === "undefined") return {};
+  try {
+    const stored = localStorage.getItem(WATCHLIST_STORAGE_KEY);
+    return stored ? JSON.parse(stored) : {};
+  } catch {
+    return {};
+  }
+}
+
+/**
+ * Save the watchlist map to localStorage
+ */
+function saveWatchlistToStorage(watchlist: Record<string, boolean>): void {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(WATCHLIST_STORAGE_KEY, JSON.stringify(watchlist));
+  } catch (err) {
+    console.error("Failed to save watchlist to localStorage:", err);
+  }
+}
+
+// Helper to get user email from various possible sources
+async function getUserEmail(): Promise<string | null> {
+  try {
+    // Try to get from better-auth session or custom storage
+    const stored = localStorage.getItem("user_session");
+    if (stored) {
+      const session = JSON.parse(stored);
+      return session?.user?.email || null;
+    }
+  } catch {
+    // Fallback: return null
+  }
+  return null;
+}
 
 const WatchlistButton = ({
   symbol,
@@ -14,17 +54,88 @@ const WatchlistButton = ({
   onWatchlistChange,
 }: WatchlistButtonProps) => {
   const [added, setAdded] = useState<boolean>(!!isInWatchlist);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Initialize state from localStorage on mount
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    
+    const watchlist = getWatchlistFromStorage();
+    if (symbol && watchlist.hasOwnProperty(symbol)) {
+      setAdded(watchlist[symbol]);
+    } else if (isInWatchlist !== undefined) {
+      setAdded(!!isInWatchlist);
+    }
+  }, [symbol, isInWatchlist]);
 
   const label = useMemo(() => {
     if (type === "icon") return added ? "" : "";
     return added ? "Remove from Watchlist" : "Add to Watchlist";
   }, [added, type]);
 
-  const handleClick = () => {
+  const handleClick = useCallback(async () => {
+    // Prevent multiple simultaneous operations
+    if (isLoading) return;
+
     const next = !added;
+    setIsLoading(true);
+    setError(null);
+
+    // Optimistically update localStorage first for immediate persistence
+    const watchlist = getWatchlistFromStorage();
+    watchlist[symbol] = next;
+    saveWatchlistToStorage(watchlist);
+
+    // Optimistically update local state
     setAdded(next);
-    onWatchlistChange?.(symbol, next);
-  };
+
+    try {
+      // Get user email for backend persistence
+      const email = await getUserEmail();
+      
+      if (email) {
+        // Call backend API to persist to database
+        let result;
+        if (next) {
+          result = await saveWatchlistItem(email, symbol, company);
+        } else {
+          result = await removeWatchlistItem(email, symbol);
+        }
+
+        // Rollback on failure
+        if (!result.success) {
+          console.error("Watchlist API error:", result.error);
+          
+          // Rollback localStorage
+          const rollbackWatchlist = getWatchlistFromStorage();
+          rollbackWatchlist[symbol] = !next;
+          saveWatchlistToStorage(rollbackWatchlist);
+          
+          // Rollback local state
+          setAdded(!next);
+          setError(result.error || "Failed to update watchlist");
+          setIsLoading(false);
+          return;
+        }
+      }
+
+      // Success - call onWatchlistChange callback
+      onWatchlistChange?.(symbol, next);
+    } catch (err) {
+      console.error("Watchlist error:", err);
+      
+      // Rollback on error
+      const rollbackWatchlist = getWatchlistFromStorage();
+      rollbackWatchlist[symbol] = !next;
+      saveWatchlistToStorage(rollbackWatchlist);
+      
+      setAdded(!next);
+      setError(err instanceof Error ? err.message : "An error occurred");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [added, isLoading, symbol, company, onWatchlistChange]);
 
   if (type === "icon") {
     return (
