@@ -1,7 +1,9 @@
+// lib/constants.tsx
+
 export const NAV_ITEMS = [
     { href: '/', label: 'Dashboard' },
     { href: '/search', label: 'Search' },
-    // { href: '/watchlist', label: 'Watchlist' },
+    { href: '/watchlist', label: 'Watchlist' },
 ];
 
 // TradingView Charts
@@ -199,16 +201,14 @@ export const BASELINE_WIDGET_CONFIG = (symbol: string) => ({
     height: 600,
 });
 
-export const TECHNICAL_ANALYSIS_WIDGET_CONFIG = (symbol: string, exchange: string) => ({
-    symbol: symbol.toUpperCase(),
+export const TECHNICAL_ANALYSIS_WIDGET_CONFIG = {
     colorTheme: 'dark',
     isTransparent: true,
     locale: 'en',
     width: '100%',
     height: 400,
     interval: '1h',
-    largeChartUrl: `https://www.tradingview.com/symbols/${exchange.toUpperCase()}-${symbol.toUpperCase()}/technicals/`,
-});
+};
 
 export const COMPANY_PROFILE_WIDGET_CONFIG = (symbol: string) => ({
     symbol: symbol.toUpperCase(),

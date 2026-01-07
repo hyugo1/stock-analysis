@@ -10,42 +10,47 @@ import {
   COMPANY_PROFILE_WIDGET_CONFIG,
   COMPANY_FINANCIALS_WIDGET_CONFIG,
 } from "@/lib/constants";
+import { getCurrentUserWatchlist } from "@/lib/actions/watchlist.actions";
 
 const FINNHUB_BASE_URL = 'https://finnhub.io/api/v1';
 const FINNHUB_API_KEY = process.env.FINNHUB_API_KEY ?? '';
 
 /**
- * Fetch the exchange for a given symbol from Finnhub
+ * Fetch the exchange and company name for a given symbol from Finnhub
  */
-async function getSymbolExchange(symbol: string): Promise<string> {
+async function getSymbolInfo(symbol: string): Promise<{ exchange: string; companyName: string }> {
   try {
     const url = `${FINNHUB_BASE_URL}/stock/profile2?symbol=${encodeURIComponent(symbol)}&token=${FINNHUB_API_KEY}`;
     const response = await fetch(url, { cache: 'force-cache', next: { revalidate: 3600 } });
     
     if (!response.ok) {
-      console.warn(`Profile fetch returned ${response.status} for ${symbol}, using default exchange`);
-      return 'NASDAQ';
+      console.warn(`Profile fetch returned ${response.status} for ${symbol}`);
+      return { exchange: 'NASDAQ', companyName: symbol };
     }
     
     const data = await response.json();
     if (!data || typeof data !== 'object') {
-      console.warn(`Invalid profile data for ${symbol}, using default exchange`);
-      return 'NASDAQ';
+      console.warn(`Invalid profile data for ${symbol}`);
+      return { exchange: 'NASDAQ', companyName: symbol };
     }
-    return data.exchange || 'NASDAQ';
+    return {
+      exchange: data.exchange || 'NASDAQ',
+      companyName: data.name || symbol
+    };
   } catch (error) {
-    // Silently handle errors and use fallback
-    console.warn(`Error fetching exchange for ${symbol}:`, error instanceof Error ? error.message : 'Unknown error');
-    return 'NASDAQ';
+    console.warn(`Error fetching info for ${symbol}:`, error instanceof Error ? error.message : 'Unknown error');
+    return { exchange: 'NASDAQ', companyName: symbol };
   }
 }
 
 export default async function StockDetails({ params }: StockDetailsPageProps) {
   const { symbol } = await params;
   const scriptUrl = `https://s3.tradingview.com/external-embedding/embed-widget-`;
+  const symbolUpper = symbol.toUpperCase();
   
-  // Fetch exchange information for TradingView links
-  const exchange = await getSymbolExchange(symbol.toUpperCase());
+  const { exchange, companyName } = await getSymbolInfo(symbolUpper);
+  const watchlistSymbols = await getCurrentUserWatchlist();
+  const isInWatchlist = watchlistSymbols.includes(symbolUpper);
 
   return (
     <div className="flex min-h-screen p-4 md:p-6 lg:p-8">
@@ -76,12 +81,19 @@ export default async function StockDetails({ params }: StockDetailsPageProps) {
         {/* Right column */}
         <div className="flex flex-col gap-6">
           <div className="flex items-center justify-between">
-            <WatchlistButton symbol={symbol.toUpperCase()} company={symbol.toUpperCase()} isInWatchlist={false} />
+            <WatchlistButton 
+              symbol={symbolUpper} 
+              company={companyName} 
+              isInWatchlist={isInWatchlist} 
+            />
           </div>
 
           <TradingViewWidget
             scriptUrl={`${scriptUrl}technical-analysis.js`}
-            config={TECHNICAL_ANALYSIS_WIDGET_CONFIG(symbol, exchange)}
+            config={{
+              ...TECHNICAL_ANALYSIS_WIDGET_CONFIG,
+              symbol: symbolUpper,
+            }}
             height={400}
           />
 

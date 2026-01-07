@@ -1,25 +1,52 @@
 'use client'
 
-import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
-import React, { useEffect } from "react"
+import { CommandDialog, CommandEmpty, CommandInput, CommandList } from "@/components/ui/command"
+import React, { useEffect, useState, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Star, TrendingUp, Loader2 } from "lucide-react"
 
 import Link from "next/link";
 import { searchStocks } from "@/lib/actions/finnhub.actions"
 import { useDebounce } from "@/hooks/useDebounce"
+import WatchlistButton from "@/components/WatchlistButton"
+import { getCurrentUserWatchlist } from "@/lib/actions/watchlist.actions"
 
 
 export default function SearchCommand({ renderAs = "button", label = "Add Stock", initialStocks }: SearchCommandProps) {
     const [open, setOpen] = React.useState(false)
     const [searchTerm, setSearchTerm] = React.useState("")
     const [loading, setLoading] = React.useState(false)
-    const [stocks, setStocks] = React.useState<StockWithWatchlistStatus[]>(initialStocks)
+    const [stocks, setStocks] = React.useState<StockWithWatchlistStatus[]>(initialStocks || [])
+    const [watchlistSymbols, setWatchlistSymbols] = useState<string[]>([])
+    const [isInitialized, setIsInitialized] = React.useState(false)
 
     const isSearchMode = !!searchTerm.trim();
     const displayStocks = isSearchMode ? stocks : stocks?.slice(0, 10);
 
+    useEffect(() => {
+        async function fetchWatchlist() {
+            try {
+                const symbols = await getCurrentUserWatchlist();
+                setWatchlistSymbols(symbols);
+            } catch (e) {
+                console.error('Error fetching watchlist:', e);
+            } finally {
+                setIsInitialized(true);
+            }
+        }
+        fetchWatchlist();
+    }, []);
 
+    useEffect(() => {
+        if (!isInitialized || watchlistSymbols.length === 0) return;
+        
+        setStocks(prevStocks => 
+            prevStocks.map(stock => ({
+                ...stock,
+                isInWatchlist: watchlistSymbols.includes(stock.symbol)
+            }))
+        );
+    }, [watchlistSymbols, isInitialized]);
 
     React.useEffect(() => {
         const down = (e: KeyboardEvent) => {
@@ -34,11 +61,18 @@ export default function SearchCommand({ renderAs = "button", label = "Add Stock"
 
 
     const handleSearch = async () => {
-        if (!isSearchMode) return setStocks(initialStocks);
+        if (!isSearchMode) {
+            setStocks(initialStocks || []);
+            return;
+        }
         setLoading(true);
         try {
             const results = await searchStocks(searchTerm);
-            setStocks(results);
+            const resultsWithStatus = results.map(stock => ({
+                ...stock,
+                isInWatchlist: watchlistSymbols.includes(stock.symbol)
+            }));
+            setStocks(resultsWithStatus);
         } catch {
             setStocks([]);
         } finally {
@@ -56,8 +90,23 @@ export default function SearchCommand({ renderAs = "button", label = "Add Stock"
     const handleSelectStock = () => {
         setOpen(false)
         setSearchTerm("")
-        setStocks(initialStocks)
+        setStocks(initialStocks || [])
     }
+
+    const handleWatchlistChange = useCallback((symbol: string, isAdded: boolean) => {
+        setWatchlistSymbols(prev => 
+            isAdded 
+                ? [...prev, symbol] 
+                : prev.filter(s => s !== symbol)
+        );
+        setStocks(prevStocks => 
+            prevStocks.map(stock => 
+                stock.symbol === symbol 
+                    ? { ...stock, isInWatchlist: isAdded }
+                    : stock
+            )
+        );
+    }, []);
 
     return (
         <>
@@ -89,7 +138,7 @@ export default function SearchCommand({ renderAs = "button", label = "Add Stock"
                                     {` `}
                                     ({displayStocks?.length || 0})
                                 </div>
-                                {displayStocks?.map((stock, i) => (
+                                {displayStocks?.map((stock) => (
                                     <li key={stock.symbol} className="search-item">
                                         <Link href={`/stocks/${stock.symbol}`} 
                                             onClick={handleSelectStock} 
@@ -102,9 +151,14 @@ export default function SearchCommand({ renderAs = "button", label = "Add Stock"
                                                 <div className="text-sm text-gray-500">
                                                     {stock.symbol} | {stock.exchange} | {stock.type}
                                                 </div>
-
                                             </div>
-                                            <Star />
+                                            <WatchlistButton 
+                                                symbol={stock.symbol}
+                                                company={stock.name}
+                                                isInWatchlist={stock.isInWatchlist}
+                                                type="icon"
+                                                onWatchlistChange={handleWatchlistChange}
+                                            />
                                         </Link>
                                     
                                     </li>

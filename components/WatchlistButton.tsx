@@ -1,8 +1,9 @@
 "use client";
 import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { saveWatchlistItem, removeWatchlistItem } from "@/lib/actions/watchlist.actions";
+import { getCurrentUserEmail } from "@/lib/actions/auth.actions";
+import { useRouter } from "next/navigation";
 
-// LocalStorage key for watchlist persistence
 const WATCHLIST_STORAGE_KEY = "stock_analysis_watchlist";
 
 /**
@@ -30,21 +31,6 @@ function saveWatchlistToStorage(watchlist: Record<string, boolean>): void {
   }
 }
 
-// Helper to get user email from various possible sources
-async function getUserEmail(): Promise<string | null> {
-  try {
-    // Try to get from better-auth session or custom storage
-    const stored = localStorage.getItem("user_session");
-    if (stored) {
-      const session = JSON.parse(stored);
-      return session?.user?.email || null;
-    }
-  } catch {
-    // Fallback: return null
-  }
-  return null;
-}
-
 const WatchlistButton = ({
   symbol,
   company,
@@ -56,8 +42,8 @@ const WatchlistButton = ({
   const [added, setAdded] = useState<boolean>(!!isInWatchlist);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
-  // Initialize state from localStorage on mount
   useEffect(() => {
     if (typeof window === "undefined") return;
     
@@ -74,7 +60,10 @@ const WatchlistButton = ({
     return added ? "Remove from Watchlist" : "Add to Watchlist";
   }, [added, type]);
 
-  const handleClick = useCallback(async () => {
+  const handleClick = useCallback(async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
     // Prevent multiple simultaneous operations
     if (isLoading) return;
 
@@ -91,11 +80,9 @@ const WatchlistButton = ({
     setAdded(next);
 
     try {
-      // Get user email for backend persistence
-      const email = await getUserEmail();
+      const email = await getCurrentUserEmail();
       
       if (email) {
-        // Call backend API to persist to database
         let result;
         if (next) {
           result = await saveWatchlistItem(email, symbol, company);
@@ -103,16 +90,13 @@ const WatchlistButton = ({
           result = await removeWatchlistItem(email, symbol);
         }
 
-        // Rollback on failure
         if (!result.success) {
           console.error("Watchlist API error:", result.error);
           
-          // Rollback localStorage
           const rollbackWatchlist = getWatchlistFromStorage();
           rollbackWatchlist[symbol] = !next;
           saveWatchlistToStorage(rollbackWatchlist);
           
-          // Rollback local state
           setAdded(!next);
           setError(result.error || "Failed to update watchlist");
           setIsLoading(false);
@@ -120,8 +104,8 @@ const WatchlistButton = ({
         }
       }
 
-      // Success - call onWatchlistChange callback
       onWatchlistChange?.(symbol, next);
+      router.refresh();
     } catch (err) {
       console.error("Watchlist error:", err);
       
@@ -152,6 +136,7 @@ const WatchlistButton = ({
           stroke="#FACC15"
           strokeWidth="1.5"
           className="watchlist-star"
+          style={{ width: 20, height: 20 }}
         >
           <path
             strokeLinecap="round"
