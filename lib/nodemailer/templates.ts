@@ -302,7 +302,7 @@ export const WELCOME_EMAIL_TEMPLATE = `<!DOCTYPE html>
                                     <a href="https://marketpulse-taupe.vercel.app" class="footer-link" style="color: #64748b; text-decoration: underline;">Visit MarketPulse</a>
                                 </p>
                                 <p class="footer-text" style="margin: 0; font-size: 13px; color: #64748b;">
-                                    © 2025 MarketPulse
+                                    © 2026 MarketPulse
                                 </p>
                             </td>
                         </tr>
@@ -632,7 +632,13 @@ export const NEWS_SUMMARY_EMAIL_TEMPLATE = `<!DOCTYPE html>
                                     <!-- News Cards Container -->
                                     <tr>
                                         <td style="padding: 0;">
-                                            {{newsContent}}
+                                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #0f1218;">
+                                                <tr>
+                                                    <td style="padding: 0;">
+                                                        {{newsContent}}
+                                                    </td>
+                                                </tr>
+                                            </table>
                                         </td>
                                     </tr>
                                     
@@ -648,12 +654,15 @@ export const NEWS_SUMMARY_EMAIL_TEMPLATE = `<!DOCTYPE html>
                                     You're receiving this because you subscribed to MarketPulse news updates.
                                 </p>
                                 <p class="footer-text" style="margin: 0 0 8px 0; font-size: 13px; color: #64748b;">
+                                    <a href="https://marketpulse-taupe.vercel.app/news" class="footer-link" style="color: #10b981; text-decoration: none;">View more news on our website →</a>
+                                </p>
+                                <p class="footer-text" style="margin: 0 0 8px 0; font-size: 13px; color: #64748b;">
                                     <a href="#" class="footer-link" style="color: #64748b; text-decoration: underline;">Unsubscribe</a> 
                                     &nbsp;|&nbsp; 
                                     <a href="https://marketpulse-taupe.vercel.app" class="footer-link" style="color: #64748b; text-decoration: underline;">Visit MarketPulse</a>
                                 </p>
                                 <p class="footer-text" style="margin: 0; font-size: 13px; color: #64748b;">
-                                    © 2025 MarketPulse
+                                    © 2026 MarketPulse
                                 </p>
                             </td>
                         </tr>

@@ -1,7 +1,7 @@
 // lib/inngest/functions.ts
 
 import {inngest} from "@/lib/inngest/client";
-import {NEWS_SUMMARY_EMAIL_PROMPT, PERSONALIZED_WELCOME_EMAIL_PROMPT} from "@/lib/inngest/prompts";
+import { PERSONALIZED_WELCOME_EMAIL_PROMPT } from "@/lib/inngest/prompts";
 import { getAllUsersForNewsEmail } from "@/lib/actions/user.actions";
 import { getWatchlistSymbolsByEmail } from "@/lib/actions/watchlist.actions";
 import { getNews } from "@/lib/actions/finnhub.actions";
@@ -9,38 +9,8 @@ import { sendDailyNewsSummaryEmail, sendWelcomeEmail } from "@/lib/nodemailer";
 import { getFormattedTodayDate } from "@/lib/utils";
 import { getOrCreateNewsSection } from "./newsSections";
 import { assembleNewsContent } from "./assembleNewsEmail";
-// Direct Gemini API call function
-async function callGeminiAPI(prompt: string): Promise<string> {
-    const apiKey = process.env.GOOGLE_GEMINI_KEY;
+import { callGeminiAPI } from "@/lib/inngest/gemini";
 
-    const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${apiKey}`,
-        {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                contents: [
-                    {
-                        parts: [
-                            { text: prompt }
-                        ]
-                    }
-                ]
-            }),
-        }
-    );
-
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(`Gemini API error: ${error.error?.message || response.statusText}`);
-    }
-
-    const data = await response.json();
-    const part = data.candidates?.[0]?.content?.parts?.[0];
-    return (part && 'text' in part ? part.text : '') || 'Thanks for joining MarketPulse!';
-}
 
 export const sendSignUpEmail = inngest.createFunction(
     { id: 'sign-up-email' },
@@ -56,9 +26,14 @@ export const sendSignUpEmail = inngest.createFunction(
         const prompt = PERSONALIZED_WELCOME_EMAIL_PROMPT.replace('{{userProfile}}', userProfile)
 
         // Make direct API call instead of using step.ai.infer
-        const introText = await step.run('generate-welcome-intro', async () => {
+        const introText = await step.run("generate-welcome-intro", async () => {
+          try {
             return await callGeminiAPI(prompt);
-        })
+          } catch (err) {
+            console.error("Gemini failed:", err);
+            return "Thanks for joining MarketPulse — we’re excited to help you get started.";
+          }
+        });
 
         await step.run('send-welcome-email', async () => {
             const { data: { email, name } } = event;
@@ -73,9 +48,8 @@ export const sendSignUpEmail = inngest.createFunction(
   )
 
 export const sendDailyNewsSummary = inngest.createFunction(
-  { id: "marketpulse-daily-news-summary" },
+  { id: "marketpulse-daily-news-summary", retries: 5 },
   [{ cron: "0 12 * * *" }],
-//   [{ cron: "*/2 * * * *" }],
   async ({ step }) => {
     const users = await step.run("get-users", getAllUsersForNewsEmail);
     if (!users?.length) return;
@@ -98,12 +72,12 @@ export const sendDailyNewsSummary = inngest.createFunction(
       symbols.forEach((s) => symbolSet.add(s));
     }
 
-    // Fetch news once per symbol
+
     const sectionMap: Record<string, string> = {};
 
     for (const symbol of symbolSet) {
       const articles = await step.run(`fetch-news-${symbol}`, async () => {
-        return (await getNews([symbol]))?.slice(0, 6) || [];
+        return (await getNews([symbol]))?.slice(0, 3) || [];
       });
       if (!articles.length) continue;
 
@@ -114,9 +88,9 @@ export const sendDailyNewsSummary = inngest.createFunction(
       });
     }
 
-    // General fallback
+
     const generalArticles = await step.run("fetch-general-news", async () => {
-      return (await getNews())?.slice(0, 6) || [];
+      return (await getNews())?.slice(0, 3) || [];
     });
     const generalSection = await getOrCreateNewsSection({
       sectionKey: "general",
