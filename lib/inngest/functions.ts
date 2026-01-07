@@ -27,7 +27,7 @@ async function callGeminiAPI(prompt: string): Promise<string> {
             parts: [{ text: prompt }]
           }
         ]
-      }), }
+      }) }
     );
 
     if (!response.ok) {
