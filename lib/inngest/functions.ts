@@ -9,37 +9,39 @@ import { sendDailyNewsSummaryEmail, sendWelcomeEmail } from "@/lib/nodemailer";
 import { getFormattedTodayDate } from "@/lib/utils";
 import { getOrCreateNewsSection } from "./newsSections";
 import { assembleNewsContent } from "./assembleNewsEmail";
+
 // Direct Gemini API call function
 async function callGeminiAPI(prompt: string): Promise<string> {
+  try {
     const apiKey = process.env.GOOGLE_GEMINI_KEY;
+    if (!apiKey) {
+      console.error("Missing GOOGLE_GEMINI_KEY");
+      return "Market summary unavailable today.";
+    }
 
     const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${apiKey}`,
-        {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                contents: [
-                    {
-                        parts: [
-                            { text: prompt }
-                        ]
-                    }
-                ]
-            }),
-        }
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${apiKey}`,
+      { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({
+        contents: [
+          {
+            parts: [{ text: prompt }]
+          }
+        ]
+      }), }
     );
 
     if (!response.ok) {
-        const error = await response.json();
-        throw new Error(`Gemini API error: ${error.error?.message || response.statusText}`);
+      const text = await response.text();
+      console.error("Gemini error:", response.status, text);
+      return "Market summary unavailable today.";
     }
 
     const data = await response.json();
-    const part = data.candidates?.[0]?.content?.parts?.[0];
-    return (part && 'text' in part ? part.text : '') || 'Thanks for joining MarketPulse!';
+    return data.candidates?.[0]?.content?.parts?.[0]?.text ?? "Market summary unavailable today.";
+  } catch (err) {
+    console.error("Gemini fetch failed:", err);
+    return "Market summary unavailable today.";
+  }
 }
 
 export const sendSignUpEmail = inngest.createFunction(
@@ -73,9 +75,8 @@ export const sendSignUpEmail = inngest.createFunction(
   )
 
 export const sendDailyNewsSummary = inngest.createFunction(
-  { id: "marketpulse-daily-news-summary" },
+  { id: "marketpulse-daily-news-summary", retries: 5 },
   [{ cron: "0 12 * * *" }],
-//   [{ cron: "*/2 * * * *" }],
   async ({ step }) => {
     const users = await step.run("get-users", getAllUsersForNewsEmail);
     if (!users?.length) return;
