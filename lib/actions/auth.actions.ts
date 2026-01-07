@@ -45,3 +45,13 @@ export const signOut = async () => {
         return { success: false, error: 'Sign out failed' }
     }
 }
+
+export async function getCurrentUserEmail(): Promise<string | null> {
+    try {
+        const session = await auth.api.getSession({ headers: await headers() });
+        return session?.user?.email || null;
+    } catch (e) {
+        console.error('Error getting current user email:', e);
+        return null;
+    }
+}

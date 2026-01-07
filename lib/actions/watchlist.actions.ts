@@ -2,6 +2,8 @@
 
 import { connectToDatabase } from '@/database/mongoose';
 import { Watchlist } from '@/database/models/watchlist.model';
+import { auth } from '@/lib/better-auth/auth';
+import { headers } from 'next/headers';
 
 export async function getWatchlistSymbolsByEmail(email: string): Promise<string[]> {
   if (!email) return [];
@@ -27,6 +29,24 @@ export async function getWatchlistSymbolsByEmail(email: string): Promise<string[
     return symbols;
   } catch (err) {
     console.error('getWatchlistSymbolsByEmail error:', err);
+    return [];
+  }
+}
+
+// Server action to get current user's watchlist symbols (uses session)
+export async function getCurrentUserWatchlist(): Promise<string[]> {
+  try {
+    const session = await auth.api.getSession({ headers: await headers() });
+    const email = session?.user?.email;
+    
+    if (!email) {
+      console.log('[Watchlist] No user session found');
+      return [];
+    }
+    
+    return await getWatchlistSymbolsByEmail(email);
+  } catch (err) {
+    console.error('getCurrentUserWatchlist error:', err);
     return [];
   }
 }
@@ -98,6 +118,22 @@ export async function removeWatchlistItem(email: string, symbol: string): Promis
     return { success: true };
   } catch (err) {
     console.error('removeWatchlistItem error:', err);
+    return { success: false, error: err instanceof Error ? err.message : 'Failed to remove watchlist item' };
+  }
+}
+
+export async function removeCurrentUserWatchlistItem(symbol: string): Promise<{ success: boolean; error?: string }> {
+  try {
+    const session = await auth.api.getSession({ headers: await headers() });
+    const email = session?.user?.email;
+    
+    if (!email) {
+      return { success: false, error: 'Not authenticated' };
+    }
+    
+    return await removeWatchlistItem(email, symbol);
+  } catch (err) {
+    console.error('removeCurrentUserWatchlistItem error:', err);
     return { success: false, error: err instanceof Error ? err.message : 'Failed to remove watchlist item' };
   }
 }
