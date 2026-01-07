@@ -53,8 +53,12 @@ export default function WatchlistTable({ watchlist }: WatchlistTableProps) {
     e.stopPropagation();
     setRemoving(symbol);
     try {
-      await removeCurrentUserWatchlistItem(symbol);
-      router.refresh();
+      const result = await removeCurrentUserWatchlistItem(symbol);
+      if (result.success) {
+        router.refresh();
+      } else {
+        console.error('Error removing from watchlist:', result.error);
+      }
     } catch (error) {
       console.error('Error removing from watchlist:', error);
     } finally {

@@ -158,6 +158,7 @@ export default async function WatchlistPage({
     const q = quotes[i]
     const p = profiles[i]
     const f = fundamentalsAll[i]?.metric
+    const marketCap = p.marketCapitalization != null ? p.marketCapitalization * 1_000_000 : undefined
 
     return {
       userId: session.user.email,
@@ -171,7 +172,7 @@ export default async function WatchlistPage({
         : "-",
       changePercent: q?.dp ?? 0,
       alert: getSignal(q?.dp ?? 0),
-      marketCap: p.marketCapitalization ? p.marketCapitalization * 1_000_000 : null,
+      marketCap: formatMoney(marketCap),
       peRatio: f?.forwardPE ? f.forwardPE.toFixed(2) : null,
     }
   })
@@ -252,14 +253,10 @@ export default async function WatchlistPage({
         <Row label="IPO" value={profile?.ipo} />
         {profile.country && <Row label="Country" value={profile.country} />}
         {profile.city && <Row label="City" value={profile.city} />}
-        <Row
-          label="Market Cap"
-          value={formatMoney(
-            profile?.marketCapitalization
-              ? profile.marketCapitalization * 1_000_000
-              : null
-          )}
-        />
+        {(() => {
+          const marketCap = profile?.marketCapitalization != null ? profile.marketCapitalization * 1_000_000 : undefined;
+          return <Row label="Market Cap" value={formatMoney(marketCap)} />;
+        })()}
         {fundamentals?.metric?.sharesOutstanding && (
           <Row
             label="Shares Outstanding"
@@ -307,7 +304,7 @@ export default async function WatchlistPage({
           <Metric label="Gross Margin (TTM)" value={formatNumber(metrics?.grossMarginTTM)} />
           <Metric label="52W High" value={formatNumber(metrics?.["52WeekHigh"])} />
           <Metric label="52W Low" value={formatNumber(metrics?.["52WeekLow"])} />
-          <Metric label="Market Cap" value={formatMoney(metrics?.marketCapitalization * 1_000_000)} />
+          <Metric label="Market Cap" value={formatMoney(metrics?.marketCapitalization != null ? metrics.marketCapitalization * 1_000_000 : undefined)} />
         </div>
       </div>
     </div>

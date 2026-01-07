@@ -3,7 +3,7 @@
 import { CommandDialog, CommandEmpty, CommandInput, CommandList } from "@/components/ui/command"
 import React, { useEffect, useState, useCallback } from "react"
 import { Button } from "@/components/ui/button"
-import { Star, TrendingUp, Loader2 } from "lucide-react"
+import { TrendingUp, Loader2 } from "lucide-react"
 
 import Link from "next/link";
 import { searchStocks } from "@/lib/actions/finnhub.actions"
@@ -38,7 +38,7 @@ export default function SearchCommand({ renderAs = "button", label = "Add Stock"
     }, []);
 
     useEffect(() => {
-        if (!isInitialized || watchlistSymbols.length === 0) return;
+        if (!isInitialized) return;
         
         setStocks(prevStocks => 
             prevStocks.map(stock => ({
