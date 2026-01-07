@@ -90,7 +90,7 @@ export const sendDailyNewsSummary = inngest.createFunction(
 
 
     const generalArticles = await step.run("fetch-general-news", async () => {
-      return (await getNews())?.slice(0, 2) || [];
+      return (await getNews())?.slice(0, 3) || [];
     });
     const generalSection = await getOrCreateNewsSection({
       sectionKey: "general",

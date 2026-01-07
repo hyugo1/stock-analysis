@@ -287,7 +287,7 @@ REQUIRED STRUCTURE PER ARTICLE (USE INLINE STYLES):
 </table>
 
 OUTPUT:
-- Generate EXACTLY 2 articles
+- Generate EXACTLY 3 articles
 - If sectionType is "general", omit the ticker badge span (keep only the source)
 - Use actual TICKER symbol from news data (e.g., AAPL, TSLA)
 - Use actual source name from news data (e.g., Reuters, CNBC)
