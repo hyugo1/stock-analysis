@@ -28,7 +28,7 @@ export const connectToDatabase = async (): Promise<typeof mongoose> => {
             maxPoolSize: 10,              // Limit connection pool
             serverSelectionTimeoutMS: 5000, // 5 second timeout
             socketTimeoutMS: 45000,        // 45 second socket timeout
-            })
+            });
     }
 
     try {
