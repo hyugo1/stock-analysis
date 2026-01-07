@@ -238,20 +238,8 @@ CRITICAL RULES:
 - Output ONLY valid HTML
 - NO markdown
 - NO <html>, <head>, <body>
-- Use ONLY the class names provided below
-- Do NOT invent new class names
-- Do NOT inline styles
-- Each article MUST be wrapped in .news-card
-
-AVAILABLE CSS CLASSES (USE THESE EXACTLY):
-- news-card
-- news-meta
-- ticker-badge
-- source-text
-- news-title
-- news-summary
-- news-cta
-- news-cta-arrow
+- Use inline styles only (no CSS classes or <style> tags)
+- Email clients often strip <style> tags, so inline styles are REQUIRED
 
 SECTION TYPE:
 {{sectionType}}
@@ -259,33 +247,53 @@ SECTION TYPE:
 NEWS DATA (JSON):
 {{newsData}}
 
-REQUIRED STRUCTURE PER ARTICLE:
+REQUIRED STRUCTURE PER ARTICLE (USE INLINE STYLES):
 
-<div class="news-card">
-  <div class="news-meta">
-    <span class="ticker-badge">AAPL</span>
-    <span class="source-text">Reuters</span>
-  </div>
-
-  <h3 class="news-title">
-    <a href="ARTICLE_URL" target="_blank" rel="noopener noreferrer">
-      Article headline
-    </a>
-  </h3>
-
-  <p class="news-summary">
-    1–2 sentence neutral market summary written for investors.
-  </p>
-
-  <a href="ARTICLE_URL" class="news-cta" target="_blank" rel="noopener noreferrer">
-    Read full story
-    <span class="news-cta-arrow">→</span>
-  </a>
-</div>
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #1a1f2e; border: 1px solid #2d3548; border-radius: 10px; margin-bottom: 20px; overflow: hidden;">
+  <tr>
+    <td style="padding: 24px;">
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+        <tr>
+          <td style="padding-bottom: 12px;">
+            <!-- Meta row with ticker and source -->
+            <span style="display: inline-block; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 4px; padding: 4px 10px; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; font-size: 11px; font-weight: 700; color: #10b981; letter-spacing: 0.5px;">
+              TICKER
+            </span>
+            <span style="font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; font-size: 12px; color: #64748b; margin-left: 12px;">
+              Source
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding-bottom: 12px;">
+            <a href="ARTICLE_URL" target="_blank" rel="noopener noreferrer" style="font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; font-size: 16px; font-weight: 600; color: #e2e8f0; text-decoration: none; line-height: 1.4;">
+              Article Headline Here
+            </a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <p style="font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; font-size: 14px; color: #94a3b8; margin: 0 0 15px 0; line-height: 1.6;">
+              1–2 sentence neutral market summary written for investors.
+            </p>
+            <a href="ARTICLE_URL" target="_blank" rel="noopener noreferrer" style="font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; font-size: 13px; font-weight: 600; color: #10b981; text-decoration: none;">
+              Read full story <span style="display: inline-block; margin-left: 4px;">→</span>
+            </a>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
 
 OUTPUT:
-- Generate 3–6 articles
-- If sectionType is "general", omit ticker-badge
+- Generate EXACTLY 2 articles
+- If sectionType is "general", omit the ticker badge span (keep only the source)
+- Use actual TICKER symbol from news data (e.g., AAPL, TSLA)
+- Use actual source name from news data (e.g., Reuters, CNBC)
+- Use actual article headline from news data
+- Use actual article URL from news data for href
 - Headlines must be concise
 - Summaries must be factual, not hype
+- Add spacing between articles with margin-bottom on the table
 `;

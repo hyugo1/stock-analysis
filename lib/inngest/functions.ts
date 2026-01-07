@@ -72,12 +72,12 @@ export const sendDailyNewsSummary = inngest.createFunction(
       symbols.forEach((s) => symbolSet.add(s));
     }
 
-    // Fetch news once per symbol
+
     const sectionMap: Record<string, string> = {};
 
     for (const symbol of symbolSet) {
       const articles = await step.run(`fetch-news-${symbol}`, async () => {
-        return (await getNews([symbol]))?.slice(0, 6) || [];
+        return (await getNews([symbol]))?.slice(0, 3) || [];
       });
       if (!articles.length) continue;
 
@@ -88,9 +88,9 @@ export const sendDailyNewsSummary = inngest.createFunction(
       });
     }
 
-    // General fallback
+
     const generalArticles = await step.run("fetch-general-news", async () => {
-      return (await getNews())?.slice(0, 6) || [];
+      return (await getNews())?.slice(0, 2) || [];
     });
     const generalSection = await getOrCreateNewsSection({
       sectionKey: "general",
