@@ -9,40 +9,8 @@ import { sendDailyNewsSummaryEmail, sendWelcomeEmail } from "@/lib/nodemailer";
 import { getFormattedTodayDate } from "@/lib/utils";
 import { getOrCreateNewsSection } from "./newsSections";
 import { assembleNewsContent } from "./assembleNewsEmail";
+import { callGeminiAPI } from "@/lib/inngest/gemini";
 
-// Direct Gemini API call function
-async function callGeminiAPI(prompt: string): Promise<string> {
-  try {
-    const apiKey = process.env.GOOGLE_GEMINI_KEY;
-    if (!apiKey) {
-      console.error("Missing GOOGLE_GEMINI_KEY");
-      return "Market summary unavailable today.";
-    }
-
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${apiKey}`,
-      { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({
-        contents: [
-          {
-            parts: [{ text: prompt }]
-          }
-        ]
-      }) }
-    );
-
-    if (!response.ok) {
-      const text = await response.text();
-      console.error("Gemini error:", response.status, text);
-      return "Market summary unavailable today.";
-    }
-
-    const data = await response.json();
-    return data.candidates?.[0]?.content?.parts?.[0]?.text ?? "Market summary unavailable today.";
-  } catch (err) {
-    console.error("Gemini fetch failed:", err);
-    return "Market summary unavailable today.";
-  }
-}
 
 export const sendSignUpEmail = inngest.createFunction(
     { id: 'sign-up-email' },
@@ -58,9 +26,14 @@ export const sendSignUpEmail = inngest.createFunction(
         const prompt = PERSONALIZED_WELCOME_EMAIL_PROMPT.replace('{{userProfile}}', userProfile)
 
         // Make direct API call instead of using step.ai.infer
-        const introText = await step.run('generate-welcome-intro', async () => {
+        const introText = await step.run("generate-welcome-intro", async () => {
+          try {
             return await callGeminiAPI(prompt);
-        })
+          } catch (err) {
+            console.error("Gemini failed:", err);
+            return "Thanks for joining MarketPulse — we’re excited to help you get started.";
+          }
+        });
 
         await step.run('send-welcome-email', async () => {
             const { data: { email, name } } = event;

@@ -302,7 +302,7 @@ export const WELCOME_EMAIL_TEMPLATE = `<!DOCTYPE html>
                                     <a href="https://marketpulse-taupe.vercel.app" class="footer-link" style="color: #64748b; text-decoration: underline;">Visit MarketPulse</a>
                                 </p>
                                 <p class="footer-text" style="margin: 0; font-size: 13px; color: #64748b;">
-                                    © 2025 MarketPulse
+                                    © 2026 MarketPulse
                                 </p>
                             </td>
                         </tr>
@@ -653,7 +653,7 @@ export const NEWS_SUMMARY_EMAIL_TEMPLATE = `<!DOCTYPE html>
                                     <a href="https://marketpulse-taupe.vercel.app" class="footer-link" style="color: #64748b; text-decoration: underline;">Visit MarketPulse</a>
                                 </p>
                                 <p class="footer-text" style="margin: 0; font-size: 13px; color: #64748b;">
-                                    © 2025 MarketPulse
+                                    © 2026 MarketPulse
                                 </p>
                             </td>
                         </tr>
