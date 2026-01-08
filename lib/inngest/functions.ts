@@ -49,7 +49,7 @@ export const sendSignUpEmail = inngest.createFunction(
 
 export const sendDailyNewsSummary = inngest.createFunction(
   { id: "mp-daily-summary", retries: 5 },
-  [{ cron: "0 12 * * *" }],
+  [{ cron: "0 13 * * *" }],
   async ({ step }) => {
     const users = await step.run("get-users", getAllUsersForNewsEmail);
     if (!users?.length) return;
