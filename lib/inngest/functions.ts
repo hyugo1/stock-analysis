@@ -48,7 +48,7 @@ export const sendSignUpEmail = inngest.createFunction(
   )
 
 export const sendDailyNewsSummary = inngest.createFunction(
-  { id: "marketpulse-daily-news-summary", retries: 5 },
+  { id: "mp-daily-summary", retries: 5 },
   [{ cron: "0 12 * * *" }],
   async ({ step }) => {
     const users = await step.run("get-users", getAllUsersForNewsEmail);
