@@ -403,7 +403,7 @@ export const NEWS_SUMMARY_EMAIL_TEMPLATE = `
     </style>
 </head>
 
-<body>
+<body style="margin:0;padding:0;background-color:#0e0f14;font-family:'Segoe UI',sans-serif;">
     <center>
         <table role="presentation" width="100%" bgcolor="#0e0f14" style="background-color:#0e0f14;">
             <tr>
