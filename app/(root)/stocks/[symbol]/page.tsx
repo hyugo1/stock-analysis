@@ -12,7 +12,7 @@ import {
 } from "@/lib/constants";
 import { getCurrentUserWatchlist } from "@/lib/actions/watchlist.actions";
 
-const FINNHUB_BASE_URL = 'https://finnhub.io/api/v1';
+const FINNHUB_BASE_URL = process.env.FINNHUB_BASE_URL ?? '';
 const FINNHUB_API_KEY = process.env.FINNHUB_API_KEY ?? '';
 
 /**

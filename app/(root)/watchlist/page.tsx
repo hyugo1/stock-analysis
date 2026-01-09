@@ -11,7 +11,7 @@ import { TECHNICAL_ANALYSIS_WIDGET_CONFIG } from "@/lib/constants"
 /*                                FINNHUB API                                 */
 /* -------------------------------------------------------------------------- */
 
-const FINNHUB_BASE_URL = "https://finnhub.io/api/v1"
+const FINNHUB_BASE_URL = process.env.FINNHUB_BASE_URL ?? '';
 const FINNHUB_API_KEY =
   process.env.FINNHUB_API_KEY ??
   process.env.NEXT_PUBLIC_FINNHUB_API_KEY ?? ""

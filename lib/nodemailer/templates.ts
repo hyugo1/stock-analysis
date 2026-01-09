@@ -1,313 +1,236 @@
-export const WELCOME_EMAIL_TEMPLATE = `<!DOCTYPE html>
+export const WELCOME_EMAIL_TEMPLATE = `
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="format-detection" content="telephone=no">
     <meta name="x-apple-disable-message-reformatting">
-    <title>Welcome to MarketPulse</title>
+    <meta name="color-scheme" content="light dark">
+    <meta name="supported-color-schemes" content="light dark">
+    <title>Welcome Email</title>
+
     <!--[if mso]>
-    <noscript>
-        <xml>
-            <o:OfficeDocumentSettings>
-                <o:AllowPNG/>
-                <o:PixelsPerInch>96</o:PixelsPerInch>
-            </o:OfficeDocumentSettings>
-        </xml>
-    </noscript>
+    <xml>
+    <o:OfficeDocumentSettings>
+        <o:AllowPNG/>
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+    </o:OfficeDocumentSettings>
+    </xml>
     <![endif]-->
-    <style type="text/css">
-        /* Reset styles */
-        body, table, td, p, a, li, blockquote {
-            -webkit-text-size-adjust: 100%;
-            -ms-text-size-adjust: 100%;
+
+    <style>
+        body, table, td, p, a {
+        margin: 0;
+        padding: 0;
+        -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
         }
-        table, td {
-            mso-table-lspace: 0pt;
-            mso-table-rspace: 0pt;
+        table {
+        border-spacing: 0;
+        mso-table-lspace: 0pt;
+        mso-table-rspace: 0pt;
         }
         img {
-            -ms-interpolation-mode: bicubic;
-            border: 0;
-            height: auto;
-            line-height: 100%;
-            outline: none;
-            text-decoration: none;
+        border: 0;
+        height: auto;
+        line-height: 100%;
         }
         body {
-            margin: 0 !important;
-            padding: 0 !important;
-            width: 100% !important;
+        width: 100% !important;
+        background-color: #0e0f14; 
+        font-family: 'Segoe UI', sans-serif;
         }
-        
-        /* Main styles */
+
         .email-wrapper {
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+        border-radius: 12px;
+        overflow: hidden;
         }
-        
-        .header-section {
-            padding: 40px 40px 30px 40px;
-            background: linear-gradient(180deg, #1a1f2e 0%, #0f1218 100%);
-            border-radius: 12px 12px 0 0;
+        .section {
+        padding: 35px 40px;
         }
-        
-        .logo-text {
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-            font-size: 24px;
-            font-weight: 700;
-            color: #ffffff;
-            letter-spacing: 1px;
+
+        .neon {
+        color: #10b981 !important;
+        text-shadow:
+            1px 1px 0 #000,
+        -1px 1px 0 #000,
+            1px -1px 0 #000,
+        -1px -1px 0 #000;
         }
-        
-        .logo-accent {
-            color: #10b981;
+        .neon-link {
+        color: #10b981 !important;
+        text-decoration: none;
         }
-        
-        .hero-section {
-            padding: 30px 40px;
-            background-color: #1a1f2e;
-            text-align: center;
+
+        .header {
+        background: #0e0f14;
         }
-        
-        .hero-image {
-            width: 100%;
-            max-width: 520px;
-            height: auto;
-            border-radius: 8px;
-            border: 1px solid #2d3548;
+        .logo {
+        font-size: 24px;
+        font-weight: 700;
+        color: #ffffff;
         }
-        
-        .content-section {
-            padding: 40px;
-            background-color: #0f1218;
+        .date-badge {
+        display: inline-block;
+        margin-top: 12px;
+        padding: 6px 16px;
+        border-radius: 20px;
+        background: rgba(16,185,129,0.1);
+        border: 1px solid rgba(16,185,129,0.3);
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
         }
-        
-        .welcome-heading {
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-            font-size: 28px;
-            font-weight: 700;
-            color: #ffffff;
-            margin: 0 0 25px 0;
-            line-height: 1.3;
+
+        .content {
+        background: #0a0a10;
         }
-        
-        .welcome-subheading {
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-            font-size: 16px;
-            color: #94a3b8;
-            margin: 0 0 30px 0;
-            line-height: 1.6;
+        .section-label {
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-bottom: 8px;
         }
-        
-        .section-title {
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-            font-size: 18px;
-            font-weight: 600;
-            color: #e2e8f0;
-            margin: 0 0 20px 0;
+        .news-heading {
+        font-size: 22px;
+        font-weight: 700;
+        color: #ffffff;
+        margin-bottom: 25px;
         }
-        
-        .feature-list {
-            margin: 0 0 35px 0;
-            padding: 0 0 0 24px;
+
+        .news-card {
+        background: #0f131d;
+        border: 1px solid #1f2937;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 18px;
         }
-        
-        .feature-item {
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-            font-size: 15px;
-            color: #cbd5e1;
-            margin: 0 0 15px 0;
-            line-height: 1.5;
+        .news-meta {
+        font-size: 11px;
+        margin-bottom: 8px;
         }
-        
-        .cta-button {
-            display: inline-block;
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #1e293b 100%);
-            color: #f8fafc !important;
-            text-decoration: none;
-            padding: 16px 40px;
-            border-radius: 8px;
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-            font-size: 16px;
-            font-weight: 600;
-            text-align: center;
-            border: 1px solid #334155;
-            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.4);
+        .news-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #e5e7eb;
+        margin-bottom: 10px;
         }
-        
-        .footer-section {
-            padding: 40px;
-            background-color: #0a0d12;
-            text-align: center;
-            border-radius: 0 0 12px 12px;
+        .news-title a {
+        color: #e5e7eb !important;
+        text-decoration: none;
         }
-        
+        .news-summary {
+        font-size: 14px;
+        color: #9ca3af;
+        line-height: 1.6;
+        margin-bottom: 12px;
+        }
+        .news-cta {
+        font-size: 13px;
+        font-weight: 600;
+        }
+
+        .footer {
+        background: #0e0f14;
+        text-align: center;
+        }
         .footer-text {
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-            font-size: 13px;
-            color: #64748b;
-            margin: 0 0 8px 0;
-            line-height: 1.6;
+        font-size: 13px;
+        color: #94a3b8;
+        line-height: 1.6;
+        margin: 6px 0;
         }
-        
-        .footer-link {
-            color: #64748b !important;
-            text-decoration: underline;
-        }
-        
         .footer-divider {
-            width: 60px;
-            height: 2px;
-            background: linear-gradient(90deg, #10b981 0%, transparent 100%);
-            margin: 25px auto;
+        width: 60px;
+        height: 2px;
+        margin: 20px auto;
+        background: linear-gradient(90deg, rgba(16,185,129,0.8) 0%, transparent 100%);
         }
-        
-        /* Mobile responsive */
+
         @media only screen and (max-width: 600px) {
-            .email-wrapper {
-                width: 100% !important;
-            }
-            .header-section, .hero-section, .content-section, .footer-section {
-                padding: 25px 20px !important;
-            }
-            .welcome-heading {
-                font-size: 24px !important;
-            }
-            .welcome-subheading, .feature-item {
-                font-size: 14px !important;
-            }
-            .hero-image {
-                max-width: 100% !important;
-                padding: 0 10px !important;
-            }
-            .cta-button {
-                display: block !important;
-                width: 100% !important;
-                box-sizing: border-box !important;
-            }
+        .section { padding: 25px 20px; }
+        .logo { font-size: 20px; }
+        .news-heading { font-size: 20px; }
+        .news-card { padding: 16px; }
+        .news-title { font-size: 15px; }
+        .news-summary { font-size: 13px; }
         }
     </style>
 </head>
-<body style="margin: 0; padding: 0; background-color: #050a12; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;">
-    <center style="width: 100%; background-color: #050a12;">
-        <!-- Preheader -->
-        <div style="display: none; max-height: 0; overflow: hidden; mso-hide: all;">
-            Welcome to MarketPulse! Let's get you started with your stock analysis journey.
-        </div>
-        
-        <!-- Main Email Container -->
-        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #050a12;">
+
+<body style="margin:0;padding:0;background-color:#0e0f14;font-family:'Segoe UI',sans-serif;">
+    <center>
+        <table role="presentation" width="100%" bgcolor="#0e0f14">
             <tr>
-                <td align="center" style="padding: 40px 15px;">
-                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="email-wrapper" style="max-width: 600px; background-color: #0f1218; border-radius: 12px; overflow: hidden;">
-                        
-                        <!-- Header Section -->
-                        <tr>
-                            <td class="header-section" style="padding: 40px 40px 30px 40px; background: linear-gradient(180deg, #1a1f2e 0%, #0f1218 100%);">
-                                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
-                                    <tr>
-                                        <td align="left">
-                                            <!-- Logo as Text -->
-                                            <span style="font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; font-size: 26px; font-weight: 700; color: #e2e8f0; letter-spacing: 1px;">
-                                                MARKET<span style="color: #10b981;">PULSE</span>
-                                            </span>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                        
-                        <!-- Hero Image Section -->
-                        <tr>
-                            <td class="hero-section" style="padding: 30px 40px; background-color: #1a1f2e; text-align: center;">
-                                <img src="/assets/images/stockdashboard.png" alt="MarketPulse Dashboard Preview" class="hero-image" style="width: 100%; max-width: 520px; height: auto; border-radius: 8px; border: 1px solid #2d3548;">
-                            </td>
-                        </tr>
-                        
-                        <!-- Content Section -->
-                        <tr>
-                            <td class="content-section" style="padding: 40px; background-color: #0f1218;">
-                                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
-                                    
-                                    <!-- Welcome Message -->
-                                    <tr>
-                                        <td style="padding-bottom: 25px;">
-                                            <h1 class="welcome-heading" style="margin: 0 0 15px 0; font-size: 28px; font-weight: 700; color: #ffffff; line-height: 1.3;">
-                                                Welcome aboard, {{name}}!
-                                            </h1>
-                                            <p class="welcome-subheading" style="margin: 0; font-size: 16px; color: #94a3b8; line-height: 1.6;">
-                                                {{intro}}
-                                            </p>
-                                        </td>
-                                    </tr>
-                                    
-                                    <!-- Divider -->
-                                    <tr>
-                                        <td style="padding: 20px 0;">
-                                            <div style="width: 100%; height: 1px; background: linear-gradient(90deg, #2d3548 0%, transparent 100%);"></div>
-                                        </td>
-                                    </tr>
-                                    
-                                    <!-- Features Section -->
-                                    <tr>
-                                        <td style="padding: 10px 0 30px 0;">
-                                            <p style="margin: 0 0 20px 0; font-size: 18px; font-weight: 600; color: #e2e8f0;">
-                                                Here's what you can do right now:
-                                            </p>
-                                            <ul class="feature-list" style="margin: 0; padding: 0 0 0 24px;">
-                                                <li class="feature-item" style="margin: 0 0 15px 0; font-size: 15px; color: #cbd5e1; line-height: 1.5;">
-                                                    Set up your watchlist to follow your favorite stocks
-                                                </li>
-                                                <li class="feature-item" style="margin: 0 0 15px 0; font-size: 15px; color: #cbd5e1; line-height: 1.5;">
-                                                    Create price and volume alerts so you never miss a move
-                                                </li>
-                                                <li class="feature-item" style="margin: 0; font-size: 15px; color: #cbd5e1; line-height: 1.5;">
-                                                    Explore the dashboard for trends and the latest market news
-                                                </li>
-                                            </ul>
-                                        </td>
-                                    </tr>
-                                    
-                                    <!-- Closing Message -->
-                                    <tr>
-                                        <td style="padding: 10px 0 35px 0;">
-                                            <p class="welcome-subheading" style="margin: 0; font-size: 16px; color: #94a3b8; line-height: 1.6;">
-                                                We'll keep you informed with timely updates, insights, and alerts — so you can focus on making the right calls.
-                                            </p>
-                                        </td>
-                                    </tr>
-                                    
-                                    <!-- CTA Button -->
-                                    <tr>
-                                        <td align="center" style="padding: 10px 0;">
-                                            <a href="https://marketpulse-taupe.vercel.app" class="cta-button" style="display: inline-block; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 8px; font-size: 16px; font-weight: 600;">
-                                                Go to Dashboard
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    
-                                </table>
-                            </td>
-                        </tr>
-                        
-                        <!-- Footer Section -->
-                        <tr>
-                            <td class="footer-section" style="padding: 40px; background-color: #0a0d12; text-align: center; border-radius: 0 0 12px 12px;">
-                                <div class="footer-divider" style="width: 60px; height: 2px; background: linear-gradient(90deg, #10b981 0%, transparent 100%); margin: 25px auto;"></div>
-                                <p class="footer-text" style="margin: 0 0 8px 0; font-size: 13px; color: #64748b;">
-                                    <a href="#" class="footer-link" style="color: #64748b; text-decoration: underline;">Unsubscribe</a> 
-                                    &nbsp;|&nbsp; 
-                                    <a href="https://marketpulse-taupe.vercel.app" class="footer-link" style="color: #64748b; text-decoration: underline;">Visit MarketPulse</a>
-                                </p>
-                                <p class="footer-text" style="margin: 0; font-size: 13px; color: #64748b;">
-                                    © 2026 MarketPulse
-                                </p>
-                            </td>
-                        </tr>
-                        
-                    </table>
+                <td align="center" style="padding:40px 10px;background-color:#0e0f14;">
+
+                <table role="presentation" class="email-wrapper" bgcolor="#0e1116" style="border-radius:12px;overflow:hidden;">
+
+                <!-- Header -->
+                <tr>
+                <td class="section header" bgcolor="#0e0f14" style="padding:35px 40px;background-color:#0e0f14;">
+                <span class="logo" style="font-size:24px;font-weight:700;color:#ffffff;">MARKET<span style="color:#10b981;">PULSE</span></span>
+                </td>
+                </tr>
+
+                <!-- Content -->
+                <tr>
+                <td class="section content" bgcolor="#0a0a10" style="padding:35px 40px;background-color:#0a0a10;">
+                <h1 style="font-size:28px;font-weight:700;color:#ffffff;margin:0 0 20px 0;">You're set up, {{name}}.</h1>
+                <p style="font-size:16px;color:#94a3b8;margin:0 0 25px 0;">{{intro}}</p>
+
+                <p style="font-size:18px;font-weight:600;color:#e5e7eb;margin:0 0 15px 0;">Get started in a few minutes:</p>
+                <ul style="margin:0 0 30px 24px;padding:0;">
+                    <li style="font-size:15px;color:#cbd5e1;margin-bottom:12px;">Build a watchlist to monitor the stocks that matter to you</li>
+                    <li style="font-size:15px;color:#cbd5e1;margin-bottom:12px;">Set price and volume alerts to catch meaningful market moves</li>
+                    <li style="font-size:15px;color:#cbd5e1;">Use the dashboard to track trends and key market developments</li>
+                </ul>
+
+                <p style="font-size:16px;color:#94a3b8;margin:0 0 25px 0;">We'll deliver timely updates and market signals — so you can focus on decisions, not distractions.</p>
+
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:20px auto;">
+                <tr>
+                    <td align="center">
+                    <a href="https://marketpulse-taupe.vercel.app"
+                        style="
+                        display:inline-block;
+                        background:linear-gradient(135deg,#10b981 0%,#059669 100%);
+                        color:#ffffff;
+                        text-decoration:none;
+                        padding:18px 50px;
+                        border-radius:10px;
+                        font-size:17px;
+                        font-weight:700;
+                        text-align:center;
+                        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+                        "
+                    >
+                        Open Dashboard
+                    </a>
+                    </td>
+                </tr>
+                </table>
+                </td>
+                </tr>
+
+                <!-- Footer -->
+                <tr>
+                    <td class="section footer" bgcolor="#0e0f14" style="padding:35px 40px;background-color:#0e0f14;text-align:center;">
+                        <div style="width:60px;height:2px;margin:20px auto;background:linear-gradient(90deg,rgba(16,185,129,0.8) 0%,transparent 100%);"></div>
+                            <p style="font-size:13px;color:#94a3b8;margin:6px 0;">
+                                <a href="#" style="color:#10b981;text-decoration:underline;">Unsubscribe</a> · 
+                                <a href="https://marketpulse-taupe.vercel.app" style="color:#10b981;text-decoration:underline;">Visit MarketPulse</a>
+                            </p>
+                            <p style="font-size:13px;color:#94a3b8;margin:6px 0;">© 2026 MarketPulse</p>
+                    </td>
+                </tr>
+
+                </table>
+
                 </td>
             </tr>
         </table>
@@ -315,359 +238,216 @@ export const WELCOME_EMAIL_TEMPLATE = `<!DOCTYPE html>
 </body>
 </html>`;
 
-export const NEWS_SUMMARY_EMAIL_TEMPLATE = `<!DOCTYPE html>
+export const NEWS_SUMMARY_EMAIL_TEMPLATE = `
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="format-detection" content="telephone=no">
     <meta name="x-apple-disable-message-reformatting">
+    <meta name="color-scheme" content="light dark">
+    <meta name="supported-color-schemes" content="light dark">
     <title>Market News Summary</title>
+
     <!--[if mso]>
-    <noscript>
-        <xml>
-            <o:OfficeDocumentSettings>
-                <o:AllowPNG/>
-                <o:PixelsPerInch>96</o:PixelsPerInch>
-            </o:OfficeDocumentSettings>
-        </xml>
-    </noscript>
+    <xml>
+    <o:OfficeDocumentSettings>
+        <o:AllowPNG/>
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+    </o:OfficeDocumentSettings>
+    </xml>
     <![endif]-->
-    <style type="text/css">
-        /* Reset styles */
-        body, table, td, p, a, li, blockquote {
-            -webkit-text-size-adjust: 100%;
-            -ms-text-size-adjust: 100%;
-        }
-        table, td {
-            mso-table-lspace: 0pt;
-            mso-table-rspace: 0pt;
-        }
-        img {
-            -ms-interpolation-mode: bicubic;
-            border: 0;
-            height: auto;
-            line-height: 100%;
-            outline: none;
-            text-decoration: none;
-        }
-        body {
-            margin: 0 !important;
-            padding: 0 !important;
-            width: 100% !important;
-        }
-        
-        /* Main styles */
-        .email-wrapper {
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        .header-section {
-            padding: 35px 40px;
-            background: linear-gradient(180deg, #1a1f2e 0%, #0f1218 100%);
-            border-radius: 12px 12px 0 0;
-        }
-        
-        .logo-text {
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-            font-size: 22px;
-            font-weight: 700;
-            color: #ffffff;
-            letter-spacing: 1px;
-        }
-        
-        .logo-accent {
-            color: #10b981;
-        }
-        
-        .date-badge {
-            display: inline-block;
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            border-radius: 20px;
-            padding: 6px 16px;
-            margin-top: 15px;
-        }
-        
-        .date-text {
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-            font-size: 13px;
-            color: #10b981;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .content-section {
-            padding: 35px 40px;
-            background-color: #0f1218;
-        }
-        
-        .section-label {
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-            font-size: 12px;
-            font-weight: 600;
-            color: #10b981;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin: 0 0 8px 0;
-        }
-        
-        .news-heading {
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-            font-size: 22px;
-            font-weight: 700;
-            color: #ffffff;
-            margin: 0 0 30px 0;
-            line-height: 1.3;
-        }
-        
-        .news-card {
-            background-color: #1a1f2e;
-            border: 1px solid #2d3548;
-            border-radius: 10px;
-            padding: 24px;
-            margin-bottom: 20px;
-            transition: border-color 0.2s ease;
-        }
-        
-        .news-card:last-child {
-            margin-bottom: 0;
-        }
-        
-        .news-card:hover {
-            border-color: #10b981;
-        }
-        
-        .news-meta {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-        
-        .ticker-badge {
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-            font-size: 11px;
-            font-weight: 700;
-            color: #10b981;
-            background: rgba(16, 185, 129, 0.1);
-            padding: 4px 10px;
-            border-radius: 4px;
-            letter-spacing: 0.5px;
-        }
-        
-        .source-text {
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-            font-size: 12px;
-            color: #64748b;
-        }
-        
-        .news-title {
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-            font-size: 16px;
-            font-weight: 600;
-            color: #e2e8f0;
-            margin: 0 0 12px 0;
-            line-height: 1.4;
-        }
-        
-        .news-title a {
-            color: #e2e8f0 !important;
-            text-decoration: none;
-        }
-        
-        .news-title a:hover {
-            color: #10b981 !important;
-        }
-        
-        .news-summary {
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-            font-size: 14px;
-            color: #94a3b8;
-            margin: 0 0 15px 0;
-            line-height: 1.6;
-        }
-        
-        .news-cta {
-            display: inline-block;
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-            font-size: 13px;
-            font-weight: 600;
-            color: #10b981;
-            text-decoration: none;
-        }
-        
-        .news-cta:hover {
-            text-decoration: underline;
-        }
-        
-        .news-cta-arrow {
-            display: inline-block;
-            margin-left: 4px;
-            transition: transform 0.2s ease;
-        }
-        
-        .news-card:hover .news-cta-arrow {
-            transform: translateX(3px);
-        }
-        
-        .footer-section {
-            padding: 35px 40px;
-            background-color: #0a0d12;
-            text-align: center;
-            border-radius: 0 0 12px 12px;
-        }
-        
-        .footer-text {
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-            font-size: 13px;
-            color: #64748b;
-            margin: 0 0 8px 0;
-            line-height: 1.6;
-        }
-        
-        .footer-link {
-            color: #64748b !important;
-            text-decoration: underline;
-        }
-        
-        .footer-divider {
-            width: 60px;
-            height: 2px;
-            background: linear-gradient(90deg, #10b981 0%, transparent 100%);
-            margin: 25px auto;
-        }
-        
-        /* Mobile responsive */
-        @media only screen and (max-width: 600px) {
-            .email-wrapper {
-                width: 100% !important;
-            }
-            .header-section, .content-section, .footer-section {
-                padding: 25px 20px !important;
-            }
-            .news-heading {
-                font-size: 20px !important;
-            }
-            .news-card {
-                padding: 18px !important;
-            }
-            .news-title {
-                font-size: 15px !important;
-            }
-            .news-summary {
-                font-size: 13px !important;
-            }
-            .logo-text {
-                font-size: 20px !important;
-            }
-        }
+
+    <style>
+    body, table, td, p, a {
+    margin: 0;
+    padding: 0;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    }
+    table {
+    border-spacing: 0;
+    mso-table-lspace: 0pt;
+    mso-table-rspace: 0pt;
+    }
+    img {
+    border: 0;
+    height: auto;
+    line-height: 100%;
+    }
+    body {
+    width: 100% !important;
+    background-color: #0e0f14; 
+    font-family: 'Segoe UI', sans-serif;
+    }
+
+    .email-wrapper {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    border-radius: 12px;
+    overflow: hidden;
+    }
+    .section {
+    padding: 35px 40px;
+    }
+
+    .neon {
+    color: #10b981 !important;
+    text-shadow:
+        1px 1px 0 #000,
+    -1px 1px 0 #000,
+        1px -1px 0 #000,
+    -1px -1px 0 #000;
+    }
+    .neon-link {
+    color: #10b981 !important;
+    text-decoration: none;
+    }
+
+    .header {
+    background: #0e0f14;
+    }
+    .logo {
+    font-size: 24px;
+    font-weight: 700;
+    color: #ffffff;
+    }
+    .date-badge {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 6px 16px;
+    border-radius: 20px;
+    background: rgba(16,185,129,0.1);
+    border: 1px solid rgba(16,185,129,0.3);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    }
+
+    .content {
+    background: #0a0a10;
+    }
+    .section-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    }
+    .news-heading {
+    font-size: 22px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 25px;
+    }
+
+    .news-card {
+    background: #0f131d;
+    border: 1px solid #1f2937;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 18px;
+    }
+    .news-meta {
+    font-size: 11px;
+    margin-bottom: 8px;
+    }
+    .news-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #e5e7eb;
+    margin-bottom: 10px;
+    }
+    .news-title a {
+    color: #e5e7eb !important;
+    text-decoration: none;
+    }
+    .news-summary {
+    font-size: 14px;
+    color: #9ca3af;
+    line-height: 1.6;
+    margin-bottom: 12px;
+    }
+    .news-cta {
+    font-size: 13px;
+    font-weight: 600;
+    }
+
+    .footer {
+    background: #0e0f14;
+    text-align: center;
+    }
+    .footer-text {
+    font-size: 13px;
+    color: #94a3b8;
+    line-height: 1.6;
+    margin: 6px 0;
+    }
+    .footer-divider {
+    width: 60px;
+    height: 2px;
+    margin: 20px auto;
+    background: linear-gradient(90deg, rgba(16,185,129,0.8) 0%, transparent 100%);
+    }
+
+    @media only screen and (max-width: 600px) {
+    .section { padding: 25px 20px; }
+    .logo { font-size: 20px; }
+    .news-heading { font-size: 20px; }
+    .news-card { padding: 16px; }
+    .news-title { font-size: 15px; }
+    .news-summary { font-size: 13px; }
+    }
     </style>
 </head>
-<body style="margin: 0; padding: 0; background-color: #050a12; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;">
-    <center style="width: 100%; background-color: #050a12;">
-        <!-- Preheader -->
-        <div style="display: none; max-height: 0; overflow: hidden; mso-hide: all;">
-            Your daily market news summary is here. Stay informed with the latest stock market updates.
-        </div>
-        
-        <!-- Main Email Container -->
-        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #050a12;">
+
+<body>
+    <center>
+        <table role="presentation" width="100%" bgcolor="#0e0f14" style="background-color:#0e0f14;">
             <tr>
-                <td align="center" style="padding: 40px 15px;">
-                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="email-wrapper" style="max-width: 600px; background-color: #0f1218; border-radius: 12px; overflow: hidden;">
-                        
-                        <!-- Header Section -->
-                        <tr>
-                            <td class="header-section" style="padding: 35px 40px; background: linear-gradient(180deg, #1a1f2e 0%, #0f1218 100%);">
-                                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
-                                    <tr>
-                                        <td align="left">
-                                            <!-- Logo as Text -->
-                                            <span style="font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; font-size: 24px; font-weight: 700; color: #e2e8f0; letter-spacing: 1px;">
-                                                MARKET<span style="color: #10b981;">PULSE</span>
-                                            </span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td align="left">
-                                            <!-- Date Badge -->
-                                            <div class="date-badge" style="display: inline-block; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 20px; padding: 6px 16px; margin-top: 15px;">
-                                                <span class="date-text" style="font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; font-size: 12px; font-weight: 600; color: #10b981; text-transform: uppercase; letter-spacing: 0.5px;">
-                                                    {{date}}
-                                                </span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                        
-                        <!-- Content Section -->
-                        <tr>
-                            <td class="content-section" style="padding: 35px 40px; background-color: #0f1218;">
-                                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
-                                    
-                                    <!-- Section Label -->
-                                    <tr>
-                                        <td style="padding-bottom: 8px;">
-                                            <p class="section-label" style="margin: 0; font-size: 12px; font-weight: 600; color: #10b981; text-transform: uppercase; letter-spacing: 1px;">
-                                                Today's Headlines
-                                            </p>
-                                        </td>
-                                    </tr>
-                                    
-                                    <!-- News Heading -->
-                                    <tr>
-                                        <td style="padding-bottom: 30px;">
-                                            <h1 class="news-heading" style="margin: 0; font-size: 22px; font-weight: 700; color: #ffffff; line-height: 1.3;">
-                                                Market News Summary
-                                            </h1>
-                                        </td>
-                                    </tr>
-                                    
-                                    <!-- News Cards Container -->
-                                    <tr>
-                                        <td style="padding: 0;">
-                                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #0f1218;">
-                                                <tr>
-                                                    <td style="padding: 0;">
-                                                        {{newsContent}}
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                    
-                                </table>
-                            </td>
-                        </tr>
-                        
-                        <!-- Footer Section -->
-                        <tr>
-                            <td class="footer-section" style="padding: 35px 40px; background-color: #0a0d12; text-align: center; border-radius: 0 0 12px 12px;">
-                                <div class="footer-divider" style="width: 60px; height: 2px; background: linear-gradient(90deg, #10b981 0%, transparent 100%); margin: 25px auto;"></div>
-                                <p class="footer-text" style="margin: 0 0 8px 0; font-size: 13px; color: #64748b;">
-                                    You're receiving this because you subscribed to MarketPulse news updates.
-                                </p>
-                                <p class="footer-text" style="margin: 0 0 8px 0; font-size: 13px; color: #64748b;">
-                                    <a href="https://marketpulse-taupe.vercel.app/news" class="footer-link" style="color: #10b981; text-decoration: none;">View more news on our website →</a>
-                                </p>
-                                <p class="footer-text" style="margin: 0 0 8px 0; font-size: 13px; color: #64748b;">
-                                    <a href="#" class="footer-link" style="color: #64748b; text-decoration: underline;">Unsubscribe</a> 
-                                    &nbsp;|&nbsp; 
-                                    <a href="https://marketpulse-taupe.vercel.app" class="footer-link" style="color: #64748b; text-decoration: underline;">Visit MarketPulse</a>
-                                </p>
-                                <p class="footer-text" style="margin: 0; font-size: 13px; color: #64748b;">
-                                    © 2026 MarketPulse
-                                </p>
-                            </td>
-                        </tr>
-                        
-                    </table>
+                <td align="center" style="padding:40px 10px; background-color:#0e0f14;" bgcolor="#0e0f14">
+
+                <table role="presentation" class="email-wrapper" bgcolor="#0e1116" style="background-color:#0e1116;">
+
+                <!-- Header -->
+                <tr>
+                <td class="section header" bgcolor="#0e0f14" style="background-color:#0e0f14;">
+                <span class="logo">MARKET<span class="neon">PULSE</span></span><br>
+                <span class="date-badge neon">{{date}}</span>
+                </td>
+                </tr>
+
+                <!-- Content -->
+                <tr>
+                <td class="section content" bgcolor="#0a0a10" style="background-color:#0a0a10;">
+                <p class="section-label neon">Today's Headlines</p>
+                <h1 class="news-heading">Market News Summary</h1>
+
+                {{newsContent}}
+
+                </td>
+                </tr>
+
+                <!-- Footer -->
+                <tr>
+                <td class="section footer" bgcolor="#0e0f14" style="background-color:#0e0f14;">
+                <div class="footer-divider"></div>
+                <p class="footer-text">You're receiving this because you subscribed to MarketPulse news updates.</p>
+                <p class="footer-text">
+                    <a href="https://marketpulse-taupe.vercel.app/news" class="neon-link">View more news →</a>
+                </p>
+                <p class="footer-text">
+                    <a href="#" class="neon-link">Unsubscribe</a> ·
+                    <a href="https://marketpulse-taupe.vercel.app" class="neon-link">Visit MarketPulse</a>
+                </p>
+                <p class="footer-text">© 2026 MarketPulse</p>
+                </td>
+                </tr>
+
+                </table>
+
                 </td>
             </tr>
         </table>

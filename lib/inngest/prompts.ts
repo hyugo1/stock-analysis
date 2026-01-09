@@ -58,14 +58,14 @@ CRITICAL FORMATTING REQUIREMENTS:
 - Use these specific CSS classes and styles to match the email template:
 
 SECTION HEADINGS (for categories like "Market Highlights", "Top Movers", etc.):
-<h3 class="mobile-news-title dark-text" style="margin: 30px 0 15px 0; font-size: 18px; font-weight: 600; color: #f8f9fa; line-height: 1.3;">Section Title</h3>
+<h3 class="mobile-news-title dark-text" style="margin: 30px 0 15px 0; font-size: 18px !important; font-weight: 600 !important; color: #f8fafc !important; line-height: 1.3;">Section Title</h3>
 
 PARAGRAPHS (for news content):
-<p class="mobile-text dark-text-secondary" style="margin: 0 0 20px 0; font-size: 16px; line-height: 1.6; color: #CCDADC;">Content goes here</p>
+<p class="mobile-text dark-text-secondary" style="margin: 0 0 20px 0 !important; font-size: 16px !important; line-height: 1.6; color: #94a3b8 !important;">Content goes here</p>
 
 STOCK/COMPANY MENTIONS:
-<strong style="color: #FDD458;">Stock Symbol</strong> for ticker symbols
-<strong style="color: #CCDADC;">Company Name</strong> for company names
+<strong style="color: #10b981 !important;">Stock Symbol</strong> for ticker symbols
+<strong style="color: #e2e8f0 !important;">Company Name</strong> for company names
 
 PERFORMANCE INDICATORS:
 Use 📈 for gains, 📉 for losses, 📊 for neutral/mixed
@@ -81,36 +81,36 @@ For each individual news item within a section, use this structure:
 
 ARTICLE CONTAINER:
 Wrap each article in a clean, simple container:
-<div class="dark-info-box" style="background-color: #212328; padding: 24px; margin: 20px 0; border-radius: 8px;">
+<div class="dark-info-box" style="background-color: #1a1f2e !important; padding: 24px !important; margin: 20px 0 !important; border-radius: 8px !important;">
 
 ARTICLE TITLES:
-<h4 class="dark-text" style="margin: 0 0 16px 0; font-size: 18px; font-weight: 600; color: #FFFFFF; line-height: 1.4;">
+<h4 class="dark-text" style="margin: 0 0 16px 0 !important; font-size: 18px !important; font-weight: 600 !important; color: #e2e8f0 !important; line-height: 1.4;">
 Article Title Here
 </h4>
 
 BULLET POINTS (minimum 3 concise insights):
 Use this format with clear, concise explanations (no label needed):
-<ul style="margin: 16px 0 20px 0; padding-left: 0; margin-left: 0; list-style: none;">
-  <li class="dark-text-secondary" style="margin: 0 0 16px 0; padding: 0; margin-left: 0; font-size: 16px; line-height: 1.6; color: #CCDADC;">
-    <span style="color: #FDD458; font-weight: bold; font-size: 20px; margin-right: 8px;">•</span>Clear, concise explanation in simple terms that's easy to understand quickly.
+<ul style="margin: 16px 0 20px 0 !important; padding-left: 0; margin-left: 0; list-style: none;">
+  <li class="dark-text-secondary" style="margin: 0 0 16px 0 !important; padding: 0; margin-left: 0; font-size: 15px !important; line-height: 1.6; color: #94a3b8 !important;">
+    <span style="color: #10b981 !important; font-weight: bold; font-size: 20px; margin-right: 8px;">•</span>Clear, concise explanation in simple terms that's easy to understand quickly.
   </li>
-  <li class="dark-text-secondary" style="margin: 0 0 16px 0; padding: 0; margin-left: 0; font-size: 16px; line-height: 1.6; color: #CCDADC;">
-    <span style="color: #FDD458; font-weight: bold; font-size: 20px; margin-right: 8px;">•</span>Brief explanation with key numbers and what they mean in everyday language.
+  <li class="dark-text-secondary" style="margin: 0 0 16px 0 !important; padding: 0; margin-left: 0; font-size: 15px !important; line-height: 1.6; color: #94a3b8 !important;">
+    <span style="color: #10b981 !important; font-weight: bold; font-size: 20px; margin-right: 8px;">•</span>Brief explanation with key numbers and what they mean in everyday language.
   </li>
-  <li class="dark-text-secondary" style="margin: 0 0 16px 0; padding: 0; margin-left: 0; font-size: 16px; line-height: 1.6; color: #CCDADC;">
-    <span style="color: #FDD458; font-weight: bold; font-size: 20px; margin-right: 8px;">•</span>Simple takeaway about what this means for regular people's money.
+  <li class="dark-text-secondary" style="margin: 0 0 16px 0 !important; padding: 0; margin-left: 0; font-size: 15px !important; line-height: 1.6; color: #94a3b8 !important;">
+    <span style="color: #10b981 !important; font-weight: bold; font-size: 20px; margin-right: 8px;">•</span>Simple takeaway about what this means for regular people's money.
   </li>
 </ul>
 
 INSIGHT SECTION:
 Add simple context explanation:
-<div style="background-color: #141414; border: 1px solid #374151; padding: 15px; border-radius: 6px; margin: 16px 0;">
-<p class="dark-text-secondary" style="margin: 0; font-size: 14px; color: #CCDADC; line-height: 1.4;">💡 <strong style="color: #FDD458;">Bottom Line:</strong> Simple explanation of why this news matters to your money in everyday language.</p>
+<div style="background-color: #0f1218 !important; border: 1px solid #2d3548 !important; padding: 15px !important; border-radius: 6px !important; margin: 16px 0 !important;">
+<p class="dark-text-secondary" style="margin: 0 !important; font-size: 14px !important; color: #94a3b8 !important; line-height: 1.4;">💡 <strong style="color: #10b981 !important;">Bottom Line:</strong> Simple explanation of why this news matters to your money in everyday language.</p>
 </div>
 
 READ MORE BUTTON:
-<div style="margin: 20px 0 0 0;">
-<a href="ARTICLE_URL" style="color: #FDD458; text-decoration: none; font-weight: 500; font-size: 14px;" target="_blank" rel="noopener noreferrer">Read Full Story →</a>
+<div style="margin: 20px 0 0 0 !important;">
+<a href="ARTICLE_URL" style="color: #10b981 !important; text-decoration: none !important; font-weight: 500 !important; font-size: 14px !important;" target="_blank" rel="noopener noreferrer">Read Full Story →</a>
 </div>
 
 ARTICLE DIVIDER:
@@ -140,63 +140,64 @@ Content guidelines:
 - Prioritize BREVITY and CLARITY over detailed explanations
 
 Example structure:
-<h3 class="mobile-news-title dark-text" style="margin: 30px 0 15px 0; font-size: 20px; font-weight: 600; color: #f8f9fa; line-height: 1.3;">📊 Market Overview</h3>
+<h3 class="mobile-news-title dark-text" style="margin: 30px 0 15px 0; font-size: 20px !important; font-weight: 600 !important; color: #f8fafc !important; line-height: 1.3;">📊 Market Overview</h3>
 
-<div class="dark-info-box" style="background-color: #212328; padding: 24px; margin: 20px 0; border-radius: 8px;">
-<h4 class="dark-text" style="margin: 0 0 16px 0; font-size: 18px; font-weight: 600; color: #FDD458; line-height: 1.4;">
+<div class="dark-info-box" style="background-color: #1a1f2e !important; padding: 24px !important; margin: 20px 0 !important; border-radius: 8px !important;">
+<h4 class="dark-text" style="margin: 0 0 16px 0 !important; font-size: 18px !important; font-weight: 600 !important; color: #10b981 !important; line-height: 1.4;">
 Stock Market Had Mixed Results Today
 </h4>
 
-<ul style="margin: 16px 0 20px 0; padding-left: 0; margin-left: 0; list-style: none;">
-  <li class="dark-text-secondary" style="margin: 0 0 16px 0; padding: 0; margin-left: 0; font-size: 16px; line-height: 1.6; color: #CCDADC;">
-    <span style="color: #FDD458; font-weight: bold; font-size: 20px; margin-right: 8px;">•</span>Tech stocks like Apple went up 1.2% today, which is good news for tech investors.
+<ul style="margin: 16px 0 20px 0 !important; padding-left: 0; margin-left: 0; list-style: none;">
+  <li class="dark-text-secondary" style="margin: 0 0 16px 0 !important; padding: 0; margin-left: 0; font-size: 15px !important; line-height: 1.6; color: #94a3b8 !important;">
+    <span style="color: #10b981 !important; font-weight: bold; font-size: 20px; margin-right: 8px;">•</span>Tech stocks like Apple went up 1.2% today, which is good news for tech investors.
   </li>
-  <li class="dark-text-secondary" style="margin: 0 0 16px 0; padding: 0; margin-left: 0; font-size: 16px; line-height: 1.6; color: #CCDADC;">
-    <span style="color: #FDD458; font-weight: bold; font-size: 20px; margin-right: 8px;">•</span>Traditional companies went down 0.3%, showing investors prefer tech right now.
+  <li class="dark-text-secondary" style="margin: 0 0 16px 0 !important; padding: 0; margin-left: 0; font-size: 15px !important; line-height: 1.6; color: #94a3b8 !important;">
+    <span style="color: #10b981 !important; font-weight: bold; font-size: 20px; margin-right: 8px;">•</span>Traditional companies went down 0.3%, showing investors prefer tech right now.
   </li>
-  <li class="dark-text-secondary" style="margin: 0 0 16px 0; padding: 0; margin-left: 0; font-size: 16px; line-height: 1.6; color: #CCDADC;">
-    <span style="color: #FDD458; font-weight: bold; font-size: 20px; margin-right: 8px;">•</span>High trading volume (12.4 billion shares) shows investors are confident and active.
+  <li class="dark-text-secondary" style="margin: 0 0 16px 0 !important; padding: 0; margin-left: 0; font-size: 15px !important; line-height: 1.6; color: #94a3b8 !important;">
+    <span style="color: #10b981 !important; font-weight: bold; font-size: 20px; margin-right: 8px;">•</span>High trading volume (12.4 billion shares) shows investors are confident and active.
   </li>
 </ul>
 
-<div style="background-color: #141414; border: 1px solid #374151; padding: 15px; border-radius: 6px; margin: 16px 0;">
-<p class="dark-text-secondary" style="margin: 0; font-size: 14px; color: #CCDADC; line-height: 1.4;">💡 <strong style="color: #FDD458;">Bottom Line:</strong> If you own tech stocks, today was good for you. If you're thinking about investing, tech companies might be a smart choice right now.</p>
+<div style="background-color: #0f1218 !important; border: 1px solid #2d3548 !important; padding: 15px !important; border-radius: 6px !important; margin: 16px 0 !important;">
+<p class="dark-text-secondary" style="margin: 0 !important; font-size: 14px !important; color: #94a3b8 !important; line-height: 1.4;">💡 <strong style="color: #10b981 !important;">Bottom Line:</strong> If you own tech stocks, today was good for you. If you're thinking about investing, tech companies might be a smart choice right now.</p>
 </div>
 
-<div style="margin: 20px 0 0 0;">
-<a href="https://example.com/article1" style="color: #FDD458; text-decoration: none; font-weight: 500; font-size: 14px;" target="_blank" rel="noopener noreferrer">Read Full Story →</a>
+<div style="margin: 20px 0 0 0 !important;">
+<a href="https://example.com/article1" style="color: #10b981 !important; text-decoration: none !important; font-weight: 500 !important; font-size: 14px !important;" target="_blank" rel="noopener noreferrer">Read Full Story →</a>
 </div>
 </div>
 
-<div style="border-top: 1px solid #374151; margin: 32px 0 24px 0;"></div>
+<div style="border-top: 1px solid #2d3548 !important; margin: 32px 0 24px 0 !important;"></div>
 
-<h3 class="mobile-news-title dark-text" style="margin: 30px 0 15px 0; font-size: 20px; font-weight: 600; color: #f8f9fa; line-height: 1.3;">📈 Top Gainers</h3>
+<h3 class="mobile-news-title dark-text" style="margin: 30px 0 15px 0; font-size: 20px !important; font-weight: 600 !important; color: #f8fafc !important; line-height: 1.3;">📈 Top Gainers</h3>
 
-<div class="dark-info-box" style="background-color: #212328; padding: 24px; margin: 20px 0; border-radius: 8px;">
-<h4 class="dark-text" style="margin: 0 0 16px 0; font-size: 18px; font-weight: 600; color: #FDD458; line-height: 1.4;">
+<div class="dark-info-box" style="background-color: #1a1f2e !important; padding: 24px !important; margin: 20px 0 !important; border-radius: 8px !important;">
+<h4 class="dark-text" style="margin: 0 0 16px 0 !important; font-size: 18px !important; font-weight: 600 !important; color: #10b981 !important; line-height: 1.4;">
 Apple Stock Jumped After Great Earnings Report
 </h4>
 
-<ul style="margin: 16px 0 20px 0; padding-left: 0; margin-left: 0; list-style: none;">
-  <li class="dark-text-secondary" style="margin: 0 0 16px 0; padding: 0; margin-left: 0; font-size: 16px; line-height: 1.6; color: #CCDADC;">
-    <span style="color: #FDD458; font-weight: bold; font-size: 20px; margin-right: 8px;">•</span>Apple stock jumped 5.2% after beating earnings expectations.
+<ul style="margin: 16px 0 20px 0 !important; padding-left: 0; margin-left: 0; list-style: none;">
+  <li class="dark-text-secondary" style="margin: 0 0 16px 0 !important; padding: 0; margin-left: 0; font-size: 15px !important; line-height: 1.6; color: #94a3b8 !important;">
+    <span style="color: #10b981 !important; font-weight: bold; font-size: 20px; margin-right: 8px;">•</span>Apple stock jumped 5.2% after beating earnings expectations.
   </li>
-  <li class="dark-text-secondary" style="margin: 0 0 16px 0; padding: 0; margin-left: 0; font-size: 16px; line-height: 1.6; color: #CCDADC;">
-    <span style="color: #FDD458; font-weight: bold; font-size: 20px; margin-right: 8px;">•</span>iPhone sales expected to grow 8% next quarter despite economic uncertainty.
+  <li class="dark-text-secondary" style="margin: 0 0 16px 0 !important; padding: 0; margin-left: 0; font-size: 15px !important; line-height: 1.6; color: #94a3b8 !important;">
+    <span style="color: #10b981 !important; font-weight: bold; font-size: 20px; margin-right: 8px;">•</span>iPhone sales expected to grow 8% next quarter despite economic uncertainty.
   </li>
-  <li class="dark-text-secondary" style="margin: 0 0 16px 0; padding: 0; margin-left: 0; font-size: 16px; line-height: 1.6; color: #CCDADC;">
-    <span style="color: #FDD458; font-weight: bold; font-size: 20px; margin-right: 8px;">•</span>App store and services revenue hit $22.3 billion (up 14%), providing steady income.
+  <li class="dark-text-secondary" style="margin: 0 0 16px 0 !important; padding: 0; margin-left: 0; font-size: 15px !important; line-height: 1.6; color: #94a3b8 !important;">
+    <span style="color: #10b981 !important; font-weight: bold; font-size: 20px; margin-right: 8px;">•</span>App store and services revenue hit $22.3 billion (up 14%), providing steady income.
   </li>
 </ul>
 
-<div style="background-color: #141414; border: 1px solid #374151; padding: 15px; border-radius: 6px; margin: 16px 0;">
-<p class="dark-text-secondary" style="margin: 0; font-size: 14px; color: #CCDADC; line-height: 1.4;">💡 <strong style="color: #FDD458;">Bottom Line:</strong> Apple is making money in different ways (phones AND services), so it's a pretty safe stock to own even when the economy gets shaky.</p>
+<div style="background-color: #0f1218 !important; border: 1px solid #2d3548 !important; padding: 15px !important; border-radius: 6px !important; margin: 16px 0 !important;">
+<p class="dark-text-secondary" style="margin: 0 !important; font-size: 14px !important; color: #94a3b8 !important; line-height: 1.4;">💡 <strong style="color: #10b981 !important;">Bottom Line:</strong> Apple is making money in different ways (phones AND services), so it's a pretty safe stock to own even when the economy gets shaky.</p>
 </div>
 
-<div style="margin: 20px 0 0 0;">
-<a href="https://example.com/article2" style="color: #FDD458; text-decoration: none; font-weight: 500; font-size: 14px;" target="_blank" rel="noopener noreferrer">Read Full Story →</a>
+<div style="margin: 20px 0 0 0 !important;">
+<a href="https://example.com/article2" style="color: #10b981 !important; text-decoration: none !important; font-weight: 500 !important; font-size: 14px !important;" target="_blank" rel="noopener noreferrer">Read Full Story →</a>
 </div>
-</div>`
+</div>
+`;
 
 export const TRADINGVIEW_SYMBOL_MAPPING_PROMPT = `You are an expert in financial markets and trading platforms. Your task is to find the correct TradingView symbol that corresponds to a given Finnhub stock symbol.
 
@@ -240,6 +241,7 @@ CRITICAL RULES:
 - NO <html>, <head>, <body>
 - Use inline styles only (no CSS classes or <style> tags)
 - Email clients often strip <style> tags, so inline styles are REQUIRED
+- Colors MUST use !important to prevent email client dark mode overrides
 
 SECTION TYPE:
 {{sectionType}}
@@ -247,36 +249,36 @@ SECTION TYPE:
 NEWS DATA (JSON):
 {{newsData}}
 
-REQUIRED STRUCTURE PER ARTICLE (USE INLINE STYLES):
+REQUIRED STRUCTURE PER ARTICLE (USE INLINE STYLES WITH !IMPORTANT):
 
-<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #1a1f2e; border: 1px solid #2d3548; border-radius: 10px; margin-bottom: 20px; overflow: hidden;">
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #1a1f2e !important; border: 1px solid #2d3548 !important; border-radius: 10px; margin-bottom: 20px; overflow: hidden;">
   <tr>
-    <td style="padding: 24px;">
+    <td style="padding: 24px !important;">
       <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
         <tr>
-          <td style="padding-bottom: 12px;">
+          <td style="padding-bottom: 12px !important;">
             <!-- Meta row with ticker and source -->
-            <span style="display: inline-block; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 4px; padding: 4px 10px; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; font-size: 11px; font-weight: 700; color: #10b981; letter-spacing: 0.5px;">
+            <span style="display: inline-block; background: rgba(16, 185, 129, 0.15) !important; border: 1px solid rgba(16, 185, 129, 0.4) !important; border-radius: 4px; padding: 4px 10px; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; font-size: 11px !important; font-weight: 700 !important; color: #10b981 !important; letter-spacing: 0.5px;">
               TICKER
             </span>
-            <span style="font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; font-size: 12px; color: #64748b; margin-left: 12px;">
+            <span style="font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; font-size: 12px !important; color: #64748b !important; margin-left: 12px;">
               Source
             </span>
           </td>
         </tr>
         <tr>
-          <td style="padding-bottom: 12px;">
-            <a href="ARTICLE_URL" target="_blank" rel="noopener noreferrer" style="font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; font-size: 16px; font-weight: 600; color: #e2e8f0; text-decoration: none; line-height: 1.4;">
+          <td style="padding-bottom: 12px !important;">
+            <a href="ARTICLE_URL" target="_blank" rel="noopener noreferrer" style="font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; font-size: 16px !important; font-weight: 600 !important; color: #e2e8f0 !important; text-decoration: none !important; line-height: 1.4;">
               Article Headline Here
             </a>
           </td>
         </tr>
         <tr>
           <td>
-            <p style="font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; font-size: 14px; color: #94a3b8; margin: 0 0 15px 0; line-height: 1.6;">
+            <p style="font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; font-size: 14px !important; color: #94a3b8 !important; margin: 0 0 15px 0 !important; line-height: 1.6;">
               1–2 sentence neutral market summary written for investors.
             </p>
-            <a href="ARTICLE_URL" target="_blank" rel="noopener noreferrer" style="font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; font-size: 13px; font-weight: 600; color: #10b981; text-decoration: none;">
+            <a href="ARTICLE_URL" target="_blank" rel="noopener noreferrer" style="font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; font-size: 13px !important; font-weight: 600 !important; color: #10b981 !important; text-decoration: none !important;">
               Read full story <span style="display: inline-block; margin-left: 4px;">→</span>
             </a>
           </td>
