@@ -9,9 +9,9 @@ export async function getOrCreateNewsSection({
   sectionKey,
   articles,
   step,
-  userEmail, // optional: pass in to log which user is using this section
+  userEmail, // optional
 }: {
-  sectionKey: string; // e.g. AAPL, TSLA, general
+  sectionKey: string;
   articles: MarketNewsArticle[];
   step: any;
   userEmail?: string;
