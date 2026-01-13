@@ -222,7 +222,7 @@ export const WELCOME_EMAIL_TEMPLATE = `
                     <td class="section footer" bgcolor="#0e0f14" style="padding:35px 40px;background-color:#0e0f14;text-align:center;">
                         <div style="width:60px;height:2px;margin:20px auto;background:linear-gradient(90deg,rgba(16,185,129,0.8) 0%,transparent 100%);"></div>
                             <p style="font-size:13px;color:#94a3b8;margin:6px 0;">
-                                <a href="#" style="color:#10b981;text-decoration:underline;">Unsubscribe</a> · 
+                                <a href="{{unsubscribeUrl}}" style="color:#10b981;text-decoration:underline;">Unsubscribe</a> · 
                                 <a href="https://marketpulse-taupe.vercel.app" style="color:#10b981;text-decoration:underline;">Visit MarketPulse</a>
                             </p>
                             <p style="font-size:13px;color:#94a3b8;margin:6px 0;">© 2026 MarketPulse</p>
@@ -436,10 +436,7 @@ export const NEWS_SUMMARY_EMAIL_TEMPLATE = `
                 <div class="footer-divider"></div>
                 <p class="footer-text">You're receiving this because you subscribed to MarketPulse news updates.</p>
                 <p class="footer-text">
-                    <a href="https://marketpulse-taupe.vercel.app/news" class="neon-link">View more news →</a>
-                </p>
-                <p class="footer-text">
-                    <a href="#" class="neon-link">Unsubscribe</a> ·
+                    <a href="{{unsubscribeUrl}}" class="neon-link">Unsubscribe</a> ·
                     <a href="https://marketpulse-taupe.vercel.app" class="neon-link">Visit MarketPulse</a>
                 </p>
                 <p class="footer-text">© 2026 MarketPulse</p>

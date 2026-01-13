@@ -9,10 +9,16 @@ export const transporter = nodemailer.createTransport({
     }
 })
 
-export const sendWelcomeEmail = async ({ email, name, intro }: WelcomeEmailData) => {
+export const sendWelcomeEmail = async ({ email, name, intro, unsubscribeToken }: WelcomeEmailData & { unsubscribeToken?: string }) => {
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://marketpulse-taupe.vercel.app";
+    const unsubscribeUrl = unsubscribeToken 
+        ? `${baseUrl}/api/unsubscribe?token=${unsubscribeToken}`
+        : `${baseUrl}/unsubscribe`;
+
     const htmlTemplate = WELCOME_EMAIL_TEMPLATE
         .replace('{{name}}', name)
-        .replace('{{intro}}', intro);
+        .replace('{{intro}}', intro)
+        .replace(/href="{{unsubscribeUrl}}"/g, `href="${unsubscribeUrl}"`);
 
     const mailOptions = {
         from: `"MarketPulse" <marketpulse.dev@gmail.com>`,
@@ -36,11 +42,18 @@ export const sendWelcomeEmail = async ({ email, name, intro }: WelcomeEmailData)
 
 
 export const sendDailyNewsSummaryEmail = async (
-    { email, date, newsContent }: { email: string; date: string; newsContent: string }
+    { email, date, newsContent, unsubscribeToken }: { email: string; date: string; newsContent: string; unsubscribeToken?: string }
 ): Promise<void> => {
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://marketpulse-taupe.vercel.app";
+    const unsubscribeUrl = unsubscribeToken 
+        ? `${baseUrl}/api/unsubscribe?token=${unsubscribeToken}`
+        : `${baseUrl}/unsubscribe`;
+
     const htmlTemplate = NEWS_SUMMARY_EMAIL_TEMPLATE
         .replace('{{date}}', date)
-        .replace('{{newsContent}}', newsContent);
+        .replace('{{newsContent}}', newsContent)
+        .replace(/href="#"/g, `href="${unsubscribeUrl}"`)
+        .replace('{{unsubscribeUrl}}', unsubscribeUrl);
 
     const mailOptions = {
         from: `"MarketPulse News" <marketpulse.dev@gmail.com>`,
