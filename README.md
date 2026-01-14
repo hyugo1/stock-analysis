@@ -1,6 +1,6 @@
 # MarketPulse
 
-A modern, full-featured stock analysis and monitoring platform built with Next.js 16. MarketPulse provides real-time stock data, interactive charts, personalized watchlists, and AI-powered news summaries delivered directly to your inbox.
+A modern, full-featured stock analysis and monitoring platform built with Next.js 16.1.1. MarketPulse provides real-time stock data, interactive charts, personalized watchlists, and AI-powered news summaries delivered directly to your inbox.
 
 ## ✨ Features
 
@@ -258,6 +258,7 @@ stock-analysis/
 
 ## 📄 License
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## 🙏 Acknowledgments
