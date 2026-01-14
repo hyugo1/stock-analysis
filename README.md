@@ -81,7 +81,7 @@ stock-analysis/
 │   ├── (auth)/            # Authentication pages
 │   ├── (root)/            # Main application pages
 │   ├── unsubscribe/       # Unsubscribe page
-│   └── global-fake.css    # Global styles
+│   └── global.css    # Global styles
 ├── components/            # React components
 │   ├── ui/               # UI primitives (Shadcn/ui)
 │   ├── forms/            # Form components
