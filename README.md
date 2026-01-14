@@ -123,7 +123,6 @@ stock-analysis/
 │   │   ├── checker/
 │   │   ├── index.ts
 │   │   └── templates.ts
-│   ├── cache/            # Cache utilities
 │   ├── redis.ts          # Redis client
 │   ├── unsubscribe-token.ts
 │   ├── utils.ts
@@ -265,7 +264,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 > **Note:** This project was inspired by a [tutorial](https://www.youtube.com/watch?v=gu4pafNCXng) on JSMastery. MarketPulse adds new features on top such as watchlists and unsubscribe management.
 
-- [JSMastery] (https://www.youtube.com/watch?v=gu4pafNCXng) - Tutorial Inspiration
+- [JSMastery](https://www.youtube.com/watch?v=gu4pafNCXng) - Tutorial Inspiration
 - [Next.js](https://nextjs.org/) - The React Framework
 - [TradingView](https://www.tradingview.com/) - Charting Library
 - [Finnhub](https://finnhub.io/) - Stock Market Data
@@ -274,4 +273,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - [Google Gemini](https://gemini.google.com/) - AI Processing
 - [Tailwind CSS](https://tailwindcss.com/) - Styling
 - [Radix UI](https://www.radix-ui.com/) - UI Components
-- [Vercel] (https://vercel.com/) - Deployment Platform
+- [Vercel](https://vercel.com/) - Deployment Platform
