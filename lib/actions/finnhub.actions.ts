@@ -170,6 +170,9 @@ export const searchStocks = cache(async (query?: string): Promise<StockWithWatch
         };
         return item;
       })
+      .filter((item, index, self) => 
+        index === self.findIndex((s) => s.symbol === item.symbol)
+      )
       .slice(0, 15);
 
     return mapped;
