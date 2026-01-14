@@ -6,7 +6,7 @@ import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {useRouter} from "next/navigation";
 import {Button} from "@/components/ui/button";
-import { LogOut } from "lucide-react";
+import { LogOut, Settings } from "lucide-react";
 import NavItems from "@/components/NavItems";
 import {signOut} from "@/lib/actions/auth.actions";
 
@@ -61,6 +61,11 @@ const UserDropdown = ( {user, initialStocks} : {user: User, initialStocks: Stock
                         </div>
                     </div>
                 </DropdownMenuLabel>   
+                <DropdownMenuSeparator className="bg-gray-600"/>
+                    <DropdownMenuItem onClick={() => router.push("/settings/notifications")} className="text-gray-100 text-md font-medium cursor-pointer focus:text-yellow-500 transition-colors cursor-pointer">
+                        <Settings className="mr-2 h-4 w-4" />
+                        Settings
+                    </DropdownMenuItem>
                 <DropdownMenuSeparator className="bg-gray-600"/>
                     <DropdownMenuItem onClick={handleSignOut} className="text-gray-100 text-md font-medium cursor-pointer focus:text-yellow-500 transition-colors cursor-pointer">
                         <LogOut className="mr-2 h-4 w-4 hidden sm:block"/>

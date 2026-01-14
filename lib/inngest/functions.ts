@@ -2,7 +2,7 @@
 
 import {inngest} from "@/lib/inngest/client";
 import { PERSONALIZED_WELCOME_EMAIL_PROMPT } from "@/lib/inngest/prompts";
-import { getAllUsersForNewsEmail } from "@/lib/actions/user.actions";
+import { getAllUsersForNewsEmail, generateUnsubscribeToken } from "@/lib/actions/user.actions";
 import { getWatchlistSymbolsByEmail } from "@/lib/actions/watchlist.actions";
 import { getNews } from "@/lib/actions/finnhub.actions";
 import { sendDailyNewsSummaryEmail, sendWelcomeEmail } from "@/lib/nodemailer";
@@ -37,7 +37,8 @@ export const sendSignUpEmail = inngest.createFunction(
 
         await step.run('send-welcome-email', async () => {
             const { data: { email, name } } = event;
-            return await sendWelcomeEmail({ email, name, intro: introText });
+            const unsubscribeToken = generateUnsubscribeToken(email);
+            return await sendWelcomeEmail({ email, name, intro: introText, unsubscribeToken });
         })
 
         return {
@@ -49,8 +50,7 @@ export const sendSignUpEmail = inngest.createFunction(
 
 export const sendDailyNewsSummary = inngest.createFunction(
   { id: "marketpulse-daily-summary", retries: 5 },
-  // [{ cron: "*/2 * * * *" }],
-  [{ cron: "0 15 * * *" }],
+  [{ cron: "0 12 * * *" }],
   async ({ step }) => {
     const users = await step.run("get-users", getAllUsersForNewsEmail);
     if (!users?.length) return;
@@ -112,10 +112,12 @@ export const sendDailyNewsSummary = inngest.createFunction(
       });
 
     await step.run(`send-email-${user.email}`, async () => {
+    const unsubscribeToken = generateUnsubscribeToken(user.email);
     await sendDailyNewsSummaryEmail({
         email: user.email,
         date,
         newsContent,
+        unsubscribeToken,
     });
       });
     }
