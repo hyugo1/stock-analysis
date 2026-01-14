@@ -31,7 +31,7 @@ A modern, full-featured stock analysis and monitoring platform built with Next.j
 - **Secure Authentication** - Email/password login with better-auth
 - **Subscription Management** - Toggle email preferences
 - **User Profiles** - Store investment preferences and goals
-- **Responsive Design** - Works seamlessly on all devices
+- **Responsive Design** - Works seamlessly on all devices, including mobile
 
 ## 🛠 Tech Stack
 
