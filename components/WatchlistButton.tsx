@@ -38,6 +38,7 @@ const WatchlistButton = ({
   showTrashIcon = false,
   type = "button",
   onWatchlistChange,
+  disableRefresh = false,
 }: WatchlistButtonProps) => {
   const [added, setAdded] = useState<boolean>(!!isInWatchlist);
   const [isLoading, setIsLoading] = useState(false);
@@ -105,7 +106,9 @@ const WatchlistButton = ({
       }
 
       onWatchlistChange?.(symbol, next);
-      router.refresh();
+      if (!disableRefresh) {
+        router.refresh();
+      }
     } catch (err) {
       console.error("Watchlist error:", err);
       

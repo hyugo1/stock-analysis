@@ -84,7 +84,8 @@ export default async function StockDetails({ params }: StockDetailsPageProps) {
             <WatchlistButton 
               symbol={symbolUpper} 
               company={companyName} 
-              isInWatchlist={isInWatchlist} 
+              isInWatchlist={isInWatchlist}
+              disableRefresh={true}
             />
           </div>
 
