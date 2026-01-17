@@ -160,7 +160,7 @@ export const deleteAccount = async (): Promise<{ success: boolean; error?: strin
         await db.collection('user').deleteOne({ _id: user._id });
         
         // Delete all watchlist items for this user
-        await db.collection('watchlist').deleteMany({ userId: user.id });
+        await db.collection('watchlist').deleteMany({ userId: user.id as string || String(user._id || '') });
 
         // Sign out user
         await auth.api.signOut({ headers: await headers() });

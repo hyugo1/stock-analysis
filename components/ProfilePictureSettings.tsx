@@ -6,10 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { updateProfileImage } from "@/lib/actions/auth.actions";
 import { toast } from "sonner";
-import { User, Link, Loader2, RotateCcw } from "lucide-react";
+import { User as UserIcon, Link, Loader2, RotateCcw } from "lucide-react";
 
 interface ProfilePictureSettingsProps {
-  user: User;
+  user: {
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+  };
 }
 
 export function ProfilePictureSettings({ user }: ProfilePictureSettingsProps) {
@@ -67,7 +71,7 @@ export function ProfilePictureSettings({ user }: ProfilePictureSettingsProps) {
           <Avatar className="h-32 w-32 ring-4 ring-primary/20 group-hover:ring-primary/40 transition-all duration-300">
             <AvatarImage
               src={imageUrl || user.image || "https://github.com/shadcn.png"}
-              alt={user.name}
+              alt={user.name || "User"}
               className="object-cover"
             />
             <AvatarFallback className="bg-gradient-to-br from-wealth-gold to-amber-600 text-foreground text-4xl font-bold group-hover:scale-110 transition-transform duration-300">
@@ -75,7 +79,7 @@ export function ProfilePictureSettings({ user }: ProfilePictureSettingsProps) {
             </AvatarFallback>
           </Avatar>
           <div className="absolute inset-0 rounded-full bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-            <User className="h-8 w-8 text-white" />
+            <UserIcon className="h-8 w-8 text-white" />
           </div>
         </div>
         

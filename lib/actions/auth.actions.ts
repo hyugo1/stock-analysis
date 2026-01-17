@@ -58,6 +58,23 @@ export async function getCurrentUserEmail(): Promise<string | null> {
 }
 
 export const updateProfileImage = async (imageUrl: string): Promise<boolean> => {
+    // Validate URL is well-formed http or https URL
+    if (imageUrl) {
+        try {
+            const url = new URL(imageUrl);
+            if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+                console.error('Invalid URL protocol:', url.protocol);
+                return false;
+            }
+            if (!url.hostname) {
+                console.error('Missing hostname in URL:', imageUrl);
+                return false;
+            }
+        } catch (e) {
+            console.error('Invalid URL format:', imageUrl, e);
+            return false;
+        }
+    }
     return updateProfileImageDB(imageUrl);
 }
 

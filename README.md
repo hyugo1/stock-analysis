@@ -99,7 +99,7 @@ A modern, full-featured stock analysis and monitoring platform built with Next.j
 
 ## 📁 Project Structure
 
-```
+```text
 stock-analysis/
 ├── app/                    # Next.js App Router pages
 │   ├── api/               # API routes
@@ -284,7 +284,7 @@ stock-analysis/
 
 MarketPulse uses Inngest for event-driven background processing:
 
-### Send Sign Up Email
+### Send Sign-Up Email
 Triggered when a new user creates an account. Generates a personalized welcome email using Google Gemini AI based on user's investment preferences (country, goals, risk tolerance, industry).
 
 **Event:** `app/user.created`
