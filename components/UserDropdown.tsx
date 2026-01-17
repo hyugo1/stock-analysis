@@ -38,7 +38,7 @@ const UserDropdown = ({ user, initialStocks }: UserDropdownProps) => {
         >
           <Avatar className="h-8 w-8 ring-2 ring-primary/20 transition-all duration-300 group-hover:ring-primary/50 group-hover:shadow-[0_0_15px_oklch(0.65_0.2_260_/_30%)]">
             <AvatarImage
-              src="https://github.com/shadcn.png"
+              src={user.image || "https://github.com/shadcn.png"}
               alt={user.name}
             />
             <AvatarFallback className="bg-wealth-gold text-foreground text-sm font-bold transition-all duration-300 hover:scale-110">
@@ -60,7 +60,7 @@ const UserDropdown = ({ user, initialStocks }: UserDropdownProps) => {
           <div className="flex relative items-center gap-3 py-2">
             <Avatar className="h-10 w-10 ring-2 ring-primary/20">
               <AvatarImage
-                src="https://github.com/shadcn.png"
+                src={user.image || "https://github.com/shadcn.png"}
                 alt={user.name}
               />
               <AvatarFallback className="bg-wealth-gold text-foreground text-sm font-bold hover:scale-110 transition-transform">
