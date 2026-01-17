@@ -167,3 +167,38 @@ export const updateProfileImage = async (imageUrl: string): Promise<boolean> => 
 export const deleteAccount = async (): Promise<{ success: boolean; error?: string }> => {
     return deleteAccountDB();
 }
+
+// Password reset functions
+export const requestPasswordReset = async (email: string): Promise<{ success: boolean; error?: string }> => {
+    try {
+        const baseURL = process.env.BETTER_AUTH_URL || process.env.NEXT_PUBLIC_APP_URL;
+        const redirectTo = `${baseURL}/reset-password`;
+        
+        await auth.api.requestPasswordReset({ 
+            body: { email, redirectTo } 
+        });
+        
+        return { success: true };
+    } catch (e: any) {
+        // Better-auth returns success even if email doesn't exist for security
+        // So we always return success to prevent email enumeration
+        console.log('Password reset request:', e?.message || e);
+        return { success: true };
+    }
+}
+
+export const resetPassword = async (token: string, newPassword: string): Promise<{ success: boolean; error?: string }> => {
+    try {
+        await auth.api.resetPassword({ 
+            body: { token, newPassword } 
+        });
+        
+        return { success: true };
+    } catch (e: any) {
+        console.log('Reset password failed:', e);
+        return { 
+            success: false, 
+            error: e?.message || 'Failed to reset password. The link may have expired.' 
+        };
+    }
+}
