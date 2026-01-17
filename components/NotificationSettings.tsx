@@ -62,13 +62,13 @@ export function NotificationSettings() {
 
   return (
     <div className="space-y-4">
-      <div className="bg-[#0e1116] border border-[#1f2937] rounded-xl p-6">
+      <div className="bg-card border border-border/50 rounded-xl p-6 card-hover hover:scale-[1.02] transition-all duration-300">
         <div className="flex items-center justify-between">
           <div className="flex-1">
-            <h3 className="text-lg font-semibold text-white mb-1">
+            <h3 className="text-lg font-semibold text-foreground mb-1 transition-all duration-300">
               Daily News Summary
             </h3>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-muted-foreground transition-all duration-300">
               Receive a daily email with market news and updates based on your watchlist
             </p>
           </div>
@@ -77,23 +77,23 @@ export function NotificationSettings() {
             onClick={handleToggle}
             disabled={isUpdating}
             className={`
-              relative inline-flex h-7 w-12 items-center rounded-full transition-colors
-              ${isSubscribed ? 'bg-[#10b981]' : 'bg-[#374151]'}
-              ${isUpdating ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+              relative inline-flex h-7 w-12 items-center rounded-full transition-all duration-300
+              ${isSubscribed ? 'bg-growth-emerald animate-pulse-glow' : 'bg-muted'}
+              ${isUpdating ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:scale-110'}
             `}
           >
             <span
               className={`
-                inline-block h-5 w-5 transform rounded-full bg-white transition-transform
+                inline-block h-5 w-5 transform rounded-full bg-white transition-all duration-300 shadow-lg
                 ${isSubscribed ? 'translate-x-6' : 'translate-x-1'}
               `}
             />
           </button>
         </div>
         
-        <div className="mt-4 pt-4 border-t border-[#1f2937]">
-          <p className="text-xs text-gray-500">
-            Status: <span className={isSubscribed ? 'text-[#10b981]' : 'text-gray-400'}>
+        <div className="mt-4 pt-4 border-t border-border/50">
+          <p className="text-xs text-muted-foreground transition-all duration-300">
+            Status: <span className={isSubscribed ? 'text-growth-emerald font-semibold' : 'text-muted-foreground'}>
               {isSubscribed ? 'Subscribed' : 'Unsubscribed'}
             </span>
           </p>
@@ -103,10 +103,10 @@ export function NotificationSettings() {
       {message && (
         <div
           className={`
-            p-4 rounded-lg text-sm
+            p-4 rounded-lg text-sm animate-fade-up
             ${message.type === 'success' 
-              ? 'bg-green-500/10 text-green-400 border border-green-500/20' 
-              : 'bg-red-500/10 text-red-400 border border-red-500/20'
+              ? 'bg-growth-emerald/10 text-growth-emerald border border-growth-emerald/20' 
+              : 'bg-alert-red/10 text-alert-red border border-alert-red/20'
             }
           `}
         >

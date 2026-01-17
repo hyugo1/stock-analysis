@@ -1,6 +1,5 @@
 'use client';
 
-
 // app/(auth)/sign-up/page.tsx
 import {useForm} from "react-hook-form";
 import { Button } from '@/components/ui/button';
@@ -43,7 +42,7 @@ const SignUp = () => {
   } 
   return (
     <>
-      <h1 className="form-title">Sign Up & Start Investing</h1>
+      <h1 className="form-title animate-fade-up">Sign Up</h1>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         {/* INPUTS */}
           <InputField 
@@ -86,7 +85,7 @@ const SignUp = () => {
 
           {/* country */}
 
-
+          <div className="grid grid-cols-2 gap-4">
           <CountrySelectField
               name="country"
               label="Country"
@@ -95,7 +94,18 @@ const SignUp = () => {
               required
             />
 
+            <SelectField
+              name="riskTolerance"
+              label="Risk Tolerance"
+              placeholder="Select your risk level"
+              options={RISK_TOLERANCE_OPTIONS}
+              control={control}
+              error={errors.riskTolerance}
+              required
+            />
+          </div>
 
+          <div className="grid grid-cols-2 gap-4">
            <SelectField
               name="investmentGoals"
               label="Investment Goals"
@@ -103,16 +113,6 @@ const SignUp = () => {
               options={INVESTMENT_GOALS}
               control={control}
               error={errors.investmentGoals}
-              required
-            />
-
-            <SelectField
-                name="riskTolerance"
-                label="Risk Tolerance"
-                placeholder="Select your risk level"
-                options={RISK_TOLERANCE_OPTIONS}
-                control={control}
-                error={errors.riskTolerance}
                 required
             />
 
@@ -125,10 +125,43 @@ const SignUp = () => {
                 error={errors.preferredIndustry}
                 required
             />
+          </div>
         
 
-        <Button type="submit" className="yellow-btn w-full mt-5" disabled={isSubmitting}>
-          {isSubmitting ? 'Creating Account' : 'Start Your Investment Journey'}
+        <Button
+          type="submit"
+          variant="premium"
+          size="lg"
+          disabled={isSubmitting}
+          className="w-full mt-5 btn-shine hover-lift transition-all duration-300"
+        >
+          {isSubmitting ? (
+            <span className="flex items-center gap-2">
+              <svg
+                className="animate-spin h-5 w-5"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                />
+              </svg>
+              Creating Account...
+            </span>
+          ) : (
+            'Start Investing'
+          )}
         </Button>
 
 

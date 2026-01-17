@@ -82,6 +82,7 @@ export const STOCK_HEATMAP_WIDGET_CONFIG = {
     isMonoSize: false,
     width: '100%',
     height: 600,
+    backgroundColor: 'rgba(0,0,0,0)',
 };
 
 export const TIMELINES_WIDGET_CONFIG = {
@@ -102,8 +103,8 @@ export const MARKET_DATA_WIDGET_CONFIG = {
     locale: 'en',
     showSymbolLogo: true,
     colorTheme: 'dark',
-    isTransparent: false,
-    backgroundColor: '#0F0F0F',
+    isTransparent: true,
+    backgroundColor: 'rgba(0,0,0,0)',
     symbolsGroups: [
         {
             name: 'Financial',

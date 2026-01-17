@@ -67,23 +67,23 @@ export default function WatchlistTable({ watchlist }: WatchlistTableProps) {
   };
 
   const getAlertColor = (signal: string | undefined) => {
-    if (!signal) return 'text-gray-500';
-    if (signal.includes('STRONG_BUY') || signal.includes('BUY')) return 'text-green-500 font-semibold';
-    if (signal.includes('STRONG_SELL') || signal.includes('SELL')) return 'text-red-500 font-semibold';
-    if (signal.includes('MOONING') || signal.includes('BULLISH')) return 'text-green-500';
-    if (signal.includes('CRASHING') || signal.includes('BEARISH')) return 'text-red-500';
-    return 'text-gray-500';
+    if (!signal) return 'text-muted-foreground';
+    if (signal.includes('STRONG_BUY') || signal.includes('BUY')) return 'text-growth-emerald font-semibold';
+    if (signal.includes('STRONG_SELL') || signal.includes('SELL')) return 'text-alert-red font-semibold';
+    if (signal.includes('MOONING') || signal.includes('BULLISH')) return 'text-growth-emerald';
+    if (signal.includes('CRASHING') || signal.includes('BEARISH')) return 'text-alert-red';
+    return 'text-muted-foreground';
   };
 
   const getChangeColor = (change: number | undefined) => {
-    if (change === undefined) return 'text-gray-400';
-    return change >= 0 ? 'text-green-500' : 'text-red-500';
+    if (change === undefined) return 'text-muted-foreground';
+    return change >= 0 ? 'text-growth-emerald' : 'text-alert-red';
   };
 
   if (!watchlist || watchlist.length === 0) {
     return (
-      <div className="text-center py-10 bg-gray-800 rounded-lg border border-gray-600">
-        <p className="text-gray-400">Your watchlist is empty. Add stocks to see them here!</p>
+      <div className="text-center py-10 bg-card rounded-lg border border-border/50">
+        <p className="text-muted-foreground">Your watchlist is empty. Add stocks to see them here!</p>
       </div>
     )
   }
@@ -106,17 +106,17 @@ export default function WatchlistTable({ watchlist }: WatchlistTableProps) {
           {watchlist.map((item) => (
             <TableRow 
               key={item.symbol} 
-              className={`table-row cursor-pointer transition-colors ${selectedSymbol === item.symbol ? 'bg-gray-700/50 border-l-4 border-l-yellow-500' : 'hover:bg-gray-700/30'}`}
+              className={`table-row cursor-pointer transition-colors ${selectedSymbol === item.symbol ? 'bg-primary/10 border-l-4 border-l-primary' : 'hover:bg-muted/50'}`}
               onClick={() => handleRowClick(item.symbol)}
             >
-              <TableCell className="table-cell text-gray-100 truncate">{item.company}</TableCell>
-              <TableCell className="table-cell font-mono text-yellow-500 font-medium truncate">{item.symbol}</TableCell>
-              <TableCell className="table-cell text-gray-200 truncate">{item.priceFormatted || '-'}</TableCell>
+              <TableCell className="table-cell text-foreground truncate">{item.company}</TableCell>
+              <TableCell className="table-cell font-mono text-primary font-medium truncate">{item.symbol}</TableCell>
+              <TableCell className="table-cell text-foreground truncate">{item.priceFormatted || '-'}</TableCell>
               <TableCell className={`table-cell ${getChangeColor(item.changePercent)} truncate`}>
                 {item.changeFormatted || '-'}
               </TableCell>
-              <TableCell className="table-cell text-gray-400 truncate">{item.marketCap || '-'}</TableCell>
-              <TableCell className="table-cell text-gray-400 truncate">{item.peRatio || '-'}</TableCell>
+              <TableCell className="table-cell text-muted-foreground truncate">{item.marketCap || '-'}</TableCell>
+              <TableCell className="table-cell text-muted-foreground truncate">{item.peRatio || '-'}</TableCell>
   
               <TableCell className={`table-cell ${getAlertColor(item.signal)}`}>
                 {item.alert || '-'}
@@ -125,7 +125,8 @@ export default function WatchlistTable({ watchlist }: WatchlistTableProps) {
                 <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
                   <Button 
                     size="sm" 
-                    className="h-7 px-2 bg-green-600/20 border border-green-600/30 text-green-500 hover:bg-green-600/30 hover:text-green-400 text-xs font-medium"
+                    variant="success"
+                    className="h-7 px-2"
                     onClick={(e) => {
                       e.stopPropagation();
                       window.open(`https://www.tradingview.com/chart/?symbol=${item.symbol}`, '_blank');
@@ -135,7 +136,8 @@ export default function WatchlistTable({ watchlist }: WatchlistTableProps) {
                   </Button>
                   <Button 
                     size="sm" 
-                    className="h-7 px-2 bg-red-600/20 border border-red-600/30 text-red-500 hover:bg-red-600/30 hover:text-red-400 text-xs font-medium"
+                    variant="destructive"
+                    className="h-7 px-2"
                     onClick={(e) => {
                       e.stopPropagation();
                       window.open(`https://www.tradingview.com/chart/?symbol=${item.symbol}`, '_blank');
@@ -149,7 +151,7 @@ export default function WatchlistTable({ watchlist }: WatchlistTableProps) {
                 <button
                   onClick={(e) => handleRemove(item.symbol, e)}
                   disabled={removing === item.symbol}
-                  className="p-2 text-gray-400 hover:text-red-400 disabled:opacity-50 transition-colors"
+                  className="p-2 text-muted-foreground hover:text-alert-rose disabled:opacity-50 transition-colors"
                   title="Remove from watchlist"
                 >
                   {removing === item.symbol ? (
