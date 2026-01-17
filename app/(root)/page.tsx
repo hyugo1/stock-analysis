@@ -17,7 +17,7 @@ const Home = () => {
         </div>
         {/* first section long */}
         <div className="md:col-span-1 xl:col-span-2">
-          <TradingViewWidget title="Stock Heatmap" scriptUrl={`${scripturl}stock-heatmap.js`} config={STOCK_HEATMAP_WIDGET_CONFIG} height={600}/>
+          <TradingViewWidget title="Stock Heatmap" scriptUrl={`${scripturl}stock-heatmap.js`} config={STOCK_HEATMAP_WIDGET_CONFIG} height={600} showBorder={false}/>
         </div>
       </section>
 

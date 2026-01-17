@@ -63,7 +63,7 @@ const onSubmit = async (data: SignInFormData) => {
             validation={{ required: 'Password is required.', minLength: 8 }}
           />
 
-        <Button type="submit" disabled={isSubmitting} className="yellow-btn w-full mt-5">
+        <Button type="submit" variant="premium" size="lg" disabled={isSubmitting} className="w-full mt-5 btn-shine hover-lift transition-all duration-300">
           {isSubmitting ? 'Signing In' : 'Sign In'}
         </Button>
 

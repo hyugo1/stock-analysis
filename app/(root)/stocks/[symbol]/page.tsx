@@ -68,6 +68,7 @@ export default async function StockDetails({ params }: StockDetailsPageProps) {
             config={CANDLE_CHART_WIDGET_CONFIG(symbol)}
             className="custom-chart"
             height={600}
+            showBorder={false}
           />
 
           <TradingViewWidget
@@ -75,6 +76,7 @@ export default async function StockDetails({ params }: StockDetailsPageProps) {
             config={BASELINE_WIDGET_CONFIG(symbol)}
             className="custom-chart"
             height={600}
+            showBorder={false}
           />
         </div>
 
@@ -98,11 +100,11 @@ export default async function StockDetails({ params }: StockDetailsPageProps) {
             height={400}
           />
 
-          <TradingViewWidget
+          {/* <TradingViewWidget
             scriptUrl={`${scriptUrl}company-profile.js`}
             config={COMPANY_PROFILE_WIDGET_CONFIG(symbol)}
             height={440}
-          />
+          /> */}
 
           <TradingViewWidget
             scriptUrl={`${scriptUrl}financials.js`}

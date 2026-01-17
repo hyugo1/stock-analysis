@@ -9,9 +9,9 @@ import {
     SelectValue
 } from "@/components/ui/select";
 
-const SelectField = ({name, label, placeholder, options, control, error, required = false}: SelectFieldProps) => {
+const SelectField = ({name, label, placeholder, options, control, error, required = false, className, style}: SelectFieldProps) => {
   return (
-    <div className="space-y-2">
+    <div className={`space-y-2 ${className || ''}`} style={style}>
         <Label htmlFor={name} className="form-label">
             {label}
         </Label>
@@ -19,15 +19,18 @@ const SelectField = ({name, label, placeholder, options, control, error, require
 
         <Controller name={name} control={control} rules={{ required: required ? `${label.toLowerCase()} is required.` : false }} render={({ field }) => (
             <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger className="select-trigger">
+                <SelectTrigger className="select-trigger text-base">
                     <SelectValue placeholder={placeholder}/>
                 </SelectTrigger>
-                <SelectContent className="bg-gray-800 border-gray-600 text-gray-200">
-                    {/* <SelectItem value="light">Light</SelectItem>
-                    <SelectItem value="dark">Dark</SelectItem>
-                    <SelectItem value="system">System</SelectItem> */}
+                <SelectContent className="bg-[#0a1628] border-white/10 text-white">
                     {options.map((option) => (
-                        <SelectItem key={option.value} value={option.value} className="focus:bg-gray-700 focus:text-white">{option.label}</SelectItem>
+                        <SelectItem 
+                          key={option.value} 
+                          value={option.value}
+                          className="text-base text-white hover:bg-white/10 focus:bg-white/10 data-[state=checked]:bg-white/10 data-[state=checked]:text-white"
+                        >
+                          {option.label}
+                        </SelectItem>
                     ))}
 
                 </SelectContent>

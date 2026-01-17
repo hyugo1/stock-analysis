@@ -136,7 +136,7 @@ export default async function WatchlistPage({
   if (!symbols?.length) {
     return (
       <div className="container mx-auto mt-20 text-center">
-        <h2 className="text-xl text-gray-200">Your watchlist is empty</h2>
+        <h2 className="text-xl text-muted-foreground">Your watchlist is empty</h2>
       </div>
     )
   }
@@ -195,17 +195,17 @@ export default async function WatchlistPage({
 
   return (
         <div className="container mx-auto mt-10 px-6 pb-12">
-          <h1 className="text-3xl font-bold text-gray-100 mb-8">My Watchlist</h1>
+          <h1 className="text-3xl font-bold text-foreground mb-8 animate-fade-up">My Watchlist</h1>
 
           {/* WATCHLIST + PROFILE */}
             <section className="flex flex-col lg:flex-row gap-8 mb-10">
   {/* -------------------- LEFT COLUMN -------------------- */}
   <div className="flex-1 flex flex-col gap-8">
     {/* Watchlist Table */}
-    <div className="bg-gray-800 rounded-lg border border-gray-600 flex flex-col h-[380px]">
+    <div className="bg-card rounded-xl border border-border/50 flex flex-col h-[380px] card-hover transition-all duration-300">
       {/* Header */}
-      <div className="px-6 py-6 border-b border-gray-700 flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-gray-100">
+      <div className="px-6 py-6 border-b border-border/50 flex items-center justify-between">
+        <h3 className="text-lg font-semibold text-foreground transition-all duration-300">
           Watchlist ({symbols.length})
         </h3>
       </div>
@@ -216,14 +216,15 @@ export default async function WatchlistPage({
       </div>
     </div>
 
-    {/* TradingView Technical Analysis Widget */}
-  <div className="bg-gray-800 rounded-lg border border-gray-600 p-5 h-[460px]">
+  {/* TradingView Technical Analysis Widget */}
+  <div className="bg-card rounded-xl border border-border/50 p-5 h-[460px] card-hover transition-all duration-300 hover:scale-[1.01]">
     <TradingViewWidget
       scriptUrl={`${scriptUrl}technical-analysis.js`}
       config={{
         ...TECHNICAL_ANALYSIS_WIDGET_CONFIG,
         symbol: activeSymbol.toUpperCase(),
       }}
+      showBorder={false}
     />
   </div>
   </div>
@@ -231,17 +232,17 @@ export default async function WatchlistPage({
   {/* -------------------- RIGHT COLUMN -------------------- */}
   <div className="w-full lg:w-[380px] flex flex-col gap-8">
     {/* Profile Card */}
-    <div className="bg-gray-800 rounded-lg border border-gray-600 p-5 flex flex-col h-[380px]">
+    <div className="bg-card rounded-xl border border-border/50 p-5 flex flex-col h-[380px] card-hover transition-all duration-300 hover:scale-[1.01]">
       {/* Logo + Name */}
-      <div className="flex items-center mb-4 space-x-3">
+      <div className="flex items-center mb-4 space-x-3 transition-all duration-300">
         {profile.logo && (
           <img
             src={profile.logo}
             alt="Logo"
-            className="w-10 h-10 object-contain rounded"
+            className="w-10 h-10 object-contain rounded hover:scale-110 transition-transform duration-300"
           />
         )}
-        <h3 className="text-lg font-semibold text-gray-100">
+        <h3 className="text-lg font-semibold text-foreground transition-all duration-300">
           {profile.companyName || activeSymbol}
         </h3>
       </div>
@@ -277,7 +278,7 @@ export default async function WatchlistPage({
                 href={profile.weburl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-400 underline"
+                className="text-trade-blue underline hover:text-trade-blue/80 transition-colors duration-300"
               >
                 {profile.weburl}
               </a>
@@ -288,8 +289,8 @@ export default async function WatchlistPage({
     </div>
 
     {/* Key Metrics */}
-    <div className="bg-gray-800 rounded-lg border border-gray-600 p-5 flex flex-col h-[460px]">
-      <h3 className="text-lg font-semibold text-gray-100 mb-4">
+    <div className="bg-card rounded-xl border border-border/50 p-5 flex flex-col h-[460px] card-hover transition-all duration-300 hover:scale-[1.01]">
+      <h3 className="text-lg font-semibold text-foreground mb-4 transition-all duration-300">
         Key Metrics
       </h3>
 
@@ -312,8 +313,8 @@ export default async function WatchlistPage({
 </section>
 
       {/* NEWS */}
-      <section className="bg-gray-800 rounded-lg border border-gray-600 p-5 h-[360px] flex flex-col">
-        <h3 className="text-lg font-semibold text-gray-100 mb-4">
+      <section className="bg-card rounded-xl border border-border/50 p-5 h-[360px] flex flex-col card-hover transition-all duration-300 hover:scale-[1.01]">
+        <h3 className="text-lg font-semibold text-foreground mb-4 transition-all duration-300">
           Latest News: {activeSymbol}
         </h3>
         <div className="flex-1 overflow-y-auto space-y-3 pr-2">
@@ -323,12 +324,12 @@ export default async function WatchlistPage({
               href={n.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="block p-3 rounded bg-gray-700/30 hover:bg-gray-700/50"
+              className="block p-3 rounded bg-muted/30 hover:bg-muted/50 hover:translate-x-1 transition-all duration-300"
             >
-              <h4 className="text-sm font-medium text-gray-200 line-clamp-2">
+              <h4 className="text-sm font-medium text-foreground line-clamp-2 transition-all duration-300">
                 {n.headline}
               </h4>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-muted-foreground mt-1 transition-all duration-300">
                 {n.source} ·{" "}
                 {new Date(n.datetime * 1000).toLocaleDateString()}
               </p>
@@ -346,9 +347,9 @@ export default async function WatchlistPage({
 
 function Row({ label, value }: { label: string; value?: string | React.ReactNode }) {
   return (
-    <div className="flex justify-between border-b border-gray-700 py-2">
-      <span className="text-gray-400">{label}</span>
-      <span className="text-gray-200">{value || "-"}</span>
+    <div className="flex justify-between border-b border-border/50 py-2">
+      <span className="text-muted-foreground">{label}</span>
+      <span className="text-foreground">{value || "-"}</span>
     </div>
   )
 }
@@ -357,11 +358,11 @@ function Metric({ label, value }: { label: string; value: string }) {
   const isNA = value === "N/A"
 
   return (
-    <div className="bg-gray-700/40 rounded-lg p-3 border border-gray-600 flex flex-col justify-between h-[80px] min-h-[80px]">
-      <span className="text-xs text-gray-400 block mb-1 truncate">{label}</span>
+    <div className="bg-muted/40 rounded-lg p-3 border border-border/50 flex flex-col justify-between h-[80px] min-h-[80px]">
+      <span className="text-xs text-muted-foreground block mb-1 truncate">{label}</span>
       <span
         className={`text-lg font-semibold truncate ${
-          isNA ? "text-gray-500" : "text-gray-200"
+          isNA ? "text-muted-foreground" : "text-foreground"
         }`}
       >
         {value}

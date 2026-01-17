@@ -20,6 +20,8 @@ declare global {
         control: Control;
         error?: FieldError;
         required?: boolean;
+        className?: string;
+        style?: React.CSSProperties;
     };
 
     type FormInputProps = {
@@ -32,6 +34,8 @@ declare global {
         validation?: RegisterOptions;
         disabled?: boolean;
         value?: string;
+        className?: string;
+        style?: React.CSSProperties;
     };
 
     type SelectFieldProps = {
@@ -42,6 +46,8 @@ declare global {
         control: Control;
         error?: FieldError;
         required?: boolean;
+        className?: string;
+        style?: React.CSSProperties;
     };
 
     type Option = {

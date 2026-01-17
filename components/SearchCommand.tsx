@@ -111,15 +111,15 @@ export default function SearchCommand({ renderAs = "button", label = "Add Stock"
     return (
         <>
             {renderAs === "text" ? (
-                <span onClick={() => setOpen(true)} className="search-text">
+                <span onClick={() => setOpen(true)} className="search-text hover:text-primary hover:scale-105 transition-all duration-300 inline-block cursor-pointer">
                     {label}
                 </span>
             ) : (
-                <Button onClick={() => setOpen(true)} className="search-btn">
+                <Button onClick={() => setOpen(true)} className="gold-btn btn-shine hover-lift">
                     {label}
                 </Button>
             )}
-            <CommandDialog open={open} onOpenChange={setOpen} className="search-dialog ">
+            <CommandDialog open={open} onOpenChange={setOpen} className="search-dialog premium-card">
                 <div className="search-field">
                     <CommandInput placeholder="Search stocks..." value={searchTerm} onValueChange={setSearchTerm} className="search-input"/>
                     {loading && <Loader2 className="search-loader" />}
@@ -132,23 +132,24 @@ export default function SearchCommand({ renderAs = "button", label = "Add Stock"
                                 {isSearchMode ? "No results found." : "No stocks found."}
                             </div>   
                         ) : (
-                            <ul>
-                                <div className="search-count">
+                            <>
+                                <div className="search-count animate-fade-up">
                                     {isSearchMode ? "Search Results" : "Popular Stocks"}
                                     {` `}
                                     ({displayStocks?.length || 0})
                                 </div>
-                                {displayStocks?.map((stock) => (
-                                    <li key={stock.symbol} className="search-item">
+                                <ul>
+                                {displayStocks?.map((stock, index) => (
+                                    <li key={stock.symbol} className="search-item animate-fade-up" style={{ animationDelay: `${index * 0.05}s` }}>
                                         <Link href={`/stocks/${stock.symbol}`} 
                                             onClick={handleSelectStock} 
-                                            className="search-item-link">
-                                            <TrendingUp className="h-4 w-4 text-gray-500" />
+                                            className="search-item-link hover:bg-white/10 hover:translate-x-1 transition-all duration-300">
+                                            <TrendingUp className="h-4 w-4 text-muted-foreground transition-transform duration-300" />
                                             <div className="flex-1">
-                                                <div className="search-item-name">
+                                                <div className="search-item-name transition-colors duration-300">
                                                     {stock.name}
                                                 </div>
-                                                <div className="text-sm text-gray-500">
+                                                <div className="text-sm text-muted-foreground transition-colors duration-300">
                                                     {stock.symbol} | {stock.exchange} | {stock.type}
                                                 </div>
                                             </div>
@@ -163,10 +164,9 @@ export default function SearchCommand({ renderAs = "button", label = "Add Stock"
                                     
                                     </li>
                                 ))}
-                            </ul>
-
-                        )
-                    } 
+                                </ul>
+                              </>
+                            )}
                     </CommandList>
             </CommandDialog>
         </>
