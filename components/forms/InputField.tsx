@@ -2,7 +2,7 @@ import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
 import {cn} from "@/lib/utils";
 
-const InputField = ({name, label, placeholder, type = "text", register, error, validation, disabled, value, className, style}: FormInputProps) => {
+const InputField = ({name, label, placeholder, type = "text", register, error, validation, disabled, value, className, style, onBlur}: FormInputProps) => {
     return (
         <div className={`space-y-2 ${className || ''}`} style={style}>
             <Label htmlFor={name} className="form-label">
@@ -15,6 +15,7 @@ const InputField = ({name, label, placeholder, type = "text", register, error, v
             disabled={disabled}
             className={cn('form-input', { 'opacity-50 cursor-not-allowed': disabled })}
             {...register(name, validation)}
+            onBlur={onBlur}
             />
             {error && <p className="text-sm text-red-500">{error.message}</p>}
         </div>

@@ -27,14 +27,100 @@ export const signUpWithEmail = async ({ email, password, fullName, country, inve
     }
 }
 
-export const signInWithEmail = async ({ email, password }: SignInFormData) => {
+export type SignInErrorType = 
+    | 'invalid_credentials' 
+    | 'user_not_found' 
+    | 'invalid_password' 
+    | 'account_locked' 
+    | 'email_not_verified' 
+    | 'network_error'
+    | 'unknown_error';
+
+export interface SignInResult {
+    success: boolean;
+    data?: any;
+    error?: string;
+    errorCode?: SignInErrorType;
+    suggestedAction?: string;
+}
+
+export const signInWithEmail = async ({ email, password }: SignInFormData): Promise<SignInResult> => {
     try {
         const response = await auth.api.signInEmail({ body: { email, password } })
 
         return { success: true, data: response }
-    } catch (e) {
-        console.log('Sign in failed', e)
-        return { success: false, error: 'Sign in failed' }
+    } catch (e: any) {
+        const errorMessage = e?.message || String(e);
+        const errorCode = e?.code || e?.error?.code || 'unknown_error';
+        
+        console.log('Sign in failed', e);
+
+        if (errorMessage.includes('invalid') || errorMessage.includes('credentials') || 
+            errorCode === 'INVALID_CREDENTIALS' || errorCode === 'invalid_credentials') {
+            return {
+                success: false,
+                error: 'Invalid email or password combination',
+                errorCode: 'invalid_credentials',
+                suggestedAction: 'Check your credentials and try again'
+            };
+        }
+
+        if (errorMessage.includes('not found') || errorMessage.includes('not exist') ||
+            errorCode === 'USER_NOT_FOUND' || errorCode === 'user_not_found') {
+            return {
+                success: false,
+                error: 'No account found with this email',
+                errorCode: 'user_not_found',
+                suggestedAction: 'Create a new account or check your email address'
+            };
+        }
+
+        if (errorMessage.includes('password') || errorMessage.includes('wrong password') ||
+            errorCode === 'INVALID_PASSWORD' || errorCode === 'invalid_password') {
+            return {
+                success: false,
+                error: 'Incorrect password',
+                errorCode: 'invalid_password',
+                suggestedAction: 'Try resetting your password'
+            };
+        }
+
+        if (errorMessage.includes('locked') || errorMessage.includes('suspended') ||
+            errorCode === 'ACCOUNT_LOCKED' || errorCode === 'account_locked') {
+            return {
+                success: false,
+                error: 'Account is temporarily locked',
+                errorCode: 'account_locked',
+                suggestedAction: 'Wait a few minutes and try again or contact support'
+            };
+        }
+
+        if (errorMessage.includes('verify') || errorMessage.includes('verification') ||
+            errorCode === 'EMAIL_NOT_VERIFIED' || errorCode === 'email_not_verified') {
+            return {
+                success: false,
+                error: 'Please verify your email address',
+                errorCode: 'email_not_verified',
+                suggestedAction: 'Check your inbox for a verification email'
+            };
+        }
+
+        if (errorMessage.includes('network') || errorMessage.includes('fetch') ||
+            errorMessage.includes('ECONNREFUSED') || errorCode === 'network_error') {
+            return {
+                success: false,
+                error: 'Unable to connect to server',
+                errorCode: 'network_error',
+                suggestedAction: 'Check your internet connection and try again'
+            };
+        }
+
+        return {
+            success: false,
+            error: 'Sign in failed. Please try again.',
+            errorCode: 'unknown_error',
+            suggestedAction: 'If the problem persists, contact support'
+        };
     }
 }
 
@@ -42,7 +128,7 @@ export const signOut = async () => {
     try {
         await auth.api.signOut({ headers: await headers() });
     } catch (e) {
-        console.log('Sign out failed', e)
+        console.log('Sign out failed', e);
         return { success: false, error: 'Sign out failed' }
     }
 }

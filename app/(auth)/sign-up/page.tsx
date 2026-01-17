@@ -11,6 +11,58 @@ import FooterLink from "@/components/forms/FooterLink";
 import { signUpWithEmail } from "@/lib/actions/auth.actions";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { AlertCircle, ArrowRight, Mail, UserPlus, WifiOff } from "lucide-react";
+
+const showSignUpError = (error: unknown, router: any) => {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    
+    toast.custom((t) => (
+        <div className="w-full max-w-md p-4 rounded-lg border border-red-500/20 bg-red-500/10 backdrop-blur-sm shadow-lg animate-in slide-in-from-top-2 duration-300">
+            <div className="flex items-start gap-3">
+                <div className="flex-shrink-0 mt-0.5">
+                    <AlertCircle className="size-5 text-red-500" />
+                </div>
+                <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                        <h4 className="font-semibold text-sm text-red-500">
+                            Sign up failed
+                        </h4>
+                        <span className="text-xs text-muted-foreground font-mono uppercase tracking-wider">
+                            Error
+                        </span>
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-3">
+                        {errorMessage || 'An unexpected error occurred. Please try again.'}
+                    </p>
+                    <div className="flex items-center gap-2 pt-2 border-t border-border/50">
+                        <button
+                            onClick={() => window.location.reload()}
+                            className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-md transition-colors"
+                        >
+                            <WifiOff className="size-3.5" />
+                            Retry
+                        </button>
+                        <button
+                            onClick={() => router.push('/sign-in')}
+                            className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 rounded-md transition-colors"
+                        >
+                            <ArrowRight className="size-3.5" />
+                            Sign In
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    ), {
+        duration: 6000,
+        style: {
+            background: 'transparent',
+            boxShadow: 'none',
+            border: 'none',
+            padding: 0,
+        },
+    });
+};
 
 const SignUp = () => {
   const router = useRouter()
@@ -34,12 +86,19 @@ const SignUp = () => {
   const onSubmit = async (data: SignUpFormData) => {
     try {
       const result = await signUpWithEmail(data);
-      if (result.success) router.push('/');
+      if (result.success) {
+        toast.success('Account created!', {
+            description: 'Welcome to MarketPulse! Redirecting to your dashboard...',
+            icon: <div className="size-5 bg-green-500/20 rounded-full flex items-center justify-center animate-pulse"><UserPlus className="size-3 text-green-500" /></div>,
+            duration: 2000,
+        });
+        router.push('/');
+      }
     } catch (error) {
       console.error("Error submitting form: ", error);
-      toast.error("Sign up failed.", { description: error instanceof Error ? error.message : "Failed to create an account." }); 
+      showSignUpError(error, router);
     }
-  } 
+  }
   return (
     <>
       <h1 className="form-title animate-fade-up">Sign Up</h1>

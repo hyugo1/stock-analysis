@@ -36,6 +36,7 @@ declare global {
         value?: string;
         className?: string;
         style?: React.CSSProperties;
+        onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
     };
 
     type SelectFieldProps = {
