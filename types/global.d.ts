@@ -78,6 +78,7 @@ declare global {
         id: string;
         name: string;
         email: string;
+        image?: string;
     };
 
     type Stock = {

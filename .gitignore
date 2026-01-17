@@ -5,3 +5,4 @@ out/
 .env
 .vscode/
 .idea/
+next-env.d.ts
