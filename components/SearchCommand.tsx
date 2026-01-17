@@ -132,12 +132,13 @@ export default function SearchCommand({ renderAs = "button", label = "Add Stock"
                                 {isSearchMode ? "No results found." : "No stocks found."}
                             </div>   
                         ) : (
-                            <ul>
+                            <>
                                 <div className="search-count animate-fade-up">
                                     {isSearchMode ? "Search Results" : "Popular Stocks"}
                                     {` `}
                                     ({displayStocks?.length || 0})
                                 </div>
+                                <ul>
                                 {displayStocks?.map((stock, index) => (
                                     <li key={stock.symbol} className="search-item animate-fade-up" style={{ animationDelay: `${index * 0.05}s` }}>
                                         <Link href={`/stocks/${stock.symbol}`} 
@@ -163,10 +164,9 @@ export default function SearchCommand({ renderAs = "button", label = "Add Stock"
                                     
                                     </li>
                                 ))}
-                            </ul>
-
-                        )
-                    } 
+                                </ul>
+                              </>
+                            )}
                     </CommandList>
             </CommandDialog>
         </>

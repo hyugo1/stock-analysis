@@ -27,7 +27,7 @@ const SelectField = ({name, label, placeholder, options, control, error, require
                         <SelectItem 
                           key={option.value} 
                           value={option.value}
-                          className="text-base text-white hover:bg-white/10 focus:bg-white/10 data-[selected=true]:bg-white/10 data-[selected=true]:text-white"
+                          className="text-base text-white hover:bg-white/10 focus:bg-white/10 data-[state=checked]:bg-white/10 data-[state=checked]:text-white"
                         >
                           {option.label}
                         </SelectItem>

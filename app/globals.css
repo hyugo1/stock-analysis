@@ -228,20 +228,20 @@
     @apply text-sm font-medium text-white/70;
   }
   .form-input {
-    @apply h-12 px-3 py-3 text-white text-base placeholder:text-white/50 border-white/10 bg-white/5 rounded-lg focus:!border-primary focus:ring-0;
+    @apply h-12 px-3 py-3 text-white text-base placeholder:text-white/50 border-white/10 bg-white/5 rounded-lg focus:border-primary! focus:ring-0;
   }
   /* country select */
   .select-trigger {
-    @apply w-full !h-12 px-3 py-3 text-base border-white/10 bg-white/5 text-white rounded-lg focus:!border-primary focus:ring-0;
+    @apply w-full h-12! px-3 py-3 text-base border-white/10 bg-white/5 text-white rounded-lg focus:border-primary! focus:ring-0;
   }
   .country-select-trigger {
-    @apply h-12 px-3 py-3 text-base w-full justify-between font-normal border-white/10 bg-white/5 text-white rounded-lg focus:!border-primary focus:ring-0;
+    @apply h-12 px-3 py-3 text-base w-full justify-between font-normal border-white/10 bg-white/5 text-white rounded-lg focus:border-primary! focus:ring-0;
   }
   .country-select-input {
-    @apply !bg-white/5 text-white border-0 border-b border-white/10 rounded-none focus:ring-0 placeholder:text-white/50;
+    @apply bg-white/5! text-white border-0 border-b border-white/10 rounded-none focus:ring-0 placeholder:text-white/50;
   }
   .country-select-item {
-    @apply text-white cursor-pointer px-3 py-2 rounded-sm bg-white/5 hover:!bg-white/10;
+    @apply text-white cursor-pointer px-3 py-2 rounded-sm bg-white/5 hover:bg-white/10!;
   }
   /* footer */
   /* .footer-link {

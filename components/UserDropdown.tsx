@@ -1,8 +1,6 @@
 'use client';
 
-import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuSeparator
-
-}from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -17,6 +15,9 @@ interface UserDropdownProps {
 
 const UserDropdown = ({ user, initialStocks }: UserDropdownProps) => {
   const router = useRouter();
+
+  // Compute safe initial from user name or email
+  const safeInitial = user?.name || user?.email || "?";
 
   // signout
   const handleSignOut = async () => {
@@ -41,7 +42,7 @@ const UserDropdown = ({ user, initialStocks }: UserDropdownProps) => {
               alt={user.name}
             />
             <AvatarFallback className="bg-wealth-gold text-foreground text-sm font-bold transition-all duration-300 hover:scale-110">
-              {user.name.charAt(0)}
+              {safeInitial[0]}
             </AvatarFallback>
           </Avatar>
           <div className="hidden md:flex flex-col items-start leading-tight">
@@ -63,7 +64,7 @@ const UserDropdown = ({ user, initialStocks }: UserDropdownProps) => {
                 alt={user.name}
               />
               <AvatarFallback className="bg-wealth-gold text-foreground text-sm font-bold hover:scale-110 transition-transform">
-                {user.name.charAt(0)}
+                {safeInitial[0]}
               </AvatarFallback>
             </Avatar>
             <div className="flex flex-col">

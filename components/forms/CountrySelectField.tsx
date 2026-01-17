@@ -84,7 +84,7 @@ const CountrySelect = ({
               >
                 <CommandInput
                   placeholder='Search countries...'
-                  className='flex !h-auto w-full rounded-md bg-transparent py-3 text-lg outline-hidden placeholder:text-white/50 disabled:cursor-not-allowed disabled:opacity-50'
+                  className='flex h-auto! w-full rounded-md bg-transparent py-3 text-lg outline-hidden placeholder:text-white/50 disabled:cursor-not-allowed disabled:opacity-50'
                 />
                 <CommandEmpty className='py-6 text-center text-base'>
                   No country found.
