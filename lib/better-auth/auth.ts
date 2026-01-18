@@ -4,6 +4,7 @@ import { betterAuth } from "better-auth";
 import { mongodbAdapter} from "better-auth/adapters/mongodb";
 import { connectToDatabase} from "@/database/mongoose";
 import { nextCookies} from "better-auth/next-js";
+import { sendPasswordResetEmail } from "@/lib/nodemailer";
 
 let authInstance: ReturnType<typeof betterAuth> | null = null;
 
@@ -26,6 +27,25 @@ export const getAuth = async () => {
             minPasswordLength: 8,
             maxPasswordLength: 128,
             autoSignIn: true,
+            sendResetPassword: async ({ user, url }: { user: { email: string }; url: string }) => {
+                // We want to extract <token> and create: http://localhost:3000/reset-password?token=<token>
+                const tokenMatch = url.match(/\/api\/auth\/reset-password\/([^?]+)/);
+                const token = tokenMatch ? tokenMatch[1] : null;
+                
+                // Get the base URL from the original URL or use NEXT_PUBLIC_APP_URL
+                const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://marketpulse-taupe.vercel.app";
+                
+                const frontendResetUrl = token 
+                    ? `${baseUrl}/reset-password?token=${token}`
+                    : url;
+                
+                try {
+                    await sendPasswordResetEmail({ email: user.email, resetLink: frontendResetUrl });
+                } catch (error) {
+                    console.error(`[auth] Failed to send password reset email to user`);
+                    throw error;
+                }
+            },
         },
         plugins: [nextCookies()],
     });
