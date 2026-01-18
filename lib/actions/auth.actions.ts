@@ -55,8 +55,9 @@ export const signInWithEmail = async ({ email, password }: SignInFormData): Prom
         
         console.log('Sign in failed', e);
 
-        if (errorMessage.includes('invalid') || errorMessage.includes('credentials') || 
-            errorCode === 'INVALID_CREDENTIALS' || errorCode === 'invalid_credentials') {
+        // Check errorCode first, then fall back to message substrings
+        if (errorCode === 'INVALID_CREDENTIALS' || errorCode === 'invalid_credentials' ||
+            (errorMessage.includes('invalid') && errorMessage.includes('credentials'))) {
             return {
                 success: false,
                 error: 'Invalid email or password combination',
@@ -65,8 +66,8 @@ export const signInWithEmail = async ({ email, password }: SignInFormData): Prom
             };
         }
 
-        if (errorMessage.includes('not found') || errorMessage.includes('not exist') ||
-            errorCode === 'USER_NOT_FOUND' || errorCode === 'user_not_found') {
+        if (errorCode === 'USER_NOT_FOUND' || errorCode === 'user_not_found' ||
+            (errorMessage.includes('not found') && errorMessage.includes('not exist'))) {
             return {
                 success: false,
                 error: 'No account found with this email',
@@ -75,8 +76,8 @@ export const signInWithEmail = async ({ email, password }: SignInFormData): Prom
             };
         }
 
-        if (errorMessage.includes('password') || errorMessage.includes('wrong password') ||
-            errorCode === 'INVALID_PASSWORD' || errorCode === 'invalid_password') {
+        if (errorCode === 'INVALID_PASSWORD' || errorCode === 'invalid_password' ||
+            (errorMessage.includes('password') && errorMessage.includes('wrong'))) {
             return {
                 success: false,
                 error: 'Incorrect password',
@@ -85,8 +86,8 @@ export const signInWithEmail = async ({ email, password }: SignInFormData): Prom
             };
         }
 
-        if (errorMessage.includes('locked') || errorMessage.includes('suspended') ||
-            errorCode === 'ACCOUNT_LOCKED' || errorCode === 'account_locked') {
+        if (errorCode === 'ACCOUNT_LOCKED' || errorCode === 'account_locked' ||
+            (errorMessage.includes('locked') && errorMessage.includes('suspended'))) {
             return {
                 success: false,
                 error: 'Account is temporarily locked',
@@ -95,8 +96,8 @@ export const signInWithEmail = async ({ email, password }: SignInFormData): Prom
             };
         }
 
-        if (errorMessage.includes('verify') || errorMessage.includes('verification') ||
-            errorCode === 'EMAIL_NOT_VERIFIED' || errorCode === 'email_not_verified') {
+        if (errorCode === 'EMAIL_NOT_VERIFIED' || errorCode === 'email_not_verified' ||
+            (errorMessage.includes('verify') && errorMessage.includes('verification'))) {
             return {
                 success: false,
                 error: 'Please verify your email address',
@@ -105,8 +106,9 @@ export const signInWithEmail = async ({ email, password }: SignInFormData): Prom
             };
         }
 
-        if (errorMessage.includes('network') || errorMessage.includes('fetch') ||
-            errorMessage.includes('ECONNREFUSED') || errorCode === 'network_error') {
+        if (errorCode === 'network_error' ||
+            (errorMessage.includes('network') && errorMessage.includes('fetch') &&
+             (errorMessage.includes('ECONNREFUSED') || errorCode === 'network_error'))) {
             return {
                 success: false,
                 error: 'Unable to connect to server',
@@ -173,6 +175,11 @@ export const requestPasswordReset = async (email: string): Promise<{ success: bo
     try {
         const baseURL = process.env.BETTER_AUTH_URL || process.env.NEXT_PUBLIC_APP_URL;
         const redirectTo = `${baseURL}/reset-password`;
+        if (!baseURL) {
+            console.error('Missing BETTER_AUTH_URL or NEXT_PUBLIC_APP_URL environment variable');
+         
+            return { success: true };
+        }
         
         await auth.api.requestPasswordReset({ 
             body: { email, redirectTo } 
@@ -199,6 +206,22 @@ export const resetPassword = async (token: string, newPassword: string): Promise
         return { 
             success: false, 
             error: e?.message || 'Failed to reset password. The link may have expired.' 
+        };
+    }
+}
+
+// Resend verification email
+export const resendVerificationEmail = async (email: string): Promise<{ success: boolean; error?: string }> => {
+    try {
+        await auth.api.sendVerificationEmail({
+            body: { email }
+        });
+        return { success: true };
+    } catch (e: any) {
+        console.error('Failed to resend verification email:', e);
+        return { 
+            success: false, 
+            error: e?.message || 'Failed to send verification email. Please try again.' 
         };
     }
 }

@@ -28,29 +28,21 @@ export const getAuth = async () => {
             maxPasswordLength: 128,
             autoSignIn: true,
             sendResetPassword: async ({ user, url }: { user: { email: string }; url: string }) => {
-                console.log(`[DEBUG] Original reset URL from better-auth: ${url}`);
-                
-                // Extract the token from the better-auth URL format
-                // extract <token> and create: http://localhost:3000/reset-password?token=<token>
+                // We want to extract <token> and create: http://localhost:3000/reset-password?token=<token>
                 const tokenMatch = url.match(/\/api\/auth\/reset-password\/([^?]+)/);
                 const token = tokenMatch ? tokenMatch[1] : null;
                 
                 // Get the base URL from the original URL or use NEXT_PUBLIC_APP_URL
                 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://marketpulse-taupe.vercel.app";
                 
-                // Create the proper frontend URL with token as query param
                 const frontendResetUrl = token 
                     ? `${baseUrl}/reset-password?token=${token}`
-                    : url; // Fallback to original URL if token extraction fails
-                
-                console.log(`[DEBUG] Extracted token: ${token}`);
-                console.log(`[DEBUG] Frontend reset URL: ${frontendResetUrl}`);
+                    : url;
                 
                 try {
                     await sendPasswordResetEmail({ email: user.email, resetLink: frontendResetUrl });
-                    console.log(`[DEBUG] Password reset email sent successfully to: ${user.email}`);
                 } catch (error) {
-                    console.error(`[DEBUG] Failed to send password reset email to ${user.email}:`, error);
+                    console.error(`[auth] Failed to send password reset email to user`);
                     throw error;
                 }
             },

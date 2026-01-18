@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import InputField from '@/components/forms/InputField';
@@ -9,13 +9,14 @@ import { resetPassword } from '@/lib/actions/auth.actions';
 import { toast } from 'sonner';
 import { Lock, ArrowRight, Loader2, CheckCircle, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 
 interface ResetPasswordFormData {
     password: string;
     confirmPassword: string;
 }
 
-const ResetPassword = () => {
+function ResetPasswordContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [isLoading, setIsLoading] = useState(false);
@@ -36,6 +37,25 @@ const ResetPassword = () => {
     });
 
     const password = watch('password');
+
+    // Handle successful password reset with proper cleanup
+    const handleSuccessAndRedirect = useCallback(() => {
+        setIsSuccess(true);
+        toast.success('Password reset!', {
+            description: 'Your password has been updated successfully.',
+            icon: <div className="size-5 bg-green-500/20 rounded-full flex items-center justify-center"><CheckCircle className="size-3 text-green-500" /></div>,
+            duration: 5000,
+        });
+    }, []);
+
+    useEffect(() => {
+        if (isSuccess) {
+            const timeoutId = setTimeout(() => {
+                router.push('/sign-in');
+            }, 2000);
+            return () => clearTimeout(timeoutId);
+        }
+    }, [isSuccess, router]);
 
     // Check if token is invalid
     if (error === 'INVALID_TOKEN' || !token) {
@@ -77,17 +97,7 @@ const ResetPassword = () => {
             const result = await resetPassword(token, data.password);
             
             if (result.success) {
-                setIsSuccess(true);
-                toast.success('Password reset!', {
-                    description: 'Your password has been updated successfully.',
-                    icon: <div className="size-5 bg-green-500/20 rounded-full flex items-center justify-center"><CheckCircle className="size-3 text-green-500" /></div>,
-                    duration: 5000,
-                });
-                
-                // Redirect to sign-in after a short delay
-                setTimeout(() => {
-                    router.push('/sign-in');
-                }, 2000);
+                handleSuccessAndRedirect();
             } else {
                 toast.error('Reset failed', {
                     description: result.error || 'Please try again.',
@@ -147,6 +157,7 @@ const ResetPassword = () => {
                     <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
+                        aria-label={showPassword ? "Hide password" : "Show password"}
                         className="absolute right-3 top-[38px] text-muted-foreground hover:text-foreground transition-colors"
                     >
                         {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
@@ -169,6 +180,7 @@ const ResetPassword = () => {
                     <button
                         type="button"
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        aria-label={showConfirmPassword ? "Hide password" : "Show password"}
                         className="absolute right-3 top-[38px] text-muted-foreground hover:text-foreground transition-colors"
                     >
                         {showConfirmPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
@@ -217,6 +229,18 @@ const ResetPassword = () => {
             </form>
         </>
     );
-};
+}
 
-export default ResetPassword;
+// Wrap with Suspense for useSearchParams
+export default function ResetPassword() {
+    return (
+        <Suspense fallback={
+            <div className="flex items-center justify-center min-h-[400px]">
+                <Loader2 className="size-8 animate-spin text-muted-foreground" />
+            </div>
+        }>
+            <ResetPasswordContent />
+        </Suspense>
+    );
+}
+

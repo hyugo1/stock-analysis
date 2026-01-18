@@ -4,12 +4,13 @@ import {useForm} from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import InputField from "@/components/forms/InputField";
 import FooterLink from "@/components/forms/FooterLink";
-import {signInWithEmail, signUpWithEmail, SignInResult} from "@/lib/actions/auth.actions";
+import {signInWithEmail, signUpWithEmail, SignInResult, resendVerificationEmail} from "@/lib/actions/auth.actions";
 import {toast} from "sonner";
 import {useRouter} from "next/navigation";
-import { AlertCircle, ArrowRight, HelpCircle, Key, Lock, Mail, RefreshCw, WifiOff } from "lucide-react";
+import { AlertCircle, ArrowRight, HelpCircle, Key, Lock, Mail, RefreshCw, WifiOff, Loader2 } from "lucide-react";
+import { useState } from "react";
 
-const showEnhancedErrorToast = (result: SignInResult, router: any) => {
+const showEnhancedErrorToast = (result: SignInResult, router: any, onResendEmail: (email: string) => Promise<{ success: boolean; error?: string }>) => {
     const { errorCode, error, suggestedAction } = result;
     
     const errorConfig: Record<string, { icon: React.ReactNode; color: string; bgColor: string; borderColor: string }> = {
@@ -84,17 +85,7 @@ const showEnhancedErrorToast = (result: SignInResult, router: any) => {
                 );
             case 'email_not_verified':
                 return (
-                    <button
-                        onClick={() => {
-                            toast.info('Check your inbox', { 
-                                description: 'We sent a verification email. Click the link to verify your account.' 
-                            });
-                        }}
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 rounded-md transition-colors"
-                    >
-                        <Mail className="size-3.5" />
-                        Resend Email
-                    </button>
+                    <ResendEmailButton onResend={onResendEmail} />
                 );
             case 'network_error':
                 return (
@@ -158,6 +149,77 @@ const showEnhancedErrorToast = (result: SignInResult, router: any) => {
     });
 };
 
+// Separate component for resend email button with loading state
+function ResendEmailButton({ onResend }: { onResend: (email: string) => Promise<{ success: boolean; error?: string }> }) {
+    const [isLoading, setIsLoading] = useState(false);
+    const [email, setEmail] = useState('');
+    const [hasSent, setHasSent] = useState(false);
+
+    const handleClick = async () => {
+        if (!email) {
+            toast.error('Please enter your email address');
+            return;
+        }
+        
+        setIsLoading(true);
+        try {
+            const result = await onResend(email);
+            if (result.success) {
+                setHasSent(true);
+                toast.success('Verification email sent!', {
+                    description: 'Check your inbox for the verification link.',
+                    icon: <Mail className="size-4 text-green-500" />,
+                });
+            } else {
+                toast.error('Failed to send email', {
+                    description: result.error || 'Please try again.',
+                });
+            }
+        } catch (error) {
+            toast.error('Something went wrong', {
+                description: 'Please try again later.',
+            });
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <div className="flex flex-col gap-2">
+            <input
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="px-3 py-1.5 text-sm bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                disabled={isLoading || hasSent}
+            />
+            <button
+                onClick={handleClick}
+                disabled={isLoading || hasSent || !email}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+                {isLoading ? (
+                    <>
+                        <Loader2 className="size-3.5 animate-spin" />
+                        Sending...
+                    </>
+                ) : hasSent ? (
+                    <>
+                        <Mail className="size-3.5" />
+                        Sent!
+                    </>
+                ) : (
+                    <>
+                        <Mail className="size-3.5" />
+                        Resend Email
+                    </>
+                )}
+            </button>
+        </div>
+    );
+}
+
 const SignIn = () => {
     const router = useRouter()
   const {
@@ -183,7 +245,7 @@ const onSubmit = async (data: SignInFormData) => {
             });
             router.push('/');
         } else {
-            showEnhancedErrorToast(result, router);
+            showEnhancedErrorToast(result, router, resendVerificationEmail);
         }
     } catch (e) {
         console.error(e);
@@ -192,7 +254,7 @@ const onSubmit = async (data: SignInFormData) => {
             error: e instanceof Error ? e.message : 'An unexpected error occurred',
             errorCode: 'unknown_error',
             suggestedAction: 'Please try again or contact support if the problem persists'
-        }, router);
+        }, router, resendVerificationEmail);
     }
 }
 

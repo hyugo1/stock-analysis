@@ -281,7 +281,12 @@ export const sendDailyNewsSummaryEmail = async (
 };
 
 export const sendPasswordResetEmail = async ({ email, resetLink, unsubscribeToken }: { email: string; resetLink: string; unsubscribeToken?: string }): Promise<void> => {
-    console.log(`[DEBUG sendPasswordResetEmail] Starting email send to: ${email}`);
+    // Only log detailed debug info in non-production environments
+    const isDebugEnabled = process.env.NODE_ENV !== 'production';
+    
+    if (isDebugEnabled) {
+        console.log(`[nodemailer] Sending password reset email`);
+    }
     
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://marketpulse-taupe.vercel.app";
     const unsubscribeUrl = unsubscribeToken 
@@ -301,20 +306,18 @@ export const sendPasswordResetEmail = async ({ email, resetLink, unsubscribeToke
         html: htmlTemplate,
     };
 
-    console.log(`[DEBUG sendPasswordResetEmail] Mail options prepared for: ${email}`);
-
     try {
-        console.log(`[DEBUG sendPasswordResetEmail] Attempting to send email via nodemailer...`);
         const result = await transporter.sendMail(mailOptions);
-        console.log(`[DEBUG sendPasswordResetEmail] Email sent successfully! MessageId: ${result.messageId}`);
+        if (isDebugEnabled) {
+            console.log(`[nodemailer] Password reset email sent successfully`);
+        }
     } catch (error: any) {
-        console.error('[DEBUG sendPasswordResetEmail] Failed to send password reset email via nodemailer', {
-            to: email,
+        // Sanitized error logging - no PII or full error payloads
+        const maskedEmail = email.replace(/(.{2})(.*)(@.*)/, '$1***$3');
+        console.error(`[nodemailer] Failed to send password reset email to ${maskedEmail}`, {
             errorCode: error?.code,
-            errorMessage: error?.message,
-            errorResponse: error?.response,
-            fullError: error,
+            errorMessage: error?.message ? '[REDACTED]' : undefined,
         });
-        throw new Error(`Failed to send password reset email: ${error?.message || 'Unknown error'}`);
+        throw new Error('Failed to send password reset email. Please try again later.');
     }
 };
