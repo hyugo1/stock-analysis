@@ -1,9 +1,26 @@
 import nodemailer from 'nodemailer';
 import { getWelcomeEmailTemplate, getNewsSummaryEmailTemplate } from "@/lib/nodemailer/templates";
 
-// Helper function to get app URL with fallback
 const getAppUrl = (): string => {
-    return process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+    
+    if (!appUrl) {
+        if (process.env.NODE_ENV === 'production') {
+            throw new Error('NEXT_PUBLIC_APP_URL must be set in production environment');
+        }
+        return 'http://localhost:3000';
+    }
+    
+    try {
+        const url = new URL(appUrl);
+        return appUrl;
+    } catch {
+        if (process.env.NODE_ENV === 'production') {
+            throw new Error('NEXT_PUBLIC_APP_URL is not a valid URL');
+        }
+        console.warn('getAppUrl: Invalid NEXT_PUBLIC_APP_URL format, falling back to localhost');
+        return 'http://localhost:3000';
+    }
 };
 
 // Helper function to safely mask email for logging
