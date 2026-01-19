@@ -197,17 +197,17 @@
 
   /* auth layout */
   .auth-layout {
-    @apply flex flex-col justify-between lg:flex-row h-screen bg-gradient-to-b from-[#0a1628] to-[#050510] relative overflow-hidden;
+    @apply flex flex-col lg:flex-row h-screen lg:min-h-screen bg-gradient-to-b from-[#0a1628] to-[#050510] relative;
   }
 
   .auth-logo {
     @apply pt-6 lg:pt-8 mb-8 lg:mb-12;
   }
   .auth-left-section {
-    @apply w-full lg:w-[50%] lg:h-screen px-6 lg:px-16 flex flex-col overflow-y-auto;
+    @apply w-full lg:w-[50%] lg:h-screen px-6 lg:px-16 flex flex-col overflow-y-auto pb-10;
   }
   .auth-right-section {
-    @apply w-full max-lg:border-t max-lg:border-white/10 lg:w-[50%] lg:h-screen bg-gradient-to-b from-[#0f1c35] to-[#070a14] px-6 py-4 md:p-6 lg:py-12 lg:px-18 flex flex-col justify-start;
+    @apply hidden lg:flex w-[50%] h-screen bg-gradient-to-b from-[#0f1c35] to-[#070a14] px-6 py-4 md:p-6 lg:py-12 lg:px-18 flex flex-col justify-start;
   }
 
   .auth-blockquote {

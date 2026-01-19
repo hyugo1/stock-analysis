@@ -56,6 +56,12 @@ const UserDropdown = ({ user, initialStocks }: UserDropdownProps) => {
         className="w-64 bg-[#0a1628] border border-white/10 rounded-xl shadow-xl p-2"
         align="end"
       >
+        {/* Mobile: Show NavItems first, Desktop: Hide */}
+        <nav className="sm:hidden">
+          <NavItems initialStocks={initialStocks} />
+          <DropdownMenuSeparator className="bg-white/10 my-2" />
+        </nav>
+        
         <DropdownMenuLabel>
           <div className="flex relative items-center gap-3 py-2">
             <Avatar className="h-10 w-10 ring-2 ring-primary/20">
@@ -86,13 +92,9 @@ const UserDropdown = ({ user, initialStocks }: UserDropdownProps) => {
           onClick={handleSignOut}
           className="text-gray-200 text-md font-medium focus:text-white transition-all duration-300 rounded-lg hover:bg-white/10 hover:translate-x-1 cursor-pointer"
         >
-          <LogOut className="mr-2 h-4 w-4 hidden sm:block transition-transform duration-300" />
+          <LogOut className="mr-2 h-4 w-4 transition-transform duration-300" />
           Logout
         </DropdownMenuItem>
-        <DropdownMenuSeparator className="bg-white/10 hidden sm:block" />
-        <nav className="sm:hidden">
-          <NavItems initialStocks={initialStocks} />
-        </nav>
       </DropdownMenuContent>
     </DropdownMenu>
   );
