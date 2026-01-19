@@ -6,6 +6,17 @@ const getAppUrl = (): string => {
     return process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 };
 
+// Helper function to safely mask email for logging
+// Preserves domain and returns a constant masked local portion
+// Handles all lengths including 1-character locals like "a@b.com"
+const maskEmail = (email: string): string => {
+  if (!email || !email.includes('@')) return '***';
+  const [local, domain] = email.split('@');
+  // Always mask the entire local part for safety, keeping just first char if it exists
+  const maskedLocal = local.length > 1 ? `${local[0]}***` : '***';
+  return `${maskedLocal}@${domain}`;
+};
+
 // Generate dynamic password reset email template
 const getResetPasswordEmailTemplate = (resetLink: string, unsubscribeUrl: string, appUrl: string): string => {
     const currentYear = new Date().getFullYear();
@@ -241,10 +252,9 @@ export const sendWelcomeEmail = async ({ email, name, intro, unsubscribeToken }:
     try {
         await transporter.sendMail(mailOptions);
     } catch (error) {
-        // Log with masked email for security
-        const maskedEmail = email.replace(/(.{2})(.*)(@.*)/, '$1***$3');
+        // Log with masked email for security using reusable helper
         console.error('Failed to send welcome email via nodemailer', {
-            to: maskedEmail,
+            to: maskEmail(email),
             error: error instanceof Error ? error.message : 'Unknown error',
         });
         throw new Error('Failed to send welcome email. Please try again later.');
@@ -273,10 +283,9 @@ export const sendDailyNewsSummaryEmail = async (
     try {
         await transporter.sendMail(mailOptions);
     } catch (error) {
-        // Log with masked email for security
-        const maskedEmail = email.replace(/(.{2})(.*)(@.*)/, '$1***$3');
+        // Log with masked email for security using reusable helper
         console.error('Failed to send daily news summary email via nodemailer', {
-            to: maskedEmail,
+            to: maskEmail(email),
             date,
             error: error instanceof Error ? error.message : 'Unknown error',
         });
@@ -313,9 +322,8 @@ export const sendPasswordResetEmail = async ({ email, resetLink, unsubscribeToke
             console.log(`[nodemailer] Password reset email sent successfully`);
         }
     } catch (error: any) {
-        // Sanitized error logging - no PII or full error payloads
-        const maskedEmail = email.replace(/(.{2})(.*)(@.*)/, '$1***$3');
-        console.error(`[nodemailer] Failed to send password reset email to ${maskedEmail}`, {
+        // Sanitized error logging - no PII or full error payloads using reusable helper
+        console.error(`[nodemailer] Failed to send password reset email to ${maskEmail(email)}`, {
             errorCode: error?.code || 'unknown',
             errorMessage: '[REDACTED]',
         });

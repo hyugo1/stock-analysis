@@ -719,25 +719,3 @@
 .scrollbar-hide-default::-webkit-scrollbar-thumb:hover {
   background-color: #9095A1;
 }
-
-/* TradingView Market Summary Widget - Dark Theme */
-.tradingview-market-summary-container {
-  background-color: #141414 !important;
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.tradingview-market-summary-container tv-market-summary {
-  background-color: #141414 !important;
-}
-
-.tradingview-market-summary-container * {
-  background-color: transparent !important;
-  color: #ffffff !important;
-}
-
-/* Force dark theme for market summary iframe content */
-.tradingview-market-summary-container iframe {
-  background-color: #141414 !important;
-  filter: invert(1) hue-rotate(180deg) contrast(0.9) !important;
-}

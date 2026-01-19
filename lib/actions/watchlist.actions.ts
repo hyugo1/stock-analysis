@@ -14,9 +14,10 @@ const maskEmail = (email: string): string => {
 
 // Helper function to validate stock symbol format
 const isValidSymbol = (symbol: string): boolean => {
-  // Stock symbols are typically 1-5 uppercase letters, may contain dots for certain types
-  const symbolRegex = /^[A-Z]{1,5}(\.[A-Z])?$/;
-  return symbolRegex.test(symbol.toUpperCase());
+  // Allow alphanumeric base with optional dot or dash followed by one or more chars
+  // Supports formats like: AAPL, TSLA, BTC-USD, .TO, BRK.A, SPY2
+  const symbolRegex = /^[A-Z0-9]{1,10}(?:[.-][A-Z0-9]+)?$/i;
+  return symbolRegex.test(symbol);
 };
 
 // Helper function to sanitize company name

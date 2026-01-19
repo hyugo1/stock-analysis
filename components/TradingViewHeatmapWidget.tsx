@@ -19,9 +19,13 @@ const TradingViewHeatmapWidget = ({
 
   useEffect(() => {
     if (!containerRef.current) return;
-    if (containerRef.current.dataset.loaded) return;
     
-    containerRef.current.innerHTML = '';
+    // Capture container at the top to avoid stale references in cleanup
+    const container = containerRef.current;
+    
+    if (container.dataset.loaded) return;
+    
+    container.innerHTML = '';
     
     const script = document.createElement('script');
     script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-stock-heatmap.js';
@@ -41,14 +45,13 @@ const TradingViewHeatmapWidget = ({
     
     script.textContent = JSON.stringify(config);
 
-    containerRef.current.appendChild(script);
-    containerRef.current.dataset.loaded = 'true';
+    container.appendChild(script);
+    container.dataset.loaded = 'true';
 
     return () => {
-      if (containerRef.current) {
-        containerRef.current.innerHTML = '';
-        delete containerRef.current.dataset.loaded;
-      }
+      // Use captured container variable instead of containerRef.current
+      container.innerHTML = '';
+      delete container.dataset.loaded;
     };
   }, [dataSource, height]);
 

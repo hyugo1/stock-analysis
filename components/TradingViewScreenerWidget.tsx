@@ -13,9 +13,16 @@ const TradingViewScreenerWidget = ({ className }: TradingViewScreenerWidgetProps
 
   useEffect(() => {
     if (!containerRef.current) return;
-    if (containerRef.current.dataset.loaded) return;
     
-    containerRef.current.innerHTML = '';
+    // Capture container at the top to avoid stale references in cleanup
+    const container = containerRef.current;
+    
+    if (container.dataset.loaded) return;
+    
+    // Don't clear the entire container - TradingView needs the placeholder div
+    // Only remove any existing scripts to prevent duplicates
+    const existingScripts = container.querySelectorAll('script');
+    existingScripts.forEach(s => s.remove());
     
     const script = document.createElement('script');
     script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-screener.js';
@@ -26,14 +33,15 @@ const TradingViewScreenerWidget = ({ className }: TradingViewScreenerWidgetProps
       backgroundColor: 'rgba(0,0,0,0)',
     });
 
-    containerRef.current.appendChild(script);
-    containerRef.current.dataset.loaded = 'true';
+    container.appendChild(script);
+    container.dataset.loaded = 'true';
 
     return () => {
-      if (containerRef.current) {
-        containerRef.current.innerHTML = '';
-        delete containerRef.current.dataset.loaded;
-      }
+      // Use captured container variable instead of containerRef.current
+      // Only remove the script, don't destroy the placeholder div
+      const scripts = container.querySelectorAll('script');
+      scripts.forEach(s => s.remove());
+      delete container.dataset.loaded;
     };
   }, []);
 
