@@ -1,4 +1,9 @@
-export const WELCOME_EMAIL_TEMPLATE = `
+// Email templates with dynamic values to prevent hardcoded URLs and PII leakage
+// All URLs are now passed as parameters from environment variables
+
+export const getWelcomeEmailTemplate = (name: string, intro: string, unsubscribeUrl: string, appUrl: string): string => {
+  const currentYear = new Date().getFullYear();
+  return `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -180,8 +185,8 @@ export const WELCOME_EMAIL_TEMPLATE = `
                 <!-- Content -->
                 <tr>
                 <td class="section content" bgcolor="#0a0a10" style="padding:35px 40px;background-color:#0a0a10;">
-                <h1 style="font-size:28px;font-weight:700;color:#ffffff;margin:0 0 20px 0;">You're set up, {{name}}.</h1>
-                <p style="font-size:16px;color:#94a3b8;margin:0 0 25px 0;">{{intro}}</p>
+                <h1 style="font-size:28px;font-weight:700;color:#ffffff;margin:0 0 20px 0;">You're set up, ${name}.</h1>
+                <p style="font-size:16px;color:#94a3b8;margin:0 0 25px 0;">${intro}</p>
 
                 <p style="font-size:18px;font-weight:600;color:#e5e7eb;margin:0 0 15px 0;">Get started in a few minutes:</p>
                 <ul style="margin:0 0 30px 24px;padding:0;">
@@ -195,7 +200,7 @@ export const WELCOME_EMAIL_TEMPLATE = `
                 <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:20px auto;">
                 <tr>
                     <td align="center">
-                    <a href="https://marketpulse-taupe.vercel.app"
+                    <a href="${appUrl}"
                         style="
                         display:inline-block;
                         background:linear-gradient(135deg,#10b981 0%,#059669 100%);
@@ -222,10 +227,10 @@ export const WELCOME_EMAIL_TEMPLATE = `
                     <td class="section footer" bgcolor="#0e0f14" style="padding:35px 40px;background-color:#0e0f14;text-align:center;">
                         <div style="width:60px;height:2px;margin:20px auto;background:linear-gradient(90deg,rgba(16,185,129,0.8) 0%,transparent 100%);"></div>
                             <p style="font-size:13px;color:#94a3b8;margin:6px 0;">
-                                <a href="{{unsubscribeUrl}}" style="color:#10b981;text-decoration:underline;">Unsubscribe</a> · 
-                                <a href="https://marketpulse-taupe.vercel.app" style="color:#10b981;text-decoration:underline;">Visit MarketPulse</a>
+                                <a href="${unsubscribeUrl}" style="color:#10b981;text-decoration:underline;">Unsubscribe</a> · 
+                                <a href="${appUrl}" style="color:#10b981;text-decoration:underline;">Visit MarketPulse</a>
                             </p>
-                            <p style="font-size:13px;color:#94a3b8;margin:6px 0;">© 2026 MarketPulse</p>
+                            <p style="font-size:13px;color:#94a3b8;margin:6px 0;">© ${currentYear} MarketPulse</p>
                     </td>
                 </tr>
 
@@ -237,9 +242,11 @@ export const WELCOME_EMAIL_TEMPLATE = `
     </center>
 </body>
 </html>`;
+};
 
-export const NEWS_SUMMARY_EMAIL_TEMPLATE = `
-
+export const getNewsSummaryEmailTemplate = (date: string, newsContent: string, unsubscribeUrl: string, appUrl: string): string => {
+  const currentYear = new Date().getFullYear();
+  return `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -415,7 +422,7 @@ export const NEWS_SUMMARY_EMAIL_TEMPLATE = `
                 <tr>
                 <td class="section header" bgcolor="#0e0f14" style="background-color:#0e0f14;">
                 <span class="logo">MARKET<span class="neon">PULSE</span></span><br>
-                <span class="date-badge neon">{{date}}</span>
+                <span class="date-badge neon">${date}</span>
                 </td>
                 </tr>
 
@@ -425,7 +432,7 @@ export const NEWS_SUMMARY_EMAIL_TEMPLATE = `
                 <p class="section-label neon">Today's Headlines</p>
                 <h1 class="news-heading">Market News Summary</h1>
 
-                {{newsContent}}
+                ${newsContent}
 
                 </td>
                 </tr>
@@ -436,10 +443,10 @@ export const NEWS_SUMMARY_EMAIL_TEMPLATE = `
                 <div class="footer-divider"></div>
                 <p class="footer-text">You're receiving this because you subscribed to MarketPulse news updates.</p>
                 <p class="footer-text">
-                    <a href="{{unsubscribeUrl}}" class="neon-link">Unsubscribe</a> ·
-                    <a href="https://marketpulse-taupe.vercel.app" class="neon-link">Visit MarketPulse</a>
+                    <a href="${unsubscribeUrl}" class="neon-link">Unsubscribe</a> ·
+                    <a href="${appUrl}" class="neon-link">Visit MarketPulse</a>
                 </p>
-                <p class="footer-text">© 2026 MarketPulse</p>
+                <p class="footer-text">© ${currentYear} MarketPulse</p>
                 </td>
                 </tr>
 
@@ -451,4 +458,5 @@ export const NEWS_SUMMARY_EMAIL_TEMPLATE = `
     </center>
 </body>
 </html>`;
+};
 

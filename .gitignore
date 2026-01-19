@@ -6,3 +6,5 @@ out/
 .vscode/
 .idea/
 next-env.d.ts
+next.config.ts
+.gitignore

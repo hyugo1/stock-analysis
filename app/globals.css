@@ -639,6 +639,44 @@
   height: 100% !important;
 }
 
+/* Transparent TradingView widgets */
+.tradingview-widget-container.tradingview-transparent,
+.tradingview-widget-container[data-transparent="true"],
+.tradingview-widget-container[data-transparent="true"] * {
+  background-color: transparent !important;
+  background: transparent !important;
+}
+
+.tradingview-widget-container.tradingview-transparent {
+  overflow: visible !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.tradingview-widget-container.tradingview-transparent iframe {
+  background-color: transparent !important;
+}
+
+/* Force TradingView iframe transparency */
+.tradingview-widget-container iframe {
+  background-color: transparent !important;
+}
+
+.tradingview-widget-container.tradingview-transparent .tradingview-widget-container__widget {
+  background-color: transparent !important;
+}
+
+.tradingview-widget-container.tradingview-transparent .tradingview-widget-container__widget iframe {
+  background-color: transparent !important;
+}
+
+/* Remove TradingView's default background colors */
+.tradingview-widget-container.tradingview-transparent [class*="tv-"] {
+  background-color: transparent !important;
+  background: transparent !important;
+}
+
 
 /* Market News Component Styles */
 .scrollbar-hide {
@@ -680,4 +718,26 @@
 
 .scrollbar-hide-default::-webkit-scrollbar-thumb:hover {
   background-color: #9095A1;
+}
+
+/* TradingView Market Summary Widget - Dark Theme */
+.tradingview-market-summary-container {
+  background-color: #141414 !important;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.tradingview-market-summary-container tv-market-summary {
+  background-color: #141414 !important;
+}
+
+.tradingview-market-summary-container * {
+  background-color: transparent !important;
+  color: #ffffff !important;
+}
+
+/* Force dark theme for market summary iframe content */
+.tradingview-market-summary-container iframe {
+  background-color: #141414 !important;
+  filter: invert(1) hue-rotate(180deg) contrast(0.9) !important;
 }

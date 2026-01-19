@@ -5,18 +5,41 @@ import { Watchlist } from '@/database/models/watchlist.model';
 import { auth } from '@/lib/better-auth/auth';
 import { headers } from 'next/headers';
 
+// Helper function to mask email for logging
+const maskEmail = (email: string): string => {
+  if (!email || !email.includes('@')) return '***';
+  const [local, domain] = email.split('@');
+  return `${local.substring(0, 2)}***@${domain}`;
+};
+
+// Helper function to validate stock symbol format
+const isValidSymbol = (symbol: string): boolean => {
+  // Stock symbols are typically 1-5 uppercase letters, may contain dots for certain types
+  const symbolRegex = /^[A-Z]{1,5}(\.[A-Z])?$/;
+  return symbolRegex.test(symbol.toUpperCase());
+};
+
+// Helper function to sanitize company name
+const sanitizeCompanyName = (company: string): string => {
+  // Remove any potential script tags or special characters that could be used for XSS
+  return company
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    .replace(/[<>]/g, '')
+    .trim()
+    .substring(0, 200); // Limit length
+};
+
 export async function getWatchlistSymbolsByEmail(email: string): Promise<string[]> {
   if (!email) return [];
 
   try {
-    console.log(`[Watchlist] Fetching watchlist for email: ${email.replace(/(.{2}).*@/, '$1***@')}`);
+    // No longer logging email to prevent PII leakage
     const mongoose = await connectToDatabase();
     const db = mongoose.connection.db;
     if (!db) throw new Error('MongoDB connection not found');
 
     const user = await db.collection('user').findOne<{ _id?: unknown; id?: string; email?: string }>({ email });
     if (!user) {
-      console.log(`[Watchlist] No user found for email: ${email}`);
       return [];
     }
 
@@ -25,10 +48,9 @@ export async function getWatchlistSymbolsByEmail(email: string): Promise<string[
 
     const items = await Watchlist.find({ userId }, { symbol: 1 }).lean();
     const symbols = items.map((i) => String(i.symbol));
-    console.log(`[Watchlist] Found symbols for  ${email.replace(/(.{2}).*@/, '$1***@')}:`, symbols);
     return symbols;
   } catch (err) {
-    console.error('getWatchlistSymbolsByEmail error:', err);
+    console.error('getWatchlistSymbolsByEmail error: [REDACTED]');
     return [];
   }
 }
@@ -40,32 +62,37 @@ export async function getCurrentUserWatchlist(): Promise<string[]> {
     const email = session?.user?.email;
     
     if (!email) {
-      console.log('[Watchlist] No user session found');
       return [];
     }
     
     return await getWatchlistSymbolsByEmail(email);
   } catch (err) {
-    console.error('getCurrentUserWatchlist error:', err);
+    console.error('getCurrentUserWatchlist error: [REDACTED]');
     return [];
   }
 }
 
 export async function saveWatchlistItem(email: string, symbol: string, company: string): Promise<{ success: boolean; error?: string }> {
   if (!email || !symbol) {
-    console.warn('[Watchlist] saveWatchlistItem called without email or symbol');
     return { success: false, error: 'Email and symbol are required' };
   }
 
+  // Validate symbol format
+  const normalizedSymbol = symbol.toUpperCase().trim();
+  if (!isValidSymbol(normalizedSymbol)) {
+    return { success: false, error: 'Invalid symbol format' };
+  }
+
+  // Sanitize company name to prevent XSS
+  const sanitizedCompany = sanitizeCompanyName(company);
+
   try {
-    console.log(`[Watchlist] Saving symbol "${symbol}" for email: ${email}`);
     const mongoose = await connectToDatabase();
     const db = mongoose.connection.db;
     if (!db) throw new Error('MongoDB connection not found');
 
     const user = await db.collection('user').findOne<{ _id?: unknown; id?: string; email?: string }>({ email });
     if (!user) {
-      console.warn(`[Watchlist] User not found for email: ${email}`);
       return { success: false, error: 'User not found' };
     }
 
@@ -73,52 +100,53 @@ export async function saveWatchlistItem(email: string, symbol: string, company: 
     if (!userId) return { success: false, error: 'User ID not found' };
 
     const updated = await Watchlist.findOneAndUpdate(
-      { userId, symbol: symbol.toUpperCase() },
+      { userId, symbol: normalizedSymbol },
       {
         userId,
-        symbol: symbol.toUpperCase(),
-        company,
+        symbol: normalizedSymbol,
+        company: sanitizedCompany,
         addedAt: new Date(),
       },
       { upsert: true, new: true }
     );
 
-    console.log(`[Watchlist] Symbol "${symbol}" saved successfully for userId: ${userId}`, updated);
     return { success: true };
   } catch (err) {
-    console.error('saveWatchlistItem error:', err);
-    return { success: false, error: err instanceof Error ? err.message : 'Failed to save watchlist item' };
+    console.error('saveWatchlistItem error: [REDACTED]');
+    return { success: false, error: 'Failed to save watchlist item' };
   }
 }
 
 export async function removeWatchlistItem(email: string, symbol: string): Promise<{ success: boolean; error?: string }> {
   if (!email || !symbol) {
-    console.warn('[Watchlist] removeWatchlistItem called without email or symbol');
     return { success: false, error: 'Email and symbol are required' };
   }
 
+  // Validate symbol format
+  const normalizedSymbol = symbol.toUpperCase().trim();
+  if (!isValidSymbol(normalizedSymbol)) {
+    return { success: false, error: 'Invalid symbol format' };
+  }
+
   try {
-    console.log(`[Watchlist] Removing symbol "${symbol}" for email: ${email}`);
     const mongoose = await connectToDatabase();
     const db = mongoose.connection.db;
     if (!db) throw new Error('MongoDB connection not found');
 
     const user = await db.collection('user').findOne<{ _id?: unknown; id?: string; email?: string }>({ email });
     if (!user) {
-      console.warn(`[Watchlist] User not found for email: ${email}`);
       return { success: false, error: 'User not found' };
     }
 
     const userId = (user.id as string) || String(user._id || '');
     if (!userId) return { success: false, error: 'User ID not found' };
 
-    const result = await Watchlist.deleteOne({ userId, symbol: symbol.toUpperCase() });
-    console.log(`[Watchlist] Symbol "${symbol}" removed for userId: ${userId}`, result);
+    await Watchlist.deleteOne({ userId, symbol: normalizedSymbol });
 
     return { success: true };
   } catch (err) {
-    console.error('removeWatchlistItem error:', err);
-    return { success: false, error: err instanceof Error ? err.message : 'Failed to remove watchlist item' };
+    console.error('removeWatchlistItem error: [REDACTED]');
+    return { success: false, error: 'Failed to remove watchlist item' };
   }
 }
 
@@ -133,7 +161,7 @@ export async function removeCurrentUserWatchlistItem(symbol: string): Promise<{ 
     
     return await removeWatchlistItem(email, symbol);
   } catch (err) {
-    console.error('removeCurrentUserWatchlistItem error:', err);
-    return { success: false, error: err instanceof Error ? err.message : 'Failed to remove watchlist item' };
+    console.error('removeCurrentUserWatchlistItem error: [REDACTED]');
+    return { success: false, error: 'Failed to remove watchlist item' };
   }
 }

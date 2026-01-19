@@ -1,5 +1,6 @@
 import TradingViewWidget from "@/components/TradingViewWidget";
 import WatchlistButton from "@/components/WatchlistButton";
+import TickerTapeWidget from "@/components/TickerTapeWidget";
 
 
 import {
@@ -7,8 +8,8 @@ import {
   CANDLE_CHART_WIDGET_CONFIG,
   BASELINE_WIDGET_CONFIG,
   TECHNICAL_ANALYSIS_WIDGET_CONFIG,
-  COMPANY_PROFILE_WIDGET_CONFIG,
   COMPANY_FINANCIALS_WIDGET_CONFIG,
+  COMPANY_PROFILE_WIDGET_CONFIG,
 } from "@/lib/constants";
 import { getCurrentUserWatchlist } from "@/lib/actions/watchlist.actions";
 
@@ -53,7 +54,13 @@ export default async function StockDetails({ params }: StockDetailsPageProps) {
   const isInWatchlist = watchlistSymbols.includes(symbolUpper);
 
   return (
-    <div className="flex min-h-screen p-4 md:p-6 lg:p-8">
+    <div className="flex flex-col min-h-screen">
+      <div className="w-full pt-4">
+        <TickerTapeWidget />
+      </div>
+
+      {/* Main content with padding */}
+      <div className="p-4 md:p-6 lg:p-8 w-full">
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
         {/* Left column */}
         <div className="flex flex-col gap-6">
@@ -100,11 +107,15 @@ export default async function StockDetails({ params }: StockDetailsPageProps) {
             height={400}
           />
 
-          {/* <TradingViewWidget
-            scriptUrl={`${scriptUrl}company-profile.js`}
-            config={COMPANY_PROFILE_WIDGET_CONFIG(symbol)}
-            height={440}
-          /> */}
+          <TradingViewWidget
+            scriptUrl={`${scriptUrl}symbol-profile.js`}
+            config={{
+              ...COMPANY_PROFILE_WIDGET_CONFIG(symbol),
+              width: '100%',
+              height: 464,
+            }}
+            height={464}
+          />
 
           <TradingViewWidget
             scriptUrl={`${scriptUrl}financials.js`}
@@ -113,6 +124,7 @@ export default async function StockDetails({ params }: StockDetailsPageProps) {
           />
         </div>
       </section>
+      </div>
     </div>
   );
 }

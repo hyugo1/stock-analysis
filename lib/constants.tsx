@@ -83,6 +83,23 @@ export const STOCK_HEATMAP_WIDGET_CONFIG = {
     width: '100%',
     height: 600,
     backgroundColor: 'rgba(0,0,0,0)',
+    plotColor: 'rgba(0,0,0,0)',
+    transparent: true,
+    // Additional transparency and styling settings
+    showFloatingTooltip: false,
+    plotLineColorGrowing: 'rgba(0,0,0,0)',
+    plotLineColorFalling: 'rgba(0,0,0,0)',
+    scaleFontColor: 'rgba(0,0,0,0)',
+    belowLineFillColorGrowing: 'rgba(0,0,0,0)',
+    belowLineFillColorFalling: 'rgba(0,0,0,0)',
+    belowLineFillColorGrowingBottom: 'rgba(0,0,0,0)',
+    belowLineFillColorFallingBottom: 'rgba(0,0,0,0)',
+    symbolActiveColor: 'rgba(0,0,0,0)',
+    gridLineColor: 'rgba(0,0,0,0)',
+    borderUpColor: 'rgba(0,0,0,0)',
+    borderDownColor: 'rgba(0,0,0,0)',
+    wickUpColor: 'rgba(0,0,0,0)',
+    wickDownColor: 'rgba(0,0,0,0)',
 };
 
 export const TIMELINES_WIDGET_CONFIG = {
@@ -209,6 +226,15 @@ export const TECHNICAL_ANALYSIS_WIDGET_CONFIG = {
     width: '100%',
     height: 400,
     interval: '1h',
+};
+
+export const SINGLE_QUOTE_WIDGET_CONFIG = {
+    colorTheme: 'dark',
+    isTransparent: true,
+    locale: 'en',
+    width: '100%',
+    height: 200,
+    backgroundColor: 'rgba(0,0,0,0)',
 };
 
 export const COMPANY_PROFILE_WIDGET_CONFIG = (symbol: string) => ({
@@ -338,3 +364,54 @@ export const CONDITION_OPTIONS = [
     { value: 'greater', label: 'Greater than (>)' },
     { value: 'less', label: 'Less than (<)' },
 ];
+
+// Tape Widget Configuration (same as AuthRightSection)
+export const TAPE_WIDGET_CONFIG = {
+    symbols: [
+        { proName: 'FOREXCOM:SPXUSD', title: 'S&P 500' },
+        { proName: 'FOREXCOM:NSXUSD', title: 'Nasdaq 100' },
+        { proName: 'FOREXCOM:DJI', title: 'Dow 30' },
+        { proName: 'NASDAQ:AAPL', title: 'Apple' },
+        { proName: 'NASDAQ:GOOGL', title: 'Google' },
+        { proName: 'NASDAQ:MSFT', title: 'Microsoft' },
+        { proName: 'BINANCE:BTCUSDT', title: 'Bitcoin' },
+        { proName: 'BINANCE:ETHUSDT', title: 'Ethereum' },
+    ],
+    showSymbolLogo: true,
+    colorTheme: 'dark',
+    isTransparent: true,
+    displayMode: 'adaptive',
+    locale: 'en',
+};
+
+export const FOREX_HEATMAP_WIDGET_CONFIG = {
+    colorTheme: 'dark',
+    isTransparent: true,
+    locale: 'en',
+    currencies: [
+        'EUR',
+        'USD',
+        'JPY',
+        'GBP',
+        'CHF',
+        'AUD',
+        'CAD',
+        'NZD',
+        'CNY',
+    ],
+    backgroundColor: 'rgba(0,0,0,0)',
+    width: '100%',
+    height: 400,
+};
+
+export const SCREENER_WIDGET_CONFIG = {
+    market: 'america',
+    showToolbar: true,
+    defaultColumn: 'overview',
+    defaultScreen: 'most_capitalized',
+    isTransparent: false,
+    locale: 'en',
+    colorTheme: 'dark',
+    width: '100%',
+    height: 550,
+};
