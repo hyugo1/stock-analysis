@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { updateProfileImage } from "@/lib/actions/auth.actions";
+import { updateProfileImage, UpdateProfileImageError, UpdateProfileImageResult } from "@/lib/actions/auth.actions";
 import { toast } from "sonner";
 import { User as UserIcon, Link, Loader2, RotateCcw } from "lucide-react";
 
@@ -16,12 +16,52 @@ interface ProfilePictureSettingsProps {
   };
 }
 
+// List of trusted services for the help text
+const TRUSTED_SERVICES = [
+  { domain: 'avatars.githubusercontent.com', service: 'GitHub Avatar' },
+  { domain: 'googleusercontent.com', service: 'Google (Images, Photos, Drive)' },
+  { domain: 'graph.microsoft.com', service: 'Microsoft/Azure AD' },
+  { domain: 'storage.googleapis.com', service: 'Google Cloud Storage' },
+  { domain: 'github.com', service: 'GitHub' },
+  { domain: 'images.unsplash.com', service: 'Unsplash' },
+];
+
 export function ProfilePictureSettings({ user }: ProfilePictureSettingsProps) {
   const [imageUrl, setImageUrl] = useState(user.image || '');
   const [isUpdating, setIsUpdating] = useState(false);
 
   // Compute safe initial from user name or email
   const safeInitial = user?.name || user?.email || "?";
+
+  const getErrorMessage = (error: UpdateProfileImageError, hostname?: string): { title: string; description: string } => {
+    switch (error) {
+      case 'invalid_url':
+        return {
+          title: 'Invalid URL Format',
+          description: 'The URL you entered is not valid. Please check for typos and ensure it starts with http:// or https://'
+        };
+      case 'invalid_protocol':
+        return {
+          title: 'Invalid Protocol',
+          description: 'Only HTTP and HTTPS URLs are allowed. The URL must start with http:// or https://'
+        };
+      case 'missing_hostname':
+        return {
+          title: 'Missing Hostname',
+          description: 'The URL appears to be missing a domain name. Please enter a complete image URL'
+        };
+      case 'untrusted_domain':
+        return {
+          title: 'Untrusted Image Domain',
+          description: `The domain "${hostname || 'unknown'}" is not allowed for security reasons.`
+        };
+      default:
+        return {
+          title: 'Unknown Error',
+          description: 'An unexpected error occurred while updating your profile picture'
+        };
+    }
+  };
 
   const handleUpdateImage = async (url: string) => {
     if (!url.trim()) {
@@ -30,38 +70,62 @@ export function ProfilePictureSettings({ user }: ProfilePictureSettingsProps) {
     }
 
     setIsUpdating(true);
-    try {
-      const result = await updateProfileImage(url.trim());
-      if (result) {
-        toast.success('Profile picture updated successfully!');
-        setImageUrl(url.trim());
-      } else {
-        toast.error('Failed to update profile picture');
-      }
-    } catch (error) {
-      console.error('Error updating profile image:', error);
-      toast.error('Failed to update profile picture');
-    } finally {
-      setIsUpdating(false);
+    const result: UpdateProfileImageResult = await updateProfileImage(url.trim());
+    
+    if (result.success) {
+      toast.success('Profile picture updated successfully!', {
+        style: { background: '#065f46', color: '#ecfdf5', border: '1px solid #10b981' }
+      });
+      setImageUrl(url.trim());
+    } else {
+      const errorInfo = getErrorMessage(result.error, result.hostname);
+      toast.error(errorInfo.title, {
+  description: errorInfo.description,
+  duration: 8000,
+  style: { background: '#7f1d1d', color: '#fef2f2', border: '1px solid #ef4444' },
+  action: {
+    label: 'View Allowed Services',
+    onClick: () => {
+      const serviceList = TRUSTED_SERVICES.map(s => 
+        `${s.service} (${s.domain})`
+      ).join('\n');
+
+      toast.info('IMAGE SERVICES\n\n' + serviceList, {
+        duration: 10000,
+        style: {
+          background: '#0f172a',
+          color: '#f1f5f9',
+          border: '1px solid #3b82f6',
+          whiteSpace: 'pre-wrap'
+        }
+      });
+    },
+  },
+  actionButtonStyle: {
+    backgroundColor: 'rgba(239, 68, 68, 0.2)',
+    color: '#fee2e2',
+    border: '1px solid rgba(248, 113, 113, 0.4)',
+  }
+});
     }
+    setIsUpdating(false);
   };
 
   const handleUseDefault = async () => {
     setIsUpdating(true);
-    try {
-      const result = await updateProfileImage('');
-      if (result) {
-        toast.success('Profile picture reset to default');
-        setImageUrl('');
-      } else {
-        toast.error('Failed to reset profile picture');
-      }
-    } catch (error) {
-      console.error('Error resetting profile image:', error);
-      toast.error('Failed to reset profile picture');
-    } finally {
-      setIsUpdating(false);
+    const result: UpdateProfileImageResult = await updateProfileImage('');
+    
+    if (result.success) {
+      toast.success('Profile picture reset to default', {
+        style: { background: '#065f46', color: '#ecfdf5', border: '1px solid #10b981' }
+      });
+      setImageUrl('');
+    } else {
+      toast.error('Failed to reset profile picture', {
+        style: { background: '#7f1d1d', color: '#fef2f2', border: '1px solid #ef4444' }
+      });
     }
+    setIsUpdating(false);
   };
 
   return (
@@ -121,16 +185,14 @@ export function ProfilePictureSettings({ user }: ProfilePictureSettingsProps) {
           </div>
           
           <p className="text-xs text-gray-500">
-            Tip: Use services like{' '}
-            <a 
-              href="https://gravatar.com" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-wealth-gold hover:underline transition-colors duration-300"
-            >
-              Gravatar
-            </a>
-            , or upload an image to an image host and paste the URL here.
+            Tip: Use images from trusted services:{' '}
+            <span className="text-wealth-gold">GitHub Avatar</span>,{' '}
+            <span className="text-wealth-gold">Google</span>,{' '}
+            <span className="text-wealth-gold">Microsoft</span>,{' '}
+            <span className="text-wealth-gold">Google Cloud Storage</span>, or{' '}
+            <span className="text-wealth-gold">Unsplash</span>.
+            <br />
+            Upload to one of these services and paste the URL here.
           </p>
 
           {(user.image || imageUrl) && (

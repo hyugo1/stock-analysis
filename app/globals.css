@@ -639,6 +639,44 @@
   height: 100% !important;
 }
 
+/* Transparent TradingView widgets */
+.tradingview-widget-container.tradingview-transparent,
+.tradingview-widget-container[data-transparent="true"],
+.tradingview-widget-container[data-transparent="true"] * {
+  background-color: transparent !important;
+  background: transparent !important;
+}
+
+.tradingview-widget-container.tradingview-transparent {
+  overflow: visible !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.tradingview-widget-container.tradingview-transparent iframe {
+  background-color: transparent !important;
+}
+
+/* Force TradingView iframe transparency */
+.tradingview-widget-container iframe {
+  background-color: transparent !important;
+}
+
+.tradingview-widget-container.tradingview-transparent .tradingview-widget-container__widget {
+  background-color: transparent !important;
+}
+
+.tradingview-widget-container.tradingview-transparent .tradingview-widget-container__widget iframe {
+  background-color: transparent !important;
+}
+
+/* Remove TradingView's default background colors */
+.tradingview-widget-container.tradingview-transparent [class*="tv-"] {
+  background-color: transparent !important;
+  background: transparent !important;
+}
+
 
 /* Market News Component Styles */
 .scrollbar-hide {

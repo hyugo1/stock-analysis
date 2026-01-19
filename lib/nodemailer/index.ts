@@ -1,8 +1,43 @@
 import nodemailer from 'nodemailer';
-import {NEWS_SUMMARY_EMAIL_TEMPLATE, WELCOME_EMAIL_TEMPLATE} from "@/lib/nodemailer/templates";
+import { getWelcomeEmailTemplate, getNewsSummaryEmailTemplate } from "@/lib/nodemailer/templates";
 
-// Password reset email template
-export const RESET_PASSWORD_EMAIL_TEMPLATE = `
+const getAppUrl = (): string => {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+    
+    if (!appUrl) {
+        if (process.env.NODE_ENV === 'production') {
+            throw new Error('NEXT_PUBLIC_APP_URL must be set in production environment');
+        }
+        return 'http://localhost:3000';
+    }
+    
+    try {
+        const url = new URL(appUrl);
+        return appUrl;
+    } catch {
+        if (process.env.NODE_ENV === 'production') {
+            throw new Error('NEXT_PUBLIC_APP_URL is not a valid URL');
+        }
+        console.warn('getAppUrl: Invalid NEXT_PUBLIC_APP_URL format, falling back to localhost');
+        return 'http://localhost:3000';
+    }
+};
+
+// Helper function to safely mask email for logging
+// Preserves domain and returns a constant masked local portion
+// Handles all lengths including 1-character locals like "a@b.com"
+const maskEmail = (email: string): string => {
+  if (!email || !email.includes('@')) return '***';
+  const [local, domain] = email.split('@');
+  // Always mask the entire local part for safety, keeping just first char if it exists
+  const maskedLocal = local.length > 1 ? `${local[0]}***` : '***';
+  return `${maskedLocal}@${domain}`;
+};
+
+// Generate dynamic password reset email template
+const getResetPasswordEmailTemplate = (resetLink: string, unsubscribeUrl: string, appUrl: string): string => {
+    const currentYear = new Date().getFullYear();
+    return `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -155,7 +190,7 @@ export const RESET_PASSWORD_EMAIL_TEMPLATE = `
                 <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:30px auto;">
                 <tr>
                     <td align="center">
-                    <a href="{{resetLink}}"
+                    <a href="${resetLink}"
                         style="
                         display:inline-block;
                         background:linear-gradient(135deg,#10b981 0%,#059669 100%);
@@ -190,10 +225,10 @@ export const RESET_PASSWORD_EMAIL_TEMPLATE = `
                     <td class="section footer" bgcolor="#0e0f14" style="padding:35px 40px;background-color:#0e0f14;text-align:center;">
                         <div style="width:60px;height:2px;margin:20px auto;background:linear-gradient(90deg,rgba(16,185,129,0.8) 0%,transparent 100%);"></div>
                             <p style="font-size:13px;color:#94a3b8;margin:6px 0;">
-                                <a href="{{unsubscribeUrl}}" style="color:#10b981;text-decoration:underline;">Unsubscribe</a> · 
-                                <a href="https://marketpulse-taupe.vercel.app" style="color:#10b981;text-decoration:underline;">Visit MarketPulse</a>
+                                <a href="${unsubscribeUrl}" style="color:#10b981;text-decoration:underline;">Unsubscribe</a> · 
+                                <a href="${appUrl}" style="color:#10b981;text-decoration:underline;">Visit MarketPulse</a>
                             </p>
-                            <p style="font-size:13px;color:#94a3b8;margin:6px 0;">© 2026 MarketPulse</p>
+                            <p style="font-size:13px;color:#94a3b8;margin:6px 0;">© ${currentYear} MarketPulse</p>
                     </td>
                 </tr>
 
@@ -205,6 +240,7 @@ export const RESET_PASSWORD_EMAIL_TEMPLATE = `
     </center>
 </body>
 </html>`;
+};
 
 export const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -215,31 +251,28 @@ export const transporter = nodemailer.createTransport({
 })
 
 export const sendWelcomeEmail = async ({ email, name, intro, unsubscribeToken }: WelcomeEmailData & { unsubscribeToken?: string }) => {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://marketpulse-taupe.vercel.app";
+    const baseUrl = getAppUrl();
     const unsubscribeUrl = unsubscribeToken 
         ? `${baseUrl}/api/unsubscribe?token=${unsubscribeToken}`
         : `${baseUrl}/unsubscribe`;
 
-    const htmlTemplate = WELCOME_EMAIL_TEMPLATE
-        .replace('{{name}}', name)
-        .replace('{{intro}}', intro)
-        .replace(/href="{{unsubscribeUrl}}"/g, `href="${unsubscribeUrl}"`);
+    const htmlTemplate = getWelcomeEmailTemplate(name, intro, unsubscribeUrl, baseUrl);
 
     const mailOptions = {
-        from: `"MarketPulse" <marketpulse.dev@gmail.com>`,
+        from: `"MarketPulse" <${process.env.NODEMAILER_EMAIL}>`,
         to: email,
         subject: "Welcome to MarketPulse🚀",
         text: 'Thank you for joining MarketPulse!',
         html: htmlTemplate,
     }
 
-    // await transporter.sendMail(mailOptions);
     try {
         await transporter.sendMail(mailOptions);
     } catch (error) {
+        // Log with masked email for security using reusable helper
         console.error('Failed to send welcome email via nodemailer', {
-            to: email,
-            error,
+            to: maskEmail(email),
+            error: error instanceof Error ? error.message : 'Unknown error',
         });
         throw new Error('Failed to send welcome email. Please try again later.');
     }
@@ -249,19 +282,15 @@ export const sendWelcomeEmail = async ({ email, name, intro, unsubscribeToken }:
 export const sendDailyNewsSummaryEmail = async (
     { email, date, newsContent, unsubscribeToken }: { email: string; date: string; newsContent: string; unsubscribeToken?: string }
 ): Promise<void> => {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://marketpulse-taupe.vercel.app";
+    const baseUrl = getAppUrl();
     const unsubscribeUrl = unsubscribeToken 
         ? `${baseUrl}/api/unsubscribe?token=${unsubscribeToken}`
         : `${baseUrl}/unsubscribe`;
 
-    const htmlTemplate = NEWS_SUMMARY_EMAIL_TEMPLATE
-        .replace('{{date}}', date)
-        .replace('{{newsContent}}', newsContent)
-        .replace(/href="#"/g, `href="${unsubscribeUrl}"`)
-        .replace('{{unsubscribeUrl}}', unsubscribeUrl);
+    const htmlTemplate = getNewsSummaryEmailTemplate(date, newsContent, unsubscribeUrl, baseUrl);
 
     const mailOptions = {
-        from: `"MarketPulse News" <marketpulse.dev@gmail.com>`,
+        from: `"MarketPulse News" <${process.env.NODEMAILER_EMAIL}>`,
         to: email,
         subject: `📈 Market News Summary Today - ${date}`,
         text: `Today's market news summary from MarketPulse`,
@@ -271,10 +300,11 @@ export const sendDailyNewsSummaryEmail = async (
     try {
         await transporter.sendMail(mailOptions);
     } catch (error) {
+        // Log with masked email for security using reusable helper
         console.error('Failed to send daily news summary email via nodemailer', {
-            to: email,
+            to: maskEmail(email),
             date,
-            error,
+            error: error instanceof Error ? error.message : 'Unknown error',
         });
         throw new Error('Failed to send daily news summary email. Please try again later.');
     }
@@ -288,18 +318,15 @@ export const sendPasswordResetEmail = async ({ email, resetLink, unsubscribeToke
         console.log(`[nodemailer] Sending password reset email`);
     }
     
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://marketpulse-taupe.vercel.app";
+    const baseUrl = getAppUrl();
     const unsubscribeUrl = unsubscribeToken 
         ? `${baseUrl}/api/unsubscribe?token=${unsubscribeToken}`
         : `${baseUrl}/unsubscribe`;
 
-    const htmlTemplate = RESET_PASSWORD_EMAIL_TEMPLATE
-        .replace('{{resetLink}}', resetLink)
-        .replace(/href="{{unsubscribeUrl}}"/g, `href="${unsubscribeUrl}"`)
-        .replace('{{unsubscribeUrl}}', unsubscribeUrl);
+    const htmlTemplate = getResetPasswordEmailTemplate(resetLink, unsubscribeUrl, baseUrl);
 
     const mailOptions = {
-        from: `"MarketPulse" <marketpulse.dev@gmail.com>`,
+        from: `"MarketPulse" <${process.env.NODEMAILER_EMAIL}>`,
         to: email,
         subject: "Reset Your MarketPulse Password 🔒",
         text: `Click the following link to reset your password: ${resetLink}`,
@@ -307,16 +334,15 @@ export const sendPasswordResetEmail = async ({ email, resetLink, unsubscribeToke
     };
 
     try {
-        const result = await transporter.sendMail(mailOptions);
+        await transporter.sendMail(mailOptions);
         if (isDebugEnabled) {
             console.log(`[nodemailer] Password reset email sent successfully`);
         }
     } catch (error: any) {
-        // Sanitized error logging - no PII or full error payloads
-        const maskedEmail = email.replace(/(.{2})(.*)(@.*)/, '$1***$3');
-        console.error(`[nodemailer] Failed to send password reset email to ${maskedEmail}`, {
-            errorCode: error?.code,
-            errorMessage: error?.message ? '[REDACTED]' : undefined,
+        // Sanitized error logging - no PII or full error payloads using reusable helper
+        console.error(`[nodemailer] Failed to send password reset email to ${maskEmail(email)}`, {
+            errorCode: error?.code || 'unknown',
+            errorMessage: '[REDACTED]',
         });
         throw new Error('Failed to send password reset email. Please try again later.');
     }

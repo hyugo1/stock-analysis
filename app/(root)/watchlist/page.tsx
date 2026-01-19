@@ -5,7 +5,9 @@ import { redirect } from "next/navigation"
 import { headers } from "next/headers"
 import ClientWatchlistTable from "@/components/ClientWatchlistTable"
 import TradingViewWidget from "@/components/TradingViewWidget"
-import { TECHNICAL_ANALYSIS_WIDGET_CONFIG } from "@/lib/constants"
+import TickerTapeWidget from "@/components/TickerTapeWidget"
+import { TECHNICAL_ANALYSIS_WIDGET_CONFIG, SINGLE_QUOTE_WIDGET_CONFIG } from "@/lib/constants"
+import type { ReactNode } from "react"
 
 /* -------------------------------------------------------------------------- */
 /*                                FINNHUB API                                 */
@@ -194,7 +196,11 @@ export default async function WatchlistPage({
   /* ------------------------------------------------------------------------ */
 
   return (
-        <div className="container mx-auto mt-10 px-6 pb-12">
+        <div className="flex flex-col min-h-screen w-full">
+          <div className="w-full pt-4">
+            <TickerTapeWidget />
+          </div>
+          <div className="container mx-auto mt-10 px-6 pb-12 w-full">
           <h1 className="text-3xl font-bold text-foreground mb-8 animate-fade-up">My Watchlist</h1>
 
           {/* WATCHLIST + PROFILE */}
@@ -231,6 +237,20 @@ export default async function WatchlistPage({
 
   {/* -------------------- RIGHT COLUMN -------------------- */}
   <div className="w-full lg:w-[380px] flex flex-col gap-8">
+    {/* TradingView Single Quote Widget */}
+    <div className="bg-card rounded-xl border border-border/50 p-4 h-[220px] card-hover transition-all duration-300 hover:scale-[1.01]">
+      <TradingViewWidget
+        scriptUrl={`${scriptUrl}single-quote.js`}
+        config={{
+          ...SINGLE_QUOTE_WIDGET_CONFIG,
+          symbol: activeSymbol.toUpperCase(),
+        }}
+        height={180}
+        className="bg-transparent"
+        showBorder={false}
+      />
+    </div>
+
     {/* Profile Card */}
     <div className="bg-card rounded-xl border border-border/50 p-5 flex flex-col h-[380px] card-hover transition-all duration-300 hover:scale-[1.01]">
       {/* Logo + Name */}
@@ -338,6 +358,7 @@ export default async function WatchlistPage({
         </div>
       </section>
     </div>
+  </div>
   )
 }
 
@@ -345,7 +366,7 @@ export default async function WatchlistPage({
 /*                              SMALL COMPONENTS                              */
 /* -------------------------------------------------------------------------- */
 
-function Row({ label, value }: { label: string; value?: string | React.ReactNode }) {
+function Row({ label, value }: { label: string; value?: string | ReactNode }) {
   return (
     <div className="flex justify-between border-b border-border/50 py-2">
       <span className="text-muted-foreground">{label}</span>

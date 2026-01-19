@@ -145,25 +145,67 @@ export async function getCurrentUserEmail(): Promise<string | null> {
     }
 }
 
-export const updateProfileImage = async (imageUrl: string): Promise<boolean> => {
+export type UpdateProfileImageError = 
+  | 'invalid_url'
+  | 'invalid_protocol'
+  | 'missing_hostname'
+  | 'untrusted_domain'
+  | 'unknown';
+
+export type UpdateProfileImageResult = 
+  | { success: true }
+  | { success: false; error: UpdateProfileImageError; hostname?: string };
+
+// Trusted domains for profile images
+const TRUSTED_IMAGE_DOMAINS = [
+  { domain: 'avatars.githubusercontent.com', service: 'GitHub Avatar' },
+  { domain: 'googleusercontent.com', service: 'Google (Images, Photos, Drive)' },
+  { domain: 'graph.microsoft.com', service: 'Microsoft/Azure AD' },
+  { domain: 'storage.googleapis.com', service: 'Google Cloud Storage' },
+  { domain: 'github.com', service: 'GitHub' },
+  { domain: 'images.unsplash.com', service: 'Unsplash' },
+];
+
+// Extract just domain names for validation
+const TRUSTED_DOMAINS = TRUSTED_IMAGE_DOMAINS.map(d => d.domain);
+
+export const updateProfileImage = async (imageUrl: string): Promise<UpdateProfileImageResult> => {
     // Validate URL is well-formed http or https URL
     if (imageUrl) {
         try {
-            const url = new URL(imageUrl);
+            // Try to parse the URL, handling special characters
+            let normalizedUrl = imageUrl.trim();
+            try {
+                new URL(normalizedUrl);
+            } catch {
+                // Try URL-encoding special characters that might break parsing
+                normalizedUrl = encodeURI(normalizedUrl).replace(/%20/g, '+');
+            }
+            const url = new URL(normalizedUrl);
+            
             if (url.protocol !== 'http:' && url.protocol !== 'https:') {
-                console.error('Invalid URL protocol:', url.protocol);
-                return false;
+                return { success: false, error: 'invalid_protocol' };
             }
             if (!url.hostname) {
-                console.error('Missing hostname in URL:', imageUrl);
-                return false;
+                return { success: false, error: 'missing_hostname' };
+            }
+            // Check if hostname is in trusted domains
+            const isTrusted = TRUSTED_DOMAINS.some(domain => 
+                url.hostname === domain || url.hostname.endsWith('.' + domain)
+            );
+            if (!isTrusted) {
+                return { success: false, error: 'untrusted_domain', hostname: url.hostname };
             }
         } catch (e) {
             console.error('Invalid URL format:', imageUrl, e);
-            return false;
+            return { success: false, error: 'invalid_url' };
         }
     }
-    return updateProfileImageDB(imageUrl);
+    const result = await updateProfileImageDB(imageUrl);
+    if (result) {
+      return { success: true };
+    }
+    return { success: false, error: 'unknown' };
 }
 
 export const deleteAccount = async (): Promise<{ success: boolean; error?: string }> => {
