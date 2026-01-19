@@ -8,16 +8,31 @@ A modern, full-featured stock analysis and monitoring platform built with Next.j
 - **Interactive TradingView Widgets** - Professional-grade stock charts with multiple view options
 - **Market Overview** - Real-time visualization of major market indices (Indices, Stocks, Crypto)
 - **Ticker Tape** - Scrolling ticker showing major indices and popular stocks
-- **Hot Lists** - Top gainers, losers, and most active stocks
-- **Stock Heatmap** - Visual representation of market performance by sector
+- **Stock Heatmap** - Visual representation of market performance by sector (S&P 500)
+- **Market Data** - Real-time quotes for Financial, Technology, and Services sectors
+- **Timeline** - Market events and earnings calendar
+- **Forex Heatmap** - Currency pair performance visualization
+- **Stock Screener** - Find investment opportunities with advanced filtering
 - **Technical Analysis** - Built-in technical indicators and analysis tools
+- **Hot Lists** - Top gainers, losers, and most active stocks
+
+### 📈 Stock Details Pages
+- **Individual Stock Analysis** - Dedicated pages for each stock symbol (`/stocks/[symbol]`)
+- **Candlestick Charts** - Interactive price charts with multiple timeframes
+- **Baseline Charts** - Price comparison against performance benchmarks
+- **Technical Analysis** - RSI, MACD, Moving Averages, and more
+- **Company Profile** - Business description, sector, industry, and web links
+- **Company Financials** - Income statement, balance sheet, and cash flow data
+- **Watchlist Integration** - Add/remove stocks directly from detail pages
+- **Real-time Data** - Live price updates and market information
 
 ### 🔔 Watchlist Management
 - **Personal Watchlists** - Create and manage custom stock watchlists
 - **Real-time Price Updates** - Live stock prices with change percentages
 - **Key Metrics Display** - Market cap, P/E ratios, and custom alerts
 - **Quick Actions** - Buy/Sell quick links to TradingView
-- **One-Click Add** - Add stocks to watchlist directly from search
+- **One-Click Add** - Add stocks to watchlist directly from search or detail pages
+- **Persistent Storage** - Watchlists saved to MongoDB
 
 ### 🔍 Stock Search
 - **Smart Search** - Quick search for stocks, ETFs, and crypto via Finnhub API
@@ -25,6 +40,12 @@ A modern, full-featured stock analysis and monitoring platform built with Next.j
 - **Popular Stocks** - Browse top-traded stocks across categories
 - **Company Profiles** - Detailed company information and financials
 - **Watchlist Status** - See which stocks are already in your watchlist
+
+### ⚙️ Settings & Preferences
+- **Profile Picture** - Custom avatar support via URL (Gravatar compatible)
+- **Email Notifications** - Toggle daily news digest subscriptions
+- **Account Management** - Secure account deletion with confirmation
+- **Investment Preferences** - Store goals, risk tolerance, and preferred industries
 
 ### 📧 Email Notifications
 - **Daily News Summaries** - Personalized news based on your watchlist
@@ -41,6 +62,7 @@ A modern, full-featured stock analysis and monitoring platform built with Next.j
 - **Account Deletion** - Permanently delete account with secure confirmation flow
 - **Responsive Design** - Works seamlessly on all devices, including mobile
 - **Keyboard Shortcuts** - Quick navigation with keyboard commands
+- **Dark Mode** - Beautiful dark theme optimized for long sessions
 
 ### 📈 Analytics
 - **Google Analytics** - Track user behavior and app performance
@@ -67,7 +89,8 @@ A modern, full-featured stock analysis and monitoring platform built with Next.j
 - **Radix UI** - Accessible UI components
 - **Shadcn/ui** - Beautiful, reusable component library
 - **Lucide React** - Consistent icon library
-- **Tailwind Animate CSS** - Smooth animations
+- **Tw Animate CSS** - Smooth animations
+- **Next Themes 0.4.6** - Dark/light theme support
 
 ### Charts & Data
 - **TradingView Widgets** - Professional financial charts and market data
@@ -105,9 +128,16 @@ stock-analysis/
 │   ├── api/               # API routes
 │   │   ├── inngest/       # Inngest webhooks for background jobs
 │   │   ├── subscribe/     # Subscription management endpoints
-│   │   └── unsubscribe/   # Unsubscribe handler
+│   │   ├── unsubscribe/   # Unsubscribe handler
+│   │   └── watchlist/     # Watchlist API endpoints
 │   ├── (auth)/            # Authentication pages (sign-in, sign-up)
 │   ├── (root)/            # Main application pages
+│   │   ├── page.tsx       # Dashboard homepage
+│   │   ├── settings/      # User settings pages
+│   │   │   └── notifications/  # Notification settings
+│   │   ├── stocks/        # Stock detail pages
+│   │   │   └── [symbol]/  # Dynamic stock symbol pages
+│   │   └── watchlist/     # User watchlist page
 │   ├── unsubscribe/       # Unsubscribe landing page
 │   └── global.css         # Global styles
 ├── components/            # React components
@@ -136,15 +166,19 @@ stock-analysis/
 │   ├── NotificationSettings.tsx
 │   ├── ProfilePictureSettings.tsx
 │   ├── SearchCommand.tsx
+│   ├── TickerTapeWidget.tsx
+│   ├── TradingViewHeatmapWidget.tsx
 │   ├── TradingViewMarketOverview.tsx
+│   ├── TradingViewMarketSummary.tsx
+│   ├── TradingViewScreenerWidget.tsx
 │   ├── TradingViewWidget.tsx
 │   ├── UserDropdown.tsx
 │   ├── WatchlistButton.tsx
 │   └── WatchlistTable.tsx
 ├── database/             # Database configuration
-│   └── mongoose.ts       # MongoDB connection
-├── database/models/      # Mongoose models
-│   └── watchlist.model.ts
+│   ├── mongoose.ts       # MongoDB connection
+│   └── models/           # Mongoose models
+│       └── watchlist.model.ts
 ├── hooks/                # Custom React hooks
 │   ├── useDebounce.ts
 │   └── useTradingViewWidget.tsx
@@ -329,9 +363,12 @@ This script tests connectivity to MongoDB and Redis.
 - `SearchCommand` - Command palette for stock search with Cmd+K shortcut
 - `TradingViewWidget` - Embedded TradingView charts
 - `TradingViewMarketOverview` - Market indices and sector performance
+- `TradingViewScreenerWidget` - Advanced stock screener with filters
+- `TickerTapeWidget` - Scrolling ticker tape with market indices
 - `AuthRightSection` - Auth page with ticker tape and hotlists
 - `WatchlistTable` - Display user's watchlist stocks
 - `ClientWatchlistTable` - Client-side watchlist with real-time updates
+- `WatchlistButton` - Add/remove stocks from watchlist
 - `NotificationSettings` - Toggle email subscription
 - `ProfilePictureSettings` - Custom profile avatar management
 - `DeleteAccountSettings` - Secure account deletion with confirmation
@@ -342,6 +379,18 @@ This script tests connectivity to MongoDB and Redis.
 |----------|--------|
 | `Cmd+K` / `Ctrl+K` | Open stock search command palette |
 
+## 📂 Page Routes
+
+### Main Pages
+| Route | Description |
+|-------|-------------|
+| `/` | Dashboard with market overview, heatmaps, and screener |
+| `/stocks/[symbol]` | Individual stock detail page with charts and analysis |
+| `/watchlist` | User's personal stock watchlist |
+| `/settings/notifications` | Account settings (profile, notifications, delete account) |
+| `/sign-in` | User authentication (sign in/sign up) |
+| `/unsubscribe` | Unsubscribe from email notifications |
+
 ## 🔄 Data Flow
 
 ### Watchlist → News → Email Pipeline
@@ -351,6 +400,13 @@ This script tests connectivity to MongoDB and Redis.
 4. News content is cached in Redis
 5. Personalized emails assembled per user
 6. Nodemailer sends daily digest emails
+
+### Stock Detail Page Flow
+1. User navigates to `/stocks/AAPL`
+2. Server fetches company profile from Finnhub
+3. TradingView widgets load with symbol data
+4. Watchlist status checked and displayed
+5. User can add/remove from watchlist
 
 ### Authentication Flow
 1. User signs up with email/password
@@ -385,7 +441,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 🙏 Acknowledgments
 
-> **Note:** This project was inspired by a [tutorial](https://www.youtube.com/watch?v=gu4pafNCXng) on JSMastery. MarketPulse adds new features on top such as watchlists, unsubscribe management, AI-powered emails, and more.
+> **Note:** This project was inspired by a [tutorial](https://www.youtube.com/watch?v=gu4pafNCXng) on JSMastery. MarketPulse adds new features on top such as watchlists, unsubscribe management, AI-powered emails, stock detail pages, screener, settings management, and more.
 
 - [JSMastery](https://www.youtube.com/watch?v=gu4pafNCXng) - Tutorial Inspiration
 - [Next.js](https://nextjs.org/) - The React Framework
