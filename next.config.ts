@@ -33,7 +33,7 @@ const nextConfig: NextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.tradingview.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://*.tradingview.com https://generativelanguage.googleapis.com https://www.google-analytics.com wss://*.tradingview.com; frame-src 'self' https://*.tradingview.com;",
+            value: "default-src 'self'; script-src-elem 'self' 'unsafe-inline' 'unsafe-eval' https://*.tradingview.com https://www.googletagmanager.com https://www.google-analytics.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.tradingview.com https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://*.tradingview.com https://generativelanguage.googleapis.com https://www.google-analytics.com wss://*.tradingview.com; frame-src 'self' https://*.tradingview.com https://www.tradingview-widget.com;",
           },
           {
             key: 'X-Frame-Options',
